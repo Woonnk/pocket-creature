@@ -1,0 +1,11 @@
+name: Feature idea
+description: Suggest something fun or useful
+title: "[Idea] "
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What should the creature do?
+      description: Give a concrete situation and the behavior you would like.
+    validations:
+      required: true

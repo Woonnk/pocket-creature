@@ -1,0 +1,23 @@
+name: Bug report
+description: Report unexpected companion behavior
+title: "[Bug] "
+body:
+  - type: input
+    id: version
+    attributes:
+      label: App version and Windows version
+      placeholder: "0.10.0 · Windows 11"
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: What happened, and how can we reproduce it?
+      description: Include expected behavior, active mode, monitor layout/DPI, and local model if relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Screenshots or errors
+      description: Remove private window titles, file contents, and personal details before posting.

@@ -1,0 +1,53 @@
+name: Prepare GitHub release
+on:
+  push:
+    tags: ['v1.*']
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Match version to an explicit 1.x release tag
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: node -e "const p=require('./package.json');if(process.env.RELEASE_TAG!=='v'+p.version||!/^1\./.test(p.version))throw Error('Tag/package version mismatch');"
+      - run: npm ci
+      - run: npm test
+      - shell: powershell
+        run: ./scripts/verify-windows-helper.ps1
+      - run: npx playwright install chromium
+      - run: npm run test:browser
+      - run: npm run dist:win
+      - run: npm run check:release
+      - run: npm run release:assets
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-assets
+          path: release/assets/*
+          if-no-files-found: error
+  draft:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-assets
+          path: release-assets
+      - name: Create a reviewable release draft with Windows and playground downloads
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: gh release create "$RELEASE_TAG" release-assets/* --draft --verify-tag --title "Pocket Creature $RELEASE_TAG" --notes-file RELEASE_NOTES.md

@@ -1,0 +1,13 @@
+node_modules/
+release/
+dist/
+*.log
+.env
+.env.*
+!.env.example
+companion.json
+companion.json.tmp
+connected-folders.json
+*.local
+.DS_Store
+Thumbs.db

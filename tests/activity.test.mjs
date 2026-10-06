@@ -1,0 +1,25 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {EventEmitter} from 'node:events';
+import {createRequire} from 'node:module';
+import {normalize,normalizeActivity,activityTransition} from '../renderer/core.mjs';
+const require=createRequire(import.meta.url);
+const {classifyProcess,createActivityAdapter}=require('../desktop/activity.cjs');
+test('old saves keep progress and acquire smooth motion plus reaction settings',()=>{const s=normalize({version:1,name:'Noodle',coins:42,notes:'Keep me',hat:'crown',owned:['crown']});assert.equal(s.coins,42);assert.equal(s.notes,'Keep me');assert.equal(s.frameMode,'smooth');assert.equal(s.pcAwareness,true);assert.equal(s.idleAfter,120);assert.equal(s.version,8);});
+test('idle transition greets once and aggregate typing expires',()=>{const s=normalize();let a=activityTransition(null,{idleSeconds:150},s,1000);assert.equal(a.away,true);a=activityTransition(a,{idleSeconds:0,typingCount:4,category:'coding'},s,2000);assert.equal(a.returned,true);assert.equal(a.typing,true);assert.equal(a.outfit,'coding');a=activityTransition(a,{idleSeconds:0},s,4000);assert.equal(a.returned,false);assert.equal(a.typing,false);});
+test('disabled reactions cannot trigger naps, typing, or outfits',()=>{const s=normalize({pcAwareness:false});const a=activityTransition({away:true,typingUntil:9000},{typingCount:20,idleSeconds:300,category:'music'},s,2000);assert.equal(a.away,false);assert.equal(a.returned,false);assert.equal(a.typing,false);assert.equal(a.outfit,'none');});
+test('activity payload excludes typed text, app titles, and malformed counters',()=>{const a=normalizeActivity({category:'unknown',typingCount:Infinity,idleSeconds:-5,title:'secret',typedText:'secret'});assert.equal(a.category,'none');assert.equal(a.typingCount,0);assert.equal(a.idleSeconds,0);assert.equal(Object.hasOwn(a,'typedText'),false);assert.equal(Object.hasOwn(a,'title'),false);});
+test('recognized foreground process names map to categories',()=>{assert.equal(classifyProcess('Code.exe'),'coding');assert.equal(classifyProcess('Spotify'),'music');assert.equal(classifyProcess('RobloxPlayerBeta'),'gaming');assert.equal(classifyProcess('msedge'),'browsing');assert.equal(classifyProcess('private-document'),'none');assert.equal(classifyProcess({}),'none');});
+test('Windows adapter frames split messages, filters raw names, and stops sensing',()=>{
+  const children=[],signals=[],args=[];
+  const spawn=(_command,argv,options)=>{const p=new EventEmitter();p.stdout=new EventEmitter();p.stdout.setEncoding=()=>{};p.stderr=new EventEmitter();p.kill=()=>{p.killed=true;};children.push(p);args.push({argv,options});return p;};
+  const adapter=createActivityAdapter(s=>signals.push(s),{platform:'win32',spawnProcess:spawn});adapter.configure({pcAwareness:true,typingReaction:true});
+  children[0].stdout.emit('data','{"process":"Co');children[0].stdout.emit('data','de","typing":4,"hook":true,"title":"main.py - Code"}\nnoise\n');
+  assert.deepEqual(adapter.snapshot(),{category:'coding',typingCount:4,appAvailable:true,typingAvailable:true,contextId:2,windowTitle:'main.py - Code',fullscreen:false,monitorCenter:null,windowSurface:null});assert.equal(Object.hasOwn(signals.at(-1),'process'),false);
+  assert.equal(adapter.editorTitle(),'main.py - Code');children[0].stdout.emit('data','{"process":"Pocket Creature","self":true,"typing":0,"hook":true,"title":""}\n');assert.equal(adapter.snapshot().category,'coding');assert.equal(adapter.editorTitle(),'main.py - Code');assert.equal(adapter.snapshot().contextId,2);assert.equal(adapter.snapshot().windowTitle,'main.py - Code');assert.equal(Object.hasOwn(signals.at(-1),'title'),false);
+  children[0].stdout.emit('data','{"process":"Chrome","typing":0,"title":"First video - YouTube"}\n');const firstTab=adapter.snapshot().contextId;assert.equal(adapter.editorTitle(),'');assert.equal(adapter.snapshot().windowTitle,'First video - YouTube');children[0].stdout.emit('data','{"process":"Chrome","typing":0,"title":"Second video - YouTube"}\n');assert.equal(adapter.snapshot().category,'browsing');assert.ok(adapter.snapshot().contextId>firstTab);
+  assert.equal(args[0].options.windowsHide,true);assert.ok(args[0].argv.includes('-File'));
+  adapter.configure({pcAwareness:true,typingReaction:false});assert.equal(children[0].killed,true);assert.equal(args[1].argv.at(-1),'0');
+  children[1].stdout.emit('data','{"process":"Spotify","typing":10,"hook":false}\n');assert.equal(adapter.snapshot().typingCount,0);assert.equal(adapter.snapshot().category,'music');
+  adapter.configure({pcAwareness:false,typingReaction:false});assert.equal(children[1].killed,true);assert.equal(adapter.snapshot().appAvailable,false);adapter.stop();
+});

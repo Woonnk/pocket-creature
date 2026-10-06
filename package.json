@@ -1,0 +1,48 @@
+{
+  "name": "pocket-creature",
+  "version": "0.10.0",
+  "private": true,
+  "description": "A tiny dragon companion for your Windows desktop.",
+  "main": "desktop/main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "demo": "node scripts/serve.cjs",
+    "test": "node --test tests/*.test.mjs",
+    "build:demo": "node scripts/build-demo.mjs",
+    "dist:win": "electron-builder --win portable --x64",
+    "test:browser": "npm run build:demo && node scripts/test-browser.cjs",
+    "check:release": "node scripts/check-release.cjs",
+    "release:assets": "node scripts/release-assets.cjs"
+  },
+  "devDependencies": {
+    "electron": "44.5.1",
+    "electron-builder": "26.15.3",
+    "playwright": "1.62.1"
+  },
+  "build": {
+    "appId": "com.pocketcreature.companion",
+    "productName": "Pocket Creature",
+    "files": [
+      "desktop/**/*",
+      "renderer/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": "portable",
+      "artifactName": "Pocket-Creature-${version}-Windows.${ext}",
+      "signAndEditExecutable": false,
+      "icon": "renderer/icon.ico"
+    },
+    "directories": {
+      "output": "release"
+    },
+    "asarUnpack": [
+      "desktop/activity.ps1"
+    ]
+  },
+  "license": "MIT",
+  "author": "Pocket Creature contributors",
+  "engines": {
+    "node": ">=24 <25"
+  }
+}

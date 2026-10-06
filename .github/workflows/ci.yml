@@ -1,0 +1,69 @@
+name: Tests and Windows package
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  logic:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build:demo
+      - name: Compile bundled Windows helper without starting sensing
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: ./scripts/verify-windows-helper.ps1
+  browser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:browser
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-captures
+          path: dist/*.png
+          if-no-files-found: ignore
+          retention-days: 7
+  package:
+    needs: [logic, browser]
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run dist:win
+      - run: npm run check:release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-portable
+          path: release/Pocket-Creature-*-Windows.exe
+          if-no-files-found: error
+          retention-days: 14
