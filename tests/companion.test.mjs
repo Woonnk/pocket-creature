@@ -18,7 +18,7 @@ test('commentary respects quiet, event settling, cooldown, and distinct activity
 });
 test('project memory and chat migration are bounded; raw file content is omitted',()=>{const s=normalize({chatHistory:[{role:'system',content:'bad'},{role:'user',content:'x'.repeat(2000)}],projectMemories:[{id:'p',description:'x'.repeat(900)}],file:{excerpt:'secret'}});assert.equal(s.chatHistory.length,1);assert.equal(s.chatHistory[0].content.length,1500);assert.equal(s.projectMemories[0].description.length,500);assert.equal(s.file,undefined);assert.equal(s.talkativeness,'chatty');});
 test('editor title lookup stays in connected folders and refuses ambiguous names',async()=>{
- const temp=await fs.mkdtemp(path.join(os.tmpdir(),'pocket-files-'));try{
+ const temp=await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(),'pocket-files-')));try{
  const root=path.join(temp,'project');await fs.mkdir(root);await fs.writeFile(path.join(root,'main.py'),'def hello():\n    pass');await fs.writeFile(path.join(temp,'outside.py'),'private');const service=createFileService({inspect:inspectText});await service.addRoot(root);
  assert.equal(basenameFromTitle('*main.py - Project - Visual Studio Code'),'main.py');assert.equal(basenameFromTitle('Secret document - Browser'),'');assert.equal((await service.resolveTitle('main.py - Visual Studio Code')).functions[0],'hello');await assert.rejects(service.inspectFile(path.join(temp,'outside.py')),/outside/);
  await fs.symlink(path.join(temp,'outside.py'),path.join(root,'link.py'));await assert.rejects(service.inspectFile(path.join(root,'link.py')),/outside/);
