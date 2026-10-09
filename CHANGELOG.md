@@ -3,6 +3,7 @@
 ## 0.15.1 — public beta: voice, home, and desktop startup fix
 
 - Publish the accumulated 0.11–0.15 improvements: Windows/Kokoro spoken replies, push-to-talk, local creature commands, organized settings, a movable home, decor, and task gestures. Earlier preview entries below describe development milestones first included in this public update.
+- Resolve Windows speech/JSON assemblies from their loaded framework locations before compiling helper C#. Browser voice checks wait for playback completion rather than assuming it finishes within 700 ms.
 - Fix the desktop protocol blocking voice-command/home/task modules. Desktop and demo now share a flat renderer asset inventory; desktop files, private saves, unknown paths, and other hosts remain blocked.
 - Wait for trusted renderer readiness after save loading, control setup, and creature drawing before displaying the native overlay. DOM readiness alone no longer opens it. Tray controls and recovery cannot expose an unfinished window.
 - Keep startup click-through, with a 15-second startup timeout. Page/preload failure, renderer crash, or an unresponsive window releases desktop clicks, hides the overlay, stops active voice/model work, and exits with a small error message.

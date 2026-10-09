@@ -93,3 +93,7 @@ The desktop and demo now share an inventory of existing flat renderer assets. Lo
 The browser startup suite verifies every current module loads, saved name/progress remain, desktop mode/creature/home/control setup precede the single readiness report, and reload works. Aborting `home.mjs` reproduces import failure and sends no readiness signal. These checks use Chromium and a native bridge mock, not an actual Windows Electron process.
 
 User-reported smoke result on 2026-10-07: after receiving 0.15.1 and setting up Kokoro, the user reported “all works.” Detailed acceptance remains open: existing-save migration, tray open/close, underlying desktop clicks, hide/recovery shortcuts, and induced startup/crash cleanup. The corrected package is unsigned; current audio/recognition/DPI/game checks remain pending as above.
+
+## Publication CI corrections — 2026-10-09
+
+The first 0.15.1 publication run passed 94 logic tests on Windows and Linux, but Windows helper compilation could not resolve `System.Speech.dll` by its bare filename. Voice helpers and the compilation check now load framework assemblies and use their full locations. The Linux browser voice-conversation test also exposed a fixed 700 ms playback assumption; it now waits for completed playback with a bounded timeout. Publication is retried with both fixes; check Actions for final results.

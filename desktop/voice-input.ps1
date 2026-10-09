@@ -2,7 +2,10 @@ param([int]$ParentPid)
 $ErrorActionPreference = 'Stop'
 [Console]::InputEncoding = New-Object System.Text.UTF8Encoding($false)
 [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false)
-Add-Type -ReferencedAssemblies System.dll, System.Core.dll, System.Speech.dll, System.Web.Extensions.dll -TypeDefinition @'
+Add-Type -AssemblyName System.Speech, System.Web.Extensions
+$speechAssembly = [System.Speech.Synthesis.SpeechSynthesizer].Assembly.Location
+$jsonAssembly = [System.Web.Script.Serialization.JavaScriptSerializer].Assembly.Location
+Add-Type -ReferencedAssemblies System.dll, System.Core.dll, $speechAssembly, $jsonAssembly -TypeDefinition @'
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
