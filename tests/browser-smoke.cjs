@@ -1,3 +1,4 @@
+const {openSettingsSection,openCreatureDetails}=require('./panel-helpers.cjs');
 // Optional visual smoke suite: npm install --no-save playwright, then npx playwright install chromium.
 // Start npm run demo first. CI may supply PLAYWRIGHT_MODULE and CHROMIUM_EXECUTABLE.
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
@@ -13,8 +14,8 @@ async function run(){
     await page.waitForTimeout(900);
     await page.screenshot({path:path.join(__dirname,'../dist/Pocket-Creature-Preview.png')});
     await page.locator('[data-action="pet"]').click();assert.equal(await page.locator('#coins').textContent(),'1');
-    await page.locator('[data-color="lavender"]').click();assert.equal(await page.locator('[data-color="lavender"]').getAttribute('aria-pressed'),'true');
-    await page.locator('[data-hat="wizard"]').click();assert.match(await page.locator('#toast').textContent(),/few more coins/);
+    await openCreatureDetails(page,'style');await page.locator('[data-color="lavender"]').click();assert.equal(await page.locator('[data-color="lavender"]').getAttribute('aria-pressed'),'true');
+    await openCreatureDetails(page,'style');await page.locator('[data-hat="wizard"]').click();assert.match(await page.locator('#toast').textContent(),/few more coins/);
     const before=await page.locator('#pet').boundingBox();
     await page.mouse.move(before.x+100,before.y+110);await page.mouse.down();await page.mouse.move(before.x+180,before.y-50,{steps:10});await page.waitForTimeout(80);await page.mouse.up();await page.waitForTimeout(1200);
     await page.waitForFunction(()=>document.querySelector('#pet').getBoundingClientRect().y>400,{},{timeout:6000});
@@ -24,7 +25,7 @@ async function run(){
     await page.locator('#focus-start').click();assert.equal(await page.locator('#focus-start').textContent(),'Keep going');await page.locator('#focus-start').click();assert.equal(await page.locator('#focus-start').textContent(),'Pause session');
     await page.locator('#reminder-title').fill('<img src=x onerror=alert(1)>');await page.locator('#reminder-form button').click();assert.match(await page.locator('#reminders').textContent(),/<img/);assert.equal(await page.locator('#reminders img').count(),0);
     await page.locator('[data-tab="notes"]').click();await page.locator('#notes').fill('Tiny dragon, big plans.');
-    await page.locator('[data-tab="settings"]').click();await page.locator('#name-input').fill('Noodle');
+    await page.locator('[data-tab="settings"]').click();await openSettingsSection(page,'general');await page.locator('#name-input').fill('Noodle');
     await page.waitForTimeout(700);await page.reload();assert.equal(await page.locator('#pet-name').textContent(),'Noodle');assert.equal(await page.locator('#notes').inputValue(),'Tiny dragon, big plans.');assert.equal(await page.locator('[data-color="lavender"]').getAttribute('aria-pressed'),'true');
     assert.equal(await page.locator('#focus-badge').isVisible(),true);
     await page.locator('#close-panel').click();assert.equal(await page.locator('#panel').isVisible(),false);await page.locator('#launcher').click();assert.equal(await page.locator('#panel').isVisible(),true);

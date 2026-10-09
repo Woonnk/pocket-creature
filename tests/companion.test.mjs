@@ -16,6 +16,19 @@ test('file observations describe actual sampled structure without executing it',
 test('commentary respects quiet, event settling, cooldown, and distinct activity categories',()=>{
  const c=createCommentator(),s=normalize(),ctx={category:'none'};c.hold(0);assert.equal(c.next(ctx,s,6000),null);assert.match(c.next({...ctx,category:'gaming'},s,7000),/Game time/);assert.equal(c.next({...ctx,category:'coding'},s,8000),null);assert.match(c.next({...ctx,category:'coding'},s,14000),/Coding time/);assert.equal(c.next(ctx,{...s,quiet:true},60000),null);assert.equal(c.next({...ctx,sleeping:true},s,60000),null);assert.equal(c.next(ctx,{...s,pcAwareness:false},60000),null);
 });
+test('changed window titles settle, name the current context, and respect conversation cooldowns',()=>{
+ const c=createCommentator(),s=normalize({talkativeness:'balanced'}),first={category:'browsing',contextId:4,windowTitle:'First page'};
+ c.hold(0);assert.equal(c.next(first,s,1000),null);assert.match(c.next(first,s,18000),/First page/);
+ const second={...first,contextId:5,windowTitle:'Second page'};assert.equal(c.next(second,s,19000),null);assert.equal(c.next(second,s,35000),null);
+ const reply=c.next(second,s,36000);assert.match(reply,/Second page/);assert.doesNotMatch(reply,/First page/);
+ const disabled=createCommentator();disabled.hold(0);disabled.next(first,s,1000);assert.doesNotMatch(disabled.next(first,{...s,contextReactions:false},18000),/First page/);
+});
+test('title commentary is bounded and file, typing, and focus context retain priority',()=>{
+ const s=normalize(),run=ctx=>{const c=createCommentator();c.hold(0);c.next(ctx,s,1000);return c.next(ctx,s,7000);};
+ const ctx={category:'coding',contextId:8,windowTitle:'Editor\n'+ 'x'.repeat(500)};
+ const line=run(ctx);assert.match(line,/Working in/);assert.ok(line.length<110);assert.doesNotMatch(line,/\n/);
+ assert.doesNotMatch(run({...ctx,fileName:'main.py'}),/Working in/);assert.doesNotMatch(run({...ctx,typing:true}),/Working in/);assert.doesNotMatch(run({...ctx,focus:true}),/Working in/);
+});
 test('project memory and chat migration are bounded; raw file content is omitted',()=>{const s=normalize({chatHistory:[{role:'system',content:'bad'},{role:'user',content:'x'.repeat(2000)}],projectMemories:[{id:'p',description:'x'.repeat(900)}],file:{excerpt:'secret'}});assert.equal(s.chatHistory.length,1);assert.equal(s.chatHistory[0].content.length,1500);assert.equal(s.projectMemories[0].description.length,500);assert.equal(s.file,undefined);assert.equal(s.talkativeness,'chatty');});
 test('editor title lookup stays in connected folders and refuses ambiguous names',async()=>{
  const temp=await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(),'pocket-files-')));try{

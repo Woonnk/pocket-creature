@@ -1,25 +1,25 @@
 # Publishing GitHub releases
 
-The first public release is the 0.10.0 beta. Stable 1.0 follows the readiness checks below. The intended repository is `Woonnk/pocket-creature`.
+The repository is `Woonnk/pocket-creature`. The current beta is 0.15.1; stable 1.0 follows the readiness checks below.
 
-## Publish the 0.10 beta
+## Publish a 0.x beta
 
-Push the reviewed source to main and let CI run. Create a release tagged `v0.10.0` at that source commit, titled `Pocket Creature 0.10.0 — public beta`, using RELEASE_NOTES.md. Mark it as a **pre-release**. Attach the tested Windows EXE, standalone HTML, LICENSE, THIRD_PARTY_NOTICES.md, and SHA256SUMS.txt. Source archives are supplied by GitHub. The Windows binary was tested for packaging integrity on Linux; direct Windows and live Ollama checks are still pending.
+Update package.json/package-lock.json, README.md, RELEASE_NOTES.md, CHANGELOG.md, and QA.md for the actual scope. Run checks before publication. Push reviewed source to main with `[release]` in the publication commit message, or push an explicit `v0.x.y` tag matching package.json. Ordinary main commits only run CI and do not publish.
 
-The existing automatic draft-release workflow deliberately starts at 1.x; publishing the beta tag does not create a competing automatic release. Main-branch CI still runs. Verify the public repository, source files/screenshots, release pre-release flag, and downloadable assets before reporting publication complete.
+The release workflow checks the version, runs logic/browser tests, compiles all bundled Windows helpers, builds/verifies the Windows portable package, and prepares checksummed assets. Only after those steps pass, it publishes a **pre-release** tagged at the tested commit. Downloads include the Windows EXE, standalone HTML, LICENSE, THIRD_PARTY_NOTICES.md, and SHA256SUMS.txt; GitHub supplies source archives. Verify Actions, the pre-release flag, source commit/tag, and assets before reporting publication complete. Inspect and repair an existing release rather than replacing it blindly or triggering the same version twice.
+
+The 0.10 beta remains in release history. The user's 0.15.1 launch/Kokoro smoke report is recorded in QA.md; it does not close broader native acceptance checks.
 
 ## Before 1.0
 
-Complete the direct Windows checks in QA.md, including perching on moved/resized/restored/closed windows and mixed-DPI monitors, game visibility, personal memory edits/forgetting, Ollama replies, tray/shortcuts, and existing-save migration. Finish the planned launch-at-startup, save export/import, and clearer connection status work. Record evidence honestly; CI/package success is not native runtime evidence.
+Complete direct Windows checks in QA.md, including perching, mixed-DPI monitors, game visibility, memory edits/forgetting, Ollama replies, voice input/output, tray/shortcuts, and save migration. Finish launch-at-startup, save export/import, and clearer connection status. CI/package success is not native runtime evidence.
 
 ## Prepare a versioned build
 
-1. Update package.json/package-lock.json together to 1.0.0. Update README.md, RELEASE_NOTES.md, CHANGELOG.md, and QA.md around the final scope.
-2. Run `npm ci`, `npm test`, and `npm run test:browser` after installing Chromium. On Windows run `powershell -NoProfile -File scripts/verify-windows-helper.ps1` to validate the bundled helper without starting sensing.
-3. Run `npm run dist:win`, `npm run check:release`, and `npm run release:assets`. The verifier checks PE headers, version, matching source/archive runtime files, unpacked PowerShell, and bundled runtime notices. Assets include the Windows EXE, standalone HTML, project/license notices, and SHA256SUMS.txt. GitHub supplies source archives from the release tag.
-4. Push the reviewed source to main in the public repository and let CI complete. Generated EXEs, node_modules, local saves, and secrets are excluded by .gitignore. Keep reviewed screenshots under docs/screenshots.
-5. Create and push the explicit `v1.0.0` tag. The prepared release workflow only responds to v1.* tags and checks that the tag exactly matches package.json. It tests/builds on Windows and creates a draft release with assets and notes. Review the draft, then publish it.
+1. Update package.json/package-lock.json together and refresh documentation around the final scope.
+2. Run `npm ci`, `npm test`, and `npm run test:browser` after installing Chromium. On Windows run `powershell -NoProfile -File scripts/verify-windows-helper.ps1` to compile bundled helpers without sensing or microphone capture.
+3. Run `npm run dist:win`, `npm run check:release`, and `npm run release:assets`. Verification covers PE headers, package version, matching runtime files, unpacked PowerShell, and runtime notices.
+4. Push reviewed source to main. Generated EXEs, dependencies, local saves, and secrets are excluded by .gitignore.
+5. For 1.x, push an explicit matching version tag. The workflow tests/builds and creates a **draft** with assets and notes; review and publish the draft separately. A main `[release]` commit is allowed only for 0.x betas.
 
-The manually published 0.10 beta does not satisfy the v1.* workflow tag/version check. Normal main-branch CI creates downloadable build artifacts without creating a release. Actions use read-only permissions except the separate draft-release job; checkout credentials are not retained. No personal token or machine credentials are embedded.
-
-Use the same version/tag/notes process for later 1.x releases. Update workflow tag policy before supporting another major version. Keep runtime licenses in the packaged application and review dependency upgrades with the tests.
+Actions use read-only permissions except the separate publication job; checkout credentials are not retained. No personal token or machine credentials are embedded. Keep runtime licenses in the packaged application and review dependency upgrades with tests.

@@ -1,6 +1,7 @@
 const {contextBridge,ipcRenderer}=require('electron');
 const subscribe=(channel,fn)=>{const handler=(_event,value)=>fn(value);ipcRenderer.on(channel,handler);return()=>ipcRenderer.removeListener(channel,handler);};
 contextBridge.exposeInMainWorld('companion',Object.freeze({
+  rendererReady:()=>ipcRenderer.send('renderer-ready'),
   loadState:()=>ipcRenderer.invoke('load-state'),
   saveState:state=>ipcRenderer.invoke('save-state',state),
   setClickThrough:ignore=>ipcRenderer.send('click-through',ignore),
@@ -23,5 +24,16 @@ contextBridge.exposeInMainWorld('companion',Object.freeze({
   chooseFile:()=>ipcRenderer.invoke('choose-file'),
   clearFile:()=>ipcRenderer.invoke('clear-file'),
   aiStatus:()=>ipcRenderer.invoke('ai-status'),
+  speechStatus:()=>ipcRenderer.invoke('speech-status'),
+  speak:payload=>ipcRenderer.invoke('speak',payload),
+  stopSpeech:()=>ipcRenderer.send('stop-speech'),
+  onSpeechState:fn=>subscribe('speech-state',fn),
+  synthesize:payload=>ipcRenderer.invoke('synthesize',payload),
+  voiceInputStatus:()=>ipcRenderer.invoke('voice-input-status'),
+  startVoiceInput:()=>ipcRenderer.invoke('voice-input-start'),
+  finishVoiceInput:()=>ipcRenderer.send('voice-input-finish'),
+  cancelVoiceInput:()=>ipcRenderer.send('voice-input-cancel'),
+  cancelChat:()=>ipcRenderer.send('cancel-chat'),
+  onVoiceInput:fn=>subscribe('voice-input',fn),
   chat:payload=>ipcRenderer.invoke('chat',payload)
 }));

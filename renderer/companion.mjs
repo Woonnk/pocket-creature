@@ -56,7 +56,8 @@ export function createCommentator(){
       const gap=context.gameMode?Math.max(60000,{chatty:7000,balanced:18000,minimal:45000}[settings.talkativeness]||7000):{chatty:7000,balanced:18000,minimal:45000}[settings.talkativeness]||7000;
       const ambient={chatty:24000,balanced:65000,minimal:180000}[settings.talkativeness]||24000;
       const category=CHAT_LINES[context.category]?context.category:'none';
-      if(category!==candidate){candidate=category;candidateSince=now;}
+      const activityKey=context.contextId===undefined?category:category+':'+String(context.contextId);
+      if(activityKey!==candidate){candidate=activityKey;candidateSince=now;}
       const changed=candidate!==stable&&now-candidateSince>=1200;
       const typingStarted=context.typing&&!lastTyping;
       if(force||now-lastSpoke>=gap&&(changed||typingStarted||now>=nextAmbient)){
@@ -64,6 +65,12 @@ export function createCommentator(){
         const key=context.focus?'focus':typingStarted?'typing':category;
         lastSpoke=now;lastTyping=context.typing;nextAmbient=now+(context.gameMode?Math.max(60000,ambient):context.focus?ambient*2:ambient);
         const line=lineFor(key,settings.personality||'playful');
+        const title=typeof context.windowTitle==='string'?context.windowTitle.replace(/[\x00-\x1f]/g,'').trim().slice(0,64):'';
+        if(changed&&!context.focus&&!context.typing&&title&&settings.contextReactions!==false){
+          if(category==='browsing')return `You switched to “${title}”. What caught your eye?`;
+          if(category==='coding'&&!context.fileName)return `Working in “${title}”? I’ll keep you company.`;
+          if(category==='music')return `I noticed “${title}”. Got a soundtrack in mind?`;
+        }
         if(context.fileName&&(key==='coding'||key==='typing'||key==='none')&&(indices.get(key)||0)%2===0)return `Still working on ${context.fileName}? ${context.projectDescription?'How’s '+context.projectDescription+' coming along?':'What’s the next little step?'} `;
         return line;
       }

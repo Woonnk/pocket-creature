@@ -1,11 +1,13 @@
-name: Prepare GitHub release
+name: Publish beta or prepare stable release
 on:
   push:
-    tags: ['v1.*']
+    branches: [main]
+    tags: ['v0.*', 'v1.*']
 permissions:
   contents: read
 jobs:
   build:
+    if: startsWith(github.ref, 'refs/tags/') || contains(github.event.head_commit.message, '[release]')
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -15,10 +17,11 @@ jobs:
         with:
           node-version: 24
           cache: npm
-      - name: Match version to an explicit 1.x release tag
+      - name: Validate explicit release version
         env:
           RELEASE_TAG: ${{ github.ref_name }}
-        run: node -e "const p=require('./package.json');if(process.env.RELEASE_TAG!=='v'+p.version||!/^1\./.test(p.version))throw Error('Tag/package version mismatch');"
+          RELEASE_REF_TYPE: ${{ github.ref_type }}
+        run: node -e "const p=require('./package.json');if(!/^[01]\.\d+\.\d+$/.test(p.version)||(process.env.RELEASE_REF_TYPE==='tag'?process.env.RELEASE_TAG!=='v'+p.version:!/^0\./.test(p.version)))throw Error('Tag/package version mismatch or unsupported publication');"
       - run: npm ci
       - run: npm test
       - shell: powershell
@@ -33,7 +36,7 @@ jobs:
           name: release-assets
           path: release/assets/*
           if-no-files-found: error
-  draft:
+  publish:
     needs: build
     runs-on: ubuntu-latest
     permissions:
@@ -46,8 +49,14 @@ jobs:
         with:
           name: release-assets
           path: release-assets
-      - name: Create a reviewable release draft with Windows and playground downloads
+      - name: Publish beta or create stable release draft
         env:
           GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: ${{ github.ref_name }}
-        run: gh release create "$RELEASE_TAG" release-assets/* --draft --verify-tag --title "Pocket Creature $RELEASE_TAG" --notes-file RELEASE_NOTES.md
+          RELEASE_COMMIT: ${{ github.sha }}
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if [[ "$VERSION" == 0.* ]]; then
+            gh release create "v$VERSION" release-assets/* --target "$RELEASE_COMMIT" --prerelease --title "Pocket Creature $VERSION — public beta" --notes-file RELEASE_NOTES.md
+          else
+            gh release create "v$VERSION" release-assets/* --draft --verify-tag --title "Pocket Creature $VERSION" --notes-file RELEASE_NOTES.md
+          fi

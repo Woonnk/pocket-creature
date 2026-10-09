@@ -2,11 +2,11 @@
 
 A little company. A little chaos. A tiny animated dragon for your Windows desktop.
 
-**Version 0.10.0 — window perching and editable personal memory.** No account, API key, or paid AI service is required.
+**Version 0.15.1 — voice conversations, a little home, and safer desktop startup.** No account, API key, or paid AI service is required.
 
 ## Try it
 
-**Windows:** Run `Pocket-Creature-0.10.0-Windows.exe`, the separate portable download. It launches over your desktop. Open its controls from the **Companion** button or tray icon. The app is unsigned. The new 0.10 behavior is tested with mocks and needs a run on your Windows PC; earlier user screenshots confirm the overlay, readable themes, and live Ollama replies. See [QA.md](../QA.md) for remaining native checks. Quit the old version from its tray before launching this update; existing progress stays in the same desktop save location.
+**Windows:** Run `Pocket-Creature-0.15.1-Windows.exe`, the separate portable download. It launches over your desktop. Open its controls from the **Companion** button or tray icon. The app is unsigned. The user reports the corrected launch and Kokoro setup work on their PC; broader native checks remain open. Earlier user screenshots confirm the overlay, readable themes, and live Ollama replies. See [QA.md](../QA.md) for remaining native checks. Quit the old version from its tray before launching this update; existing progress stays in the same desktop save location.
 
 **No installation:** Open `dist/Pocket-Creature-Playground.html` in a current desktop browser. This is a self-contained playground with the same creature, games, timers, and notebook. Browser progress belongs to that browser and file location; it is separate from desktop progress.
 
@@ -25,7 +25,7 @@ The short-output bug is fixed: requests prefer thinking off where the model supp
 
 With Automatic AI conversations enabled, Lil Wonks or your renamed dragon starts comments without you sending a message. File changes and PC activity supply context; the model can choose silence. Chatty/Balanced/Minimal set minimum AI intervals of 18/45/120 seconds; file events and foreground-window changes can prompt a comment after eight seconds, after the new activity settles for two seconds. Game mode has at least a 60-second automatic-comment interval, including urgent context/file events; Minimal keeps its longer 120-second interval. Built-in game comments are also spaced at least a minute apart. Quiet mode, idle naps, dragging, fetch, and manual chat suppress automatic replies. Switching apps or browser tabs cancels outdated automatic replies, including switches between two tabs in the same browser. The current foreground title supplies fresh context, even without screenshots. A title alone is not proof of page/game content. When the foreground context and selected-file sample are unchanged, title-only observations skip the model request; a changed title/file supplies a fresh event. With screen awareness, pixel comparison can trigger a fresh observation in the same app. Automatic prompts exclude conversation history and inactive files; recent comments are used only to avoid repetition. Automatic comments are limited to one sentence and 24 words, and near-duplicate comments are suppressed. These guardrails reduce rambling but do not guarantee model accuracy. Main-process checks also stop quiet/disabled/hidden/idle automatic requests. Basic local reactions continue when Ollama is offline; manual AI requests display a connection error beside the quick message input, preserving the message for retry.
 
-Supported editor titles now trigger filename curiosity even without a connected folder. **Settings → Files & memory → Connect folder** permits automatic inspection of files opened in VS Code, Cursor, Notepad, or Notepad++. Saved changes refresh the sample. Unsaved editor buffers are not read. Unresolved or duplicate filenames produce filename-only observations and are explicitly marked unread. **Show a file** remains an optional manual shortcut, including in the browser playground.
+Supported editor titles now trigger filename curiosity even without a connected folder. **Settings → Projects → Connect folder** permits automatic inspection of files opened in VS Code, Cursor, Notepad, or Notepad++. Saved changes refresh the sample. Unsaved editor buffers are not read. Unresolved or duplicate filenames produce filename-only observations and are explicitly marked unread. **Show a file** remains an optional manual shortcut, including in the browser playground.
 
 Turn on **Settings → Screen awareness** once to include occasional snapshots of the companion's selected monitor with a connected vision model. Snapshots include whatever is visible on that display, including other applications. The switch defaults off. Screen checks run only during eligible automatic observation attempts; no separate capture loop runs while you chat, sleep, hide the dragon, or use quiet mode. Images are sent only to the fixed local Ollama endpoint and never written to disk or saved state. Automatic snapshots are bounded to 960 × 540; manual snapshots to 1,280 × 720. One previous automatic snapshot is held in RAM to compare the next view, then replaced; switching foreground context, turning off screen awareness, hiding, going idle, or quitting clears it. Image access needs PC awareness on and a model advertising vision support. Screenshots can support observations about browsers, apps, or games; this is not continuous video or reliable game telemetry. Screenshots and file content are reference data, and the model has no ability to execute code or click.
 
@@ -65,11 +65,11 @@ Poses last about four seconds and have a 12-second cooldown; game poses last thr
 
 ## Personality
 
-Settings → Dragon personality offers **Playful**, **Curious**, **Cozy**, and **Cheeky**. Playful is the default for old saves. Personality changes local AI tone, built-in activity comments, greetings, affection, snacks, fetch, and naps. Hear a little personality previews a line without needing Ollama. Cozy is calmer; Cheeky uses gentle mischief rather than insults. Short-reply limits and grounded observations still apply. The live local model determines wording; the prompt cannot guarantee perfect tone.
+Settings → General → Dragon personality offers **Playful**, **Curious**, **Cozy**, and **Cheeky**. Playful is the default for old saves. Personality changes local AI tone, built-in activity comments, greetings, affection, snacks, fetch, and naps. Hear a little personality previews a line without needing Ollama. Cozy is calmer; Cheeky uses gentle mischief rather than insults. Short-reply limits and grounded observations still apply. The live local model determines wording; the prompt cannot guarantee perfect tone.
 
 ## Game mode and disappearing behind a game
 
-Game mode defaults to Automatic. Recognized games/launchers, or an unrecognized foreground app covering a monitor, activate it. A fullscreen browser does not become game mode. Settings → Game mode also offers Always on for unrecognized windowed games and Off for normal behavior.
+Game mode defaults to Automatic. Recognized games/launchers, or an unrecognized foreground app covering a monitor, activate it. A fullscreen browser does not become game mode. Settings → Games also offers Always on for unrecognized windowed games and Off for normal behavior.
 
 In game mode, the dragon is smaller, stays in a chosen corner, stops wandering/chasing, pauses fetch, and uses quieter spectator commentary. Keyboard/mouse idle does not put him to sleep while game mode is active, because controller play can appear idle to those sensors. Click through dragon is on by default; the launcher and opened controls still receive clicks. Turn it off to click/drag the dragon while gaming. PC awareness must be on for automatic detection; forced On works without automatic sensing.
 
@@ -79,7 +79,7 @@ If he disappears behind a game, press **Ctrl + Shift + G**, use Tray → Bring d
 
 ## Click to talk
 
-Click the creature to open a small message box, type a question, and Send. The reply appears above him and the input closes. Escape dismisses the input. Wandering and automatic comments pause while you type. Automatic chatter also pauses for 90 seconds after a manual reply, and automatic questions leave two minutes to answer. File events and idle returns cannot replace a conversation bubble. Startup and automatic wake-ups are silent. AI greeting prefixes are stripped before the one-sentence limit, retaining the observation; greeting-only automatic replies are suppressed. Your response can use his latest automatic comment for up to three minutes when the foreground still matches, or a short answer can follow a recent question across apps. An answered starter then joins the explicit conversation; unattended automatic comments stay out of saved history. File/folder controls and project memory now live under **Settings → Files & memory**. Automatic comments need no message or open panel.
+Click the creature to open a small message box, type a question, and Send. The reply appears above him and the input closes. Escape dismisses the input. Wandering and automatic comments pause while you type. Automatic chatter also pauses for 90 seconds after a manual reply, and automatic questions leave two minutes to answer. File events and idle returns cannot replace a conversation bubble. Startup and automatic wake-ups are silent. AI greeting prefixes are stripped before the one-sentence limit, retaining the observation; greeting-only automatic replies are suppressed. Your response can use his latest automatic comment for up to three minutes when the foreground still matches, or a short answer can follow a recent question across apps. An answered starter then joins the explicit conversation; unattended automatic comments stay out of saved history. File/folder controls and project memory now live under **Settings → Projects**. Automatic comments need no message or open panel.
 
 ## What works in this version
 
@@ -113,7 +113,7 @@ Interaction rewards: petting earns 1 coin with a 2.5-second reward cooldown; fet
 | Open controls | Companion button, right-click dragon, or tray icon |
 | Close controls | × or Escape |
 | Show / hide creature | Ctrl + Shift + P, or tray menu |
-| Bring dragon over a game | Ctrl + Shift + G, tray recovery, or Settings → Game mode |
+| Bring dragon over a game | Ctrl + Shift + G, tray recovery, or Settings → Games |
 | Change monitor | Tray → Move to next monitor |
 | Exit completely | Tray → Quit Pocket Creature, or Settings → Quit app |
 
@@ -131,19 +131,27 @@ Drag him away to give him a 45-second break from automatic perching. Drop his fe
 
 Personal memory is enabled by default and starts empty. It records clear first-person statements you send, such as “Call me Noodle,” “My favorite game is Stardew Valley,” “My hobbies are drawing,” “I like cozy games,” or “I dislike spoilers.” It recognizes a small set of literal phrases; it does not infer preferences from screenshots, opened files, someone else’s words, or AI replies. New statements replace the corresponding field rather than building an unbounded profile.
 
-Under **Settings → Personal memory**, inspect or edit the nickname, favorite games, interests, likes, and dislikes. **Save details** applies changes. **Forget personal details** clears the profile and recent conversation so an old reply cannot recreate it. Editing, forgetting, and pausing memory also discard a pending reply; pausing keeps the saved profile but stops learning and using it. Resume to use those details again. Project memory is a separate feature.
+Under **Settings → Memory**, inspect or edit the nickname, favorite games, interests, likes, and dislikes. **Save details** applies changes. **Forget personal details** clears the profile and recent conversation so an old reply cannot recreate it. Editing, forgetting, and pausing memory also discard a pending reply; pausing keeps the saved profile but stops learning and using it. Resume to use those details again. Project memory is a separate feature.
 
 Ask “What is my favorite game?” or “What do you remember about me?” for direct local recall, even without Ollama. Unknown facts stay unknown. When enabled, saved details accompany manual local-model replies only; automatic screen/app comments stay grounded in the current activity. Model tone and relevance still need a live Ollama check.
 
 ## Data and implementation
 
-The desktop app saves `companion.json` under Electron's user data folder (under `%APPDATA%`, normally `pocket-creature` or `Pocket Creature`, depending on launch mode). The browser demo uses localStorage. These saves contain settings, stats, wardrobe ownership, notebook text, reminders, focus deadlines, explicit or automatically observed project memories, forgotten-project markers, theme choices, and recent conversation, personal memory, personality, and game-mode preferences. Connected folder paths are saved separately in `connected-folders.json`. File samples themselves are not saved, though conversation messages may quote file observations or content. The Windows helper observes the foreground process name and aggregate key-down activity counts while reactions are enabled. It never reads key codes or typed characters. It reads the current foreground window title to notice supported editor filenames and follow browser tabs/game windows. A bounded title and changing activity identifier reach the renderer and local model as transient context. Raw titles are not saved, though a reply can mention an observed title. Resolved file context or an unread filename observation also reaches the renderer. Raw process names become a coarse category inside the adapter, and activity telemetry, window handles/geometry, monitor centers, and fullscreen observations are not written into your save. Screen capture is available only when Screen awareness is enabled and the selected local model supports vision. There is no microphone access. Optional local AI calls only a fixed localhost endpoint; the configured Ollama service and model determine their own behavior.
+The desktop app saves `companion.json` under Electron's user data folder (under `%APPDATA%`, normally `pocket-creature` or `Pocket Creature`, depending on launch mode). The browser demo uses localStorage. These saves contain settings, stats, wardrobe ownership, notebook text, reminders, focus deadlines, explicit or automatically observed project memories, forgotten-project markers, theme choices, and recent conversation, personal memory, personality, game-mode preferences, and home position/owned decorations/routine preferences. Connected folder paths are saved separately in `connected-folders.json`. File samples themselves are not saved, though conversation messages may quote file observations or content. The Windows helper observes the foreground process name and aggregate key-down activity counts while reactions are enabled. It never reads key codes or typed characters. It reads the current foreground window title to notice supported editor filenames and follow browser tabs/game windows. A bounded title and changing activity identifier reach the renderer and local model as transient context. Raw titles are not saved, though a reply can mention an observed title. Resolved file context or an unread filename observation also reaches the renderer. Raw process names become a coarse category inside the adapter, and activity telemetry, window handles/geometry, monitor centers, and fullscreen observations are not written into your save. Screen capture is available only when Screen awareness is enabled and the selected local model supports vision. Optional push-to-talk opens the default microphone only while a button or shortcut is held, up to 20 seconds. Audio closes before offline recognition and remains transient in memory; recognized text sent into a conversation may be saved in recent history. Its helper polls only the configured F8/F9/F10 shortcut plus Ctrl/Shift, never ordinary typed characters. Optional Kokoro output calls a separate fixed loopback endpoint on port 8880. Optional local AI calls only a fixed localhost endpoint; the configured Ollama service and model determine their own behavior.
 
 The renderer uses plain JavaScript ES modules with an original SVG character, CSS animation, and a small physics engine. There is no bundler required to modify it. Electron supplies the native desktop shell. The renderer is sandboxed, Node integration is disabled, and only narrow, sender-validated IPC functions are exposed. Saved input is normalized, and notes/reminders are rendered as text.
 
 ```text
 renderer/core.mjs       Saved state, focus logic, wardrobe, physics
 renderer/app.mjs        Behavior, interactions, UI, reminders
+renderer/speech.mjs     Speech policy, cancellation, delivery and local browser preview
+renderer/voice-input.mjs Capture epochs, transcript review and conversation state
+renderer/voice-commands.mjs Explicit local creature requests and voice pose selection
+desktop/voice-input.cjs Microphone helper lifecycle and watchdogs
+desktop/voice-input.ps1 Held shortcut, bounded capture and offline recognition
+desktop/local-voice.cjs Fixed-loopback Kokoro discovery and bounded WAV synthesis
+desktop/speech.cjs     Bounded Windows voice helper lifecycle
+desktop/speech.ps1     Installed voice discovery and native speech output
 renderer/companion.mjs  Sampled text inspection and dialogue
 desktop/files.cjs       Scoped file reads and editor-title resolution
 desktop/chat.cjs        Model discovery and fixed-localhost model adapter
@@ -182,11 +190,11 @@ npx playwright install chromium
 npm run test:browser
 ```
 
-It starts/stops its own local server on port 4173, runs nine suites, and generates preview screenshots. Stop an existing demo first. On Linux, use `npx playwright install --with-deps chromium` if system dependencies are needed. See [QA.md](../QA.md) for recorded checks and outstanding native verification, and [CONTRIBUTING.md](../CONTRIBUTING.md) for development conventions.
+It starts/stops its own local server on port 4173, runs ten suites, and generates preview screenshots. Stop an existing demo first. On Linux, use `npx playwright install --with-deps chromium` if system dependencies are needed. See [QA.md](../QA.md) for recorded checks and outstanding native verification, and [CONTRIBUTING.md](../CONTRIBUTING.md) for development conventions.
 
 ## Activity detection
 
-The browser preview reacts only to cursor/typing/idle activity within its page. Use the Creature tab’s activity preview selector to try coding, music, gaming, stepping away, and returning.
+The browser preview reacts only to cursor/typing/idle activity within its page. Use the Creature tab’s activity preview selector to try coding, browsing, music, gaming, stepping away, and returning.
 
 On Windows, a bundled PowerShell/C# helper obtains foreground process names and counts key-down events. It uses no administrator elevation and records no typed content. Disabling Typing buddy stops the keyboard hook; disabling all reactions stops the helper. The helper exits with the companion. If Windows policy blocks the helper, cursor and idle reactions remain available and the controls show that app/typing signals are unavailable.
 
@@ -194,4 +202,110 @@ Recognized categories include VS Code/Cursor/Visual Studio and common IDEs, Spot
 
 ## Next
 
-See [ROADMAP.md](../ROADMAP.md) for the expansion plan. Voice control, music integration, launch shortcuts, multiple creatures, and reliable game-event telemetry remain future work. Local AI is optional and user-configured.
+See [ROADMAP.md](../ROADMAP.md) for the expansion plan. Music integration, launch shortcuts, multiple creatures, and reliable game-event telemetry remain future work. Local AI is optional and user-configured.
+
+## Spoken replies — 0.11
+
+Open Settings → Voice. Click Refresh voices, select an installed voice (or Windows default), and try Test voice before enabling Spoken replies. Adjust Volume and Speaking pace; Expressive pace adds gentler sleepy/cozy delivery and slightly livelier playful delivery. This changes delivery, not the amount of dialogue generated.
+
+Replies only reads care, manual chat, focus completion, and reminders. Balanced also reads occasional existing automatic bubbles at least 45 seconds apart; More often lowers that limit to 15 seconds. Existing quietness, focus, idle, and conversation safeguards still apply. Speak during games is off by default; when enabled, automatic lines stay at least a minute apart. Quiet mode mutes every voice, including the test.
+
+Stop voice appears while speech is preparing/playing and remains usable with game click-through. You can also use the Settings stop button, Ctrl + Shift + M, the tray action, or Escape in the companion. Opening quick talk, dragging, hiding, or quitting stops speech. Automatic speech stops when the foreground context changes. A new reply replaces current speech; there is no playback queue.
+
+Windows output uses the bundled PowerShell/System.Speech helper and installed SAPI voices. Text is sent as plain JSON on stdin, spoken as text, and never interpreted as commands or SSML. No audio is recorded or saved. Each line may take a moment while the Windows helper starts. Voice works without Ollama; model responses are still generated by the selected conversation engine. If voice is unavailable, try Refresh voices, another installed voice, your Windows output device/volume, or installing a speech voice in Windows Settings. Some Narrator voices are not exposed to SAPI. Windows policy can block the helper; text bubbles still work.
+
+The browser playground only uses voices marked local by the browser. It reports unavailable when none are offered, rather than choosing a remote voice. Click Test voice to allow playback in browsers that require a user gesture. Actual Windows sound/quality has not been verified on the Linux build host. The browser playground does not capture a microphone or call Kokoro.
+
+
+## Voice conversations — 0.12
+
+### Talk to him
+
+1. Quit the older copy from its tray and open the new build. Keep Ollama running for local-model answers.
+2. Open Settings → Voice. Leave Windows selected, Refresh voices, choose your installed voice, and Test voice. Enable Spoken replies to hear conversation answers.
+3. Enable Push-to-talk. Hold **Ctrl + Shift + F9**, speak, then release. The Hold to talk buttons work the same way. Choose F8 or F10 if another app uses F9.
+4. The dock shows Listening, Recognizing, Thinking, and Speaking. The microphone is closed before recognizing begins. A take is limited to 20 seconds; reaching the limit closes capture and requires review.
+5. If words are uncertain, use Review to edit them in quick talk and send. Enable Review before sending to check every take. An empty take creates no message.
+
+Recognized text is sent through the existing conversation path. Local AI mode uses the configured Ollama model; offline mode keeps its existing built-in replies. This update adds conversation input, rather than a separate voice-command grammar. In games, enable Speak during games if you want answers aloud. The overlay still follows existing borderless/windowed-game limitations.
+
+Cancel discards the current take and pending answer. Escape, opening quick talk, dragging, hiding, Quiet mode, disabling push-to-talk, lock/sleep, renderer crash, or quitting stop capture. Held keys must be released before another capture. Speech output is blocked while listening/recognizing so he cannot record his own voice. Repeat last reply replays the most recent bubble without another AI call; it is unavailable during recording/recognition and cleared when conversation history is forgotten.
+
+### Natural local voices (optional)
+
+Kokoro is a separate local service, not included in the companion or installed automatically. With Docker Desktop installed and running, run this command once in PowerShell:
+
+```powershell
+docker run -d --name pocket-kokoro -p 127.0.0.1:8880:8880 ghcr.io/remsky/kokoro-fastapi-cpu:latest
+```
+
+The initial image/model download needs internet and may take a while. Once the service is ready, choose Kokoro in Settings → Voice, Refresh voices, select a voice such as af_heart, and Test voice. Requests stay at `http://127.0.0.1:8880`; the companion does not accept remote speech hosts. Official service setup: [Kokoro-FastAPI](https://github.com/remsky/Kokoro-FastAPI).
+
+After restarting Docker, start an existing container with `docker start pocket-kokoro`. Stop it with `docker stop pocket-kokoro`; do not rerun the create command with the same container name. Keep Windows selected whenever you prefer installed voices or the service is offline. Kokoro keeps a separate selected voice. The app waits for a complete WAV, capped at 8 MB/45 seconds; CPU speed affects the delay before playback. No generated audio is written to disk by the companion. The separately installed service has its own behavior/settings.
+
+### If recognition or sound is unavailable
+
+- Allow microphone access for desktop apps in Windows Settings → Privacy & security → Microphone, select a working default input device, and check that an offline Windows speech recognizer for your language is installed. Installing a spoken-output voice alone does not install a speech recognizer. Restart the companion after installation.
+- After a helper timeout or device change, toggle Push-to-talk off/on to reconnect. If Windows policy blocks PowerShell or System.Speech, text conversations remain available.
+- Quiet mode pauses input and mutes output. Games mute output until Speak during games is enabled. Recognition uses the recognizer closest to Windows' UI language, falling back to an installed recognizer if needed.
+- Refresh voices after changing engines. Kokoro offline means the local service is not ready; Windows voice availability is independent of Ollama and Kokoro.
+
+Windows recognition/audio, native shortcut behavior, and live Kokoro quality/latency still require a Windows run. Browser and unit tests use native mocks; synthetic WAV playback verifies the renderer path only. The new helper can be compile-checked without opening the microphone using `powershell -NoProfile -File scripts/verify-windows-helper.ps1`.
+
+
+## Companion layout — 0.13
+
+Open Companion or right-click your dragon. Creature keeps care/play visible; expand Style your dragon for color/wardrobe or Activity & little tricks for previews. Focus and Notes retain their dedicated pages.
+
+Settings opens a focused page instead of one long list. General contains theme/name/personality/motion, Voice contains spoken replies and push-to-talk, Local AI contains connection/model and automatic conversation/screen choices, Activity contains PC/cursor/typing/outfit/nap/perching behavior, Games contains overlay choices, Memory contains personal details and recent-conversation clearing, Projects contains file/folder and project memory controls, and Privacy explains observed data and app controls. Quiet is always available in the bottom bar.
+
+Search for a word such as “voice”, “typing”, or “nickname” to jump to a setting. Selecting a result opens its page, expands any advanced group, highlights the control, and moves keyboard focus there. Escape clears the current search; a second Escape follows the existing close/cancel behavior. Arrow keys move between settings categories when their navigation has focus. Scrolling content keeps the main navigation and bottom bar visible; each category keeps its scroll position for the current visit.
+
+Voice → Delivery & game options holds pace, spoken-comment frequency, expression, and Speak during games. Kokoro setup and voice help expand on demand. On small desktops, the panel leaves room above the voice dock; on wide desktops the dock moves to the other side while the panel is open. New build preferences use the existing save schema 10, so earlier progress remains available.
+
+
+## Creature commands — 0.14
+
+With Push-to-talk enabled, hold the shortcut/button, speak, then release. These commands also work when typed into the speech-bubble input. Windows dictation still needs an installed recognizer; the actions themselves work without Ollama. Uncertain transcripts, or all transcripts when Review before sending is enabled, need review and Send first.
+
+| Say | Result |
+| --- | --- |
+| “Take a nap” / “Wake up” | Sleep or wake; repeated requests preserve the state |
+| “Give him a snack” / “Give him a pet” | Care action using existing rewards/cooldowns |
+| “Play fetch” | Start fetch when focus and game mode are off |
+| “Start a 25-minute focus session” | Start a timer; spoken “twenty five” also works |
+| “Start focus” | Use your selected focus duration |
+| “Pause focus” / “Resume focus” / “End focus” | Control the current timer without completion rewards for cancellation |
+| “Repeat that” | Replay the last bubble without another model request |
+| “Stop talking” | Stop speech output |
+| “Be quiet” | Enable Quiet, stop playback, and pause push-to-talk |
+
+Focus accepts whole minutes from 1 to 180. An active/paused session must be ended before starting a different one. Starting focus clears fetch and wakes him. Quiet can be turned off using the Companion footer toggle; the microphone is paused while Quiet is on.
+
+He leans toward you while listening, tilts his head while recognizing/thinking, and briefly nods after a successful action. Wandering, cursor chasing, and typing mimicry pause during voice input. Game mode and reduced motion use still poses. His overlay position stays anchored.
+
+Only a whole-message explicit request is a command. “Why do you tell me to take a nap?”, quoted examples, negations, and combined requests remain conversation. Model replies never trigger actions. Creature commands stay out of recent conversation and personal memory; ordinary sent conversations follow the existing saving policy. There is no always-listening mode or new system-control permission.
+
+
+## A little home — 0.15
+
+Open **Creature → A little home**. The section starts closed to keep care controls easy to reach. Its preview shows your current corner; Beds, Rugs, Plants, Lamps, and Toys each show one compact category. Wicker bed, open floor, daylight, no plant, and the ball basket are free. Unlock other items using earned coins; purchases charge once and switching owned items is free. Progress from older builds is preserved.
+
+**Move home** closes Companion and focuses the small Home handle. Drag it, or use arrow keys (Shift for larger steps); Enter/Space opens decorations. Escape cancels the current drag. Reset position returns it to its starting corner. Saved placement is relative to the current display area, clamped on resize, and shifts temporarily above the voice dock when needed. Art is click-through; only the Home handle takes desktop input.
+
+Naps, including idle naps, send him to the bed before he curls up. Waking normally gives a five-second stretch when he is free. Starting/resuming focus clears fetch and settles him beside his bed. Games fold the whole home away while he stays in the spectator corner; leaving games restores it. You can keep decorating while game mode is on, but routine/move previews wait until it is off.
+
+With **Home routines** and roaming enabled, a free dragon occasionally visits the basket, inspects it, then tosses and catches the equipped ball or star. The first opportunity is after about 65–90 seconds and later ones wait roughly 90–180 seconds; interruptions can postpone them. Solo play grants no coins, friendship, or happiness rewards. Typing, perching, reactions, conversations, held voice input, hiding, and dragging take priority. **Visit toy basket** and **Try a stretch** preview routines even when autonomous routines are off. Naps/focus still use the home with routines off. Turn **Show little home** off to keep using the original desktop behavior; owned items remain saved.
+
+The existing offline command path also accepts **“go home”** (a nap at the visible home) and **“check your toys”**. Commands remain whole-message explicit requests; questions, quoted examples, negations, and combined requests remain conversation.
+
+**Settings → Activity → Task gestures** adds short editor/browser/music poses, a still game-watching pose, and a paw stretch after a substantial typing burst pauses. Gestures wait for stable current context and have cooldowns. Turning PC reactions or Physical reactions off also disables them. Reduced motion and game mode use still artwork. Music gestures identify the music app category, without audio or beat detection.
+
+Built-in replies can name a changed foreground window title. They use a bounded transient title, respect existing talkativeness/conversation pauses, and do not claim to have read page or file contents. File inspection and optional vision remain separately controlled. No extra AI request or telemetry is added for the home or gestures. Home artwork and handle join existing overlay exclusions for screen-change detection.
+
+
+## Desktop launch recovery — 0.15.1
+
+If 0.15 shows a full playground without your dragon and blocks desktop clicks, quit that copy using its tray menu or Task Manager, then run **Pocket-Creature-0.15.1-Windows.exe**. Keep your existing save. This patch fixes required modules being blocked by the desktop route.
+
+The overlay stays hidden and click-through until the dragon and controls finish initializing. Opening tray controls during loading waits for that initialization. If startup cannot complete within 15 seconds, a page/preload fails, or the renderer crashes/stops responding, the app hides/releases the overlay and exits with an error message. The usual Ctrl + Shift + P show/hide and Ctrl + Shift + G recovery shortcuts remain available after startup.

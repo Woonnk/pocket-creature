@@ -1,3 +1,4 @@
+import {normalizeHome} from './home.mjs';
 export const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 const numeric = (n, fallback, min, max) => typeof n === 'number' && Number.isFinite(n) ? clamp(n, min, max) : fallback;
 const text = (s, fallback, max) => typeof s === 'string' ? s.slice(0, max) : fallback;
@@ -10,12 +11,24 @@ export function normalize(input = {}) {
   const s = input && typeof input === 'object' ? input : {};
   const f = s.focus && typeof s.focus === 'object' ? s.focus : {};
   return {
-    version: 8, name: text(s.name, 'Ember', 24).trim() || 'Ember',
+    version: 11, home:normalizeHome(s.home),contextReactions:typeof s.contextReactions==='boolean'?s.contextReactions:true,name: text(s.name, 'Ember', 24).trim() || 'Ember',
     color: choice(s.color, ['mint', 'lavender', 'peach'], 'mint'),
     hat: choice(s.hat, ['none', 'sprout', 'crown', 'wizard'], 'none'),
     coins: Math.floor(numeric(s.coins, 0, 0, 1000000)),
     friendship: numeric(s.friendship, 0, 0, 1000000),
     energy: numeric(s.energy, 85, 0, 100), happiness: numeric(s.happiness, 90, 0, 100),
+    voiceInputEnabled:s.voiceInputEnabled===true,
+    voiceInputKey:choice(s.voiceInputKey,['f8','f9','f10'],'f9'),
+    voiceInputReview:s.voiceInputReview===true,
+    speechEngine:choice(s.speechEngine,['windows','kokoro'],'windows'),
+    kokoroVoice:text(s.kokoroVoice,'af_heart',80).replace(/[^a-zA-Z0-9_-]/g,'')||'af_heart',
+    speechEnabled: s.speechEnabled===true,
+    speechVoice: text(s.speechVoice,'',120),
+    speechVolume: numeric(s.speechVolume,.65,0,1),
+    speechRate: numeric(s.speechRate,1,.7,1.4),
+    speechChatter: choice(s.speechChatter,['replies','balanced','chatty'],'balanced'),
+    speechInGames: s.speechInGames===true,
+    speechExpression: typeof s.speechExpression==='boolean'?s.speechExpression:true,
     quiet: typeof s.quiet === 'boolean' ? s.quiet : false,
     wander: typeof s.wander === 'boolean' ? s.wander : true,
     reducedMotion: typeof s.reducedMotion === 'boolean' ? s.reducedMotion : false,

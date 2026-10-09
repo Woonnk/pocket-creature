@@ -5,6 +5,7 @@ function verifyPE(file){
 function verifyRelease(root=path.join(__dirname,'..')){
  const asar=require('@electron/asar'),pkg=JSON.parse(fs.readFileSync(path.join(root,'package.json'),'utf8'));
  const archive=path.join(root,'release/win-unpacked/resources/app.asar'),exe=path.join(root,'release',`Pocket-Creature-${pkg.version}-Windows.exe`);
+ assert.equal(fs.readdirSync(path.join(root,'release/win-unpacked')).filter(name=>/^\..+\.exe\./i.test(name)).length,0,'Packaging contains leftover temporary executable files; rebuild from a clean output directory.');
  verifyPE(exe);assert.equal(JSON.parse(asar.extractFile(archive,'package.json')).version,pkg.version,'Packaged version differs from source.');
  let count=0;for(const dir of ['desktop','renderer'])for(const file of fs.readdirSync(path.join(root,dir))){const relative=dir+'/'+file,source=path.join(root,relative);if(!fs.statSync(source).isFile())continue;const bytes=file.endsWith('.ps1')?fs.readFileSync(archive+'.unpacked/'+relative):asar.extractFile(archive,relative);assert.ok(bytes.equals(fs.readFileSync(source)),`Packaged file differs: ${relative}`);count++;}
  for(const name of ['LICENSE.electron.txt','LICENSES.chromium.html'])assert.ok(fs.statSync(path.join(root,'release/win-unpacked',name)).size>0,`Missing runtime notice: ${name}`);

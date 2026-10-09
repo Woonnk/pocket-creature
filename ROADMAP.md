@@ -1,6 +1,6 @@
 # Pocket Creature roadmap
 
-Current version: **0.10.0**. The 0.10 public beta comes before the stable 1.0 readiness checks.
+Public beta version: **0.15.1**. Voice, Companion layout, creature commands, and home improvements are included in this update before stable 1.0.
 
 ## Next — 1.0 readiness
 
@@ -10,13 +10,13 @@ Current version: **0.10.0**. The 0.10 public beta comes before the stable 1.0 re
 - Complete live Ollama, tray, shortcut, sleep/resume, and notification checks.
 - Review the prepared README, screenshots, license, contribution/security guides, CI, and release workflow; use beta feedback to finish the stable 1.0 release.
 
-After 1.0, prioritize a small home and more toys, task/focus improvements, then documented character packs. Voice, music integrations, and multiple creatures can follow once the core companion is stable.
+After 1.0, expand the home and toys, task/focus improvements, then documented character packs. Music integrations and multiple creatures can follow once the core companion is stable. Voice recognition and local voice quality need native acceptance checks.
 
 ## 0.2 reactive companion — implemented
 
 Cursor tracking/chasing, aggregate typing reactions, app-category outfits, idle naps and silent returns, independent toggles, and display-synced composited movement. Browser and simulated native tests cover the behavior; real Windows signal collection remains pending verification.
 
-Updates preserve the companion loop and save data. Additional toys and the home ideas below remain future work.
+Updates preserve the companion loop and save data. Further toys and home expansion remain future work.
 
 The first milestone is a complete companion loop: interact → earn coins → personalize → focus together → come back to a familiar dragon.
 
@@ -35,7 +35,7 @@ Scoped file inspection, supported-editor title lookup, file greetings, structura
 - More personality habits and additional toys beyond the implemented stretch, grooming, and settling behaviors.
 - More activities: cardboard box, laser pointer, catching stars, idle treasure discoveries.
 - Small event journal and completed-reminder history.
-- A tiny home with a bed, toy basket, and unlockable decor.
+- More home interactions and decor beyond the implemented bed, toy basket, and unlockable sets.
 - Export/import saves with schema validation; browser and desktop can then share progress intentionally.
 - Better cooldown indicators and configurable sound effects.
 
@@ -71,7 +71,7 @@ Real window tracking requires Windows-specific code. Keep it behind an adapter s
 ## Future — optional intelligence and community
 
 - Broader optional AI context and conversation improvements. Core pet behaviors continue to work offline.
-- Optional push-to-talk voice commands.
+- Extend the implemented care/focus voice commands with carefully scoped creature actions.
 - Music reactions through an explicitly configured integration.
 - Documented character packs: assets, animation states, palette, personality defaults. Start with data-only packs rather than executable community plugins.
 
@@ -111,4 +111,33 @@ Restored-window top-edge perching uses bounded transient Windows geometry, a sta
 
 A bounded editable profile stores a nickname, favorite games, interests, likes, and dislikes from clear first-person messages or direct edits. It is never inferred from screen/file content or AI replies. Local recall works without a model. Manual model replies can use enabled personal memory; automatic observations exclude it. Edit/forget/pause cancels stale pending replies and clears recent conversation. Schema-8 migration preserves earlier progress.
 
-GitHub preparation includes project documentation/screenshots, MIT licensing and runtime notices, contribution/security guides, issue/PR templates, ignored generated/private files, Windows/Linux CI, package verification, checksummed release assets, and a 1.x draft-release workflow. The 0.10 beta is intended for public feedback before the stable 1.0 release.
+GitHub preparation includes project documentation/screenshots, MIT licensing and runtime notices, contribution/security guides, issue/PR templates, ignored generated/private files, Windows/Linux CI, package verification, checksummed release assets, and explicit beta publication/1.x draft-release workflows. The 0.10 beta is intended for public feedback before the stable 1.0 release.
+
+## 0.11 spoken replies — included in the 0.15.1 beta
+
+Installed Windows voices, expression through pace, voice/volume/speed/chatter settings, game mute, stop controls, and speech lifecycle safeguards. Await direct Windows audio verification. This output milestone is followed by the 0.12 microphone and optional Kokoro integration below.
+
+
+## 0.12 voice conversations — included in the 0.15.1 beta
+
+Opt-in Windows offline push-to-talk, held shortcuts/buttons, transient in-memory capture, uncertain-transcript review, conversation lifecycle indicators/cancellation, and no self-listening during speech. Optional Kokoro synthesis uses a separate fixed-loopback service; Repeat last reply reuses the existing bubble. Schema 10 preserves progress and voice settings. Logic and browser checks pass; Windows capture/recognition and live local voice quality remain pending.
+
+
+## 0.13 Companion redesign — included in the 0.15.1 beta
+
+A wider panel, focused care/play home, expandable customization/tricks, categorized settings, search/focus, collapsed advanced voice controls, persistent navigation/Quiet, and responsive voice-dock clearance. Existing save schema and feature behavior are preserved.
+
+
+## 0.14 creature voice commands — included in the 0.15.1 beta
+
+Explicit whole-message care/focus requests run without Ollama and support spoken minute counts, reviewed speech, and typed commands. Ordinary questions and quoted examples remain conversation. Nap/wake and focus controls preserve existing state on duplicate requests; fetch respects focus and games. A listening lean, thinking tilt, and short confirmation nod stay within the dragon artwork, with still game/reduced-motion poses. Command help is expandable and commands do not enter conversation/personal memory. Native Windows recognition/audio quality remains pending.
+
+
+## 0.15 little home and task reactions — included in the 0.15.1 beta
+
+Movable, saved desktop corner with sleeping/toy baskets, permanent coin-unlocked decor, nap travel/curl, wake stretches, focus settling, and occasional autonomous toy play without rewards. Games fold away the home; roaming/routine controls, explicit previews, interruption priorities, and reduced-motion stillness keep behavior manageable. Existing voice/text commands gain home/toy requests. Coarse current-app/typing signals add fresh-context poses and bounded window-title comments without extra model calls or audio sensing. Schema 11 preserves previous progress. Windows overlay/placement acceptance remains pending.
+
+
+## 0.15.1 desktop startup fix — included in the 0.15.1 beta
+
+A shared constrained renderer inventory fixes blocked module imports. Trusted readiness gates overlay visibility/input, and timeout/page/preload/crash/unresponsive cleanup releases the desktop. The new tests cover actual registered desktop routes, the full import graph, and failed-import readiness. The user reports the corrected launch works; broader native checks remain open.

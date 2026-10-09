@@ -1,4 +1,9 @@
 const {app, BrowserWindow, Tray, Menu, nativeImage, ipcMain, globalShortcut, screen, Notification, protocol, net, session, powerMonitor,dialog,desktopCapturer} = require('electron');
+const {createSpeechAdapter}=require('./speech.cjs');
+const {createVoiceInputAdapter}=require('./voice-input.cjs');
+const {createLocalVoiceAdapter}=require('./local-voice.cjs');
+let voiceInputSuspended=false;const inputPauseReasons=new Set();
+let speech,speechAllowed,microphone,localVoice,lastAutoSpeech=-Infinity,pendingManual=null;
 const {createActivityAdapter}=require('./activity.cjs');
 const {createFileService,basenameFromTitle}=require('./files.cjs');
 const {chatWithLocalModel,checkLocalAI}=require('./chat.cjs');
@@ -12,6 +17,9 @@ const path = require('node:path');
 const fs = require('node:fs');
 const {pathToFileURL} = require('node:url');
 const rendererRoot=path.join(__dirname,'..','renderer');
+const {rendererFiles}=require('./renderer-files.cjs');
+const {createStartupGuard}=require('./startup.cjs');
+let startup,pendingControls=false;
 const HOME='pocket://companion/index.html';
 protocol.registerSchemesAsPrivileged([{scheme:'pocket',privileges:{standard:true,secure:true,supportFetchAPI:true,corsEnabled:true}}]);
 let win,tray,normalize,gameActive,windowInOverlay,savedState,clock,cursorTimer,activityTimer,activity,fileService,fileTimer,activeFile=null,lastFileKey='',dismissedTitle='',fileBusy=false,fileSelection=0,lastFileError='',quitting=false,quitRequested=false,displayIndex=0;
@@ -23,6 +31,10 @@ else{
   app.on('second-instance',()=>showControls());
   app.whenReady().then(async()=>{
     ({normalize,gameActive}=await import('../renderer/core.mjs'));
+    ({speechAllowed}=await import('../renderer/speech.mjs'));
+    localVoice=createLocalVoiceAdapter();
+    microphone=createVoiceInputAdapter(value=>{if(value.state==='listening'){interruptSpeech();pendingAutomatic?.abort();pendingManual?.abort();}if(win&&!win.isDestroyed())win.webContents.send('voice-input',value);});
+    speech=createSpeechAdapter(value=>{if(win&&!win.isDestroyed())win.webContents.send('speech-state',value);});
     ({windowInOverlay}=await import('../renderer/perching.mjs'));
     try{savedState=normalize(JSON.parse(fs.readFileSync(path.join(app.getPath('userData'),'companion.json'),'utf8')));}catch{savedState=normalize();}
     const {inspectText}=await import('../renderer/companion.mjs');
@@ -30,7 +42,7 @@ else{
     fileService=createFileService({roots,inspect:inspectText});
     protocol.handle('pocket',request=>{
       const url=new URL(request.url);
-      const publicFiles=new Set(['index.html','style.css','app.mjs','core.mjs','companion.mjs','autonomy.mjs','personality.mjs','reactions.mjs','conversation.mjs','habits.mjs','perching.mjs','personal-memory.mjs','icon.png']);
+      const publicFiles=rendererFiles(rendererRoot);
       const name=url.pathname.slice(1);
       if(url.hostname!=='companion'||!publicFiles.has(name))return new Response('Not found',{status:404});
       return net.fetch(pathToFileURL(path.join(rendererRoot,name)).href);
@@ -41,6 +53,9 @@ else{
     overlayController=createOverlayController({getWindow:()=>win,getScreen:()=>screen,getSettings:()=>savedState,getBaseDisplay:()=>screen.getAllDisplays()[displayIndex]||screen.getPrimaryDisplay(),evaluateGame:gameActive});
     refreshOverlay(true);
     createTray();
+    const pauseInput=reason=>{inputPauseReasons.add(reason);voiceInputSuspended=true;microphone.stop();interruptSpeech();pendingManual?.abort();};
+    const resumeInput=reason=>{inputPauseReasons.delete(reason);voiceInputSuspended=inputPauseReasons.size>0;microphone.configure({...savedState,voiceInputEnabled:savedState.voiceInputEnabled&&!voiceInputSuspended&&win.isVisible()});};
+    powerMonitor.on?.('suspend',()=>pauseInput('sleep'));powerMonitor.on?.('lock-screen',()=>pauseInput('lock'));powerMonitor.on?.('resume',()=>resumeInput('sleep'));powerMonitor.on?.('unlock-screen',()=>resumeInput('lock'));
     activity=createActivityAdapter(()=>{});
     activity.configure(savedState);
     activityTimer=setInterval(()=>{
@@ -48,7 +63,9 @@ else{
       const signal=activity.snapshot();
       if(!savedState.screenAwareness||!savedState.pcAwareness||savedState.quiet||!win.isVisible()||powerMonitor.getSystemIdleTime()>savedState.idleAfter&&!gameActive(savedState,signal))screenChanges.reset();
       if(!win.isVisible()||powerMonitor.getSystemIdleTime()>savedState.idleAfter&&!gameActive(savedState,signal))pendingAutomatic?.abort();
-      if(foregroundId!==signal.contextId){foregroundId=signal.contextId;pendingAutomatic?.abort();screenChanges.reset();}
+      if(gameActive(savedState,signal)&&!savedState.speechInGames)speech.stop();
+      if(powerMonitor.getSystemIdleTime()>savedState.idleAfter&&!gameActive(savedState,signal))speech.stopAutomatic();
+      if(foregroundId!==signal.contextId){speech.stopAutomatic();foregroundId=signal.contextId;pendingAutomatic?.abort();screenChanges.reset();}
       refreshOverlay();
       const perchWindow=savedState.pcAwareness&&savedState.windowPerching?windowInOverlay(signal.windowSurface,win.getBounds(),rect=>process.platform==='win32'?screen.screenToDipRect(null,rect):rect):null;
       win.webContents.send('activity',{...signal,windowSurface:undefined,perchWindow,idleSeconds:powerMonitor.getSystemIdleTime()});
@@ -56,6 +73,7 @@ else{
     fileTimer=setInterval(pollEditorFile,2500);
     globalShortcut.register('CommandOrControl+Shift+P',()=>win.isVisible()?win.hide():recoverOverlay());
     globalShortcut.register('CommandOrControl+Shift+G',recoverOverlay);
+    globalShortcut.register('CommandOrControl+Shift+M',interruptSpeech);
     clock=setInterval(()=>{if(win&&!win.isDestroyed())win.webContents.send('clock');},1000);
     cursorTimer=setInterval(()=>{
       if(!win||win.isDestroyed()||!win.isVisible())return;
@@ -73,19 +91,33 @@ function createWindow(){
   win.webContents.setWindowOpenHandler(()=>({action:'deny'}));
   win.webContents.on('will-navigate',e=>e.preventDefault());
   win.webContents.on('will-attach-webview',e=>e.preventDefault());
-  win.once('ready-to-show',()=>win.showInactive());
+  startup=createStartupGuard({getWindow:()=>win,onReady:()=>{win.showInactive();if(pendingControls){pendingControls=false;showControls();}},onFailure:message=>{
+    controlsOpen=false;interruptSpeech();microphone?.stop();pendingManual?.abort();pendingAutomatic?.abort();
+    console.error('Pocket Creature startup:',message);quitting=true;
+    dialog.showErrorBox?.('Pocket Creature could not start',message+' The overlay has been closed so your desktop remains usable. Please restart Pocket Creature.');
+    app.quit();
+  }});
+  startup.start();
+  win.webContents.on('did-fail-load',(_event,_code,description,_url,isMainFrame)=>{if(isMainFrame)startup.fail('The companion page could not load: '+description);});
+  win.webContents.on('preload-error',()=>startup.fail('The desktop bridge could not load.'));
+  win.on('unresponsive',()=>startup.fail('The companion stopped responding.'));
   win.on('close',e=>{if(!quitting){e.preventDefault();requestQuit();}});
-  win.loadURL(HOME);
+  win.on('hide',()=>{interruptSpeech();microphone?.stop();pendingManual?.abort();});
+  win.on('show',()=>microphone?.configure({...savedState,voiceInputEnabled:savedState.voiceInputEnabled&&!voiceInputSuspended}));
+  win.webContents.on('render-process-gone',()=>startup.fail('The companion renderer stopped unexpectedly.'));
+  win.loadURL(HOME)?.catch(error=>startup.fail('The companion page could not load: '+error.message));
 }
+function interruptSpeech(){speech?.stop();localVoice?.stop();if(win&&!win.isDestroyed())win.webContents.send('speech-state',{state:'cancelled'});}
 function fitDisplay(){
   if(!win||win.isDestroyed())return;
   const displays=screen.getAllDisplays();displayIndex=Math.min(displayIndex,displays.length-1);
   refreshOverlay(true);
 }
-function refreshOverlay(force=false,options={}){return overlayController?.update(activity?.snapshot()||{}, {force,...options});}
-function recoverOverlay(){if(!win||win.isDestroyed())return;refreshOverlay(true,{show:true});}
+function refreshOverlay(force=false,options={}){if(options.show&&!startup?.canInteract())options={...options,show:false};return overlayController?.update(activity?.snapshot()||{}, {force,...options});}
+function recoverOverlay(){if(!win||win.isDestroyed()||!startup?.canInteract())return;refreshOverlay(true,{show:true});}
 function showControls(){
   if(!win||win.isDestroyed())return;
+  if(!startup?.canInteract()){pendingControls=startup?.state==='loading';return;}
   controlsOpen=true;win.setIgnoreMouseEvents(false);win.show();win.webContents.send('open-controls');
 }
 function createTray(){
@@ -96,6 +128,7 @@ function createTray(){
     {label:'Show / hide dragon',click:()=>win.isVisible()?win.hide():recoverOverlay()},
     {label:'Bring dragon over game (Ctrl + Shift + G)',click:recoverOverlay},
     {label:'Move to next monitor',click:()=>{const displays=screen.getAllDisplays();const current=displays.findIndex(d=>d.id===overlayController.snapshot().displayId);displayIndex=(current+1)%displays.length;refreshOverlay(true,{manualDisplay:true,show:true});}},
+    {label:'Stop speaking (Ctrl + Shift + M)',click:interruptSpeech},
     {type:'separator'},
     {label:'Quit Pocket Creature',click:requestQuit}
   ]));
@@ -105,6 +138,8 @@ function trusted(event){return win&&!win.isDestroyed()&&event.sender===win.webCo
 function persist(state){
   const previous=savedState;
   savedState=normalize(state);
+  if(savedState.quiet||!savedState.speechEnabled||previous&&['speechEngine','kokoroVoice','speechVoice','speechVolume','speechRate','speechChatter','speechInGames','speechExpression'].some(key=>previous[key]!==savedState[key])){speech?.stop();localVoice?.stop();}
+  microphone?.configure({...savedState,voiceInputEnabled:savedState.voiceInputEnabled&&!voiceInputSuspended&&win?.isVisible()});
   if(previous&&(previous.personality!==savedState.personality||previous.gameMode!==savedState.gameMode||previous.personalMemoryEnabled!==savedState.personalMemoryEnabled||JSON.stringify(previous.personalMemory)!==JSON.stringify(savedState.personalMemory)))pendingAutomatic?.abort();
   if(previous&&(previous.screenAwareness&&!savedState.screenAwareness||previous.localModel!==savedState.localModel))pendingAutomatic?.abort();
   if(previous&&(previous.screenAwareness!==savedState.screenAwareness||previous.localModel!==savedState.localModel||previous.pcAwareness!==savedState.pcAwareness||previous.chatMode!==savedState.chatMode))resetObservations();
@@ -117,6 +152,32 @@ function persist(state){
 }
 ipcMain.handle('load-state',event=>{if(!trusted(event))throw Error('Invalid sender');return savedState;});
 ipcMain.handle('save-state',(event,value)=>{if(!trusted(event))throw Error('Invalid sender');if(JSON.stringify(value).length>120000)throw Error('Save too large');persist(value);return true;});
+ipcMain.handle('speech-status',event=>{if(!trusted(event))throw Error('Invalid sender');return savedState.speechEngine==='kokoro'?localVoice.status():speech.status();});
+ipcMain.handle('speak',(event,payload)=>{
+  if(!trusted(event)||!payload||typeof payload.text!=='string'||payload.text.length>280||!Number.isSafeInteger(payload.id))throw Error('Invalid speech');
+  const automatic=payload.automatic===true,context={listening:['listening','transcribing'].includes(microphone.status().state),hidden:!win.isVisible(),inGame:gameActive(savedState,activity?.snapshot()||{}),away:powerMonitor.getSystemIdleTime()>savedState.idleAfter,focused:savedState.focus.status==='running'};
+  if(savedState.speechEngine!=='windows'||!speechAllowed(savedState,context,automatic,payload.preview===true))return false;
+  const interval=context.inGame?60000:savedState.speechChatter==='chatty'?15000:45000;
+  if(automatic&&Date.now()-lastAutoSpeech<interval)return false;
+  const accepted=speech.speak({...payload,voice:savedState.speechVoice,volume:savedState.speechVolume});
+  if(accepted&&automatic)lastAutoSpeech=Date.now();return accepted;
+});
+ipcMain.on('stop-speech',event=>{if(trusted(event)){speech.stop();localVoice.stop();}});
+function voiceContext(){return {listening:['listening','transcribing'].includes(microphone.status().state),hidden:!win.isVisible(),inGame:gameActive(savedState,activity?.snapshot()||{}),away:powerMonitor.getSystemIdleTime()>savedState.idleAfter,focused:savedState.focus.status==='running',busy:['listening','transcribing'].includes(microphone.status().state)};}
+ipcMain.handle('synthesize',async(event,payload)=>{
+  if(!trusted(event)||!payload||typeof payload.text!=='string'||payload.text.length>280||!Number.isSafeInteger(payload.id))throw Error('Invalid speech');
+  const automatic=payload.automatic===true,context=voiceContext();
+  if(savedState.speechEngine!=='kokoro'||!speechAllowed(savedState,context,automatic,payload.preview===true))return null;
+  const interval=context.inGame?60000:savedState.speechChatter==='chatty'?15000:45000;
+  if(automatic&&Date.now()-lastAutoSpeech<interval)return null;if(automatic)lastAutoSpeech=Date.now();
+  const result=await localVoice.synthesize({...payload,voice:savedState.kokoroVoice});
+  return savedState.speechEngine==='kokoro'&&speechAllowed(savedState,voiceContext(),automatic,payload.preview===true)?result:null;
+});
+ipcMain.handle('voice-input-status',event=>{if(!trusted(event))throw Error('Invalid sender');return microphone.status();});
+ipcMain.handle('voice-input-start',event=>{if(!trusted(event))throw Error('Invalid sender');if(!savedState.voiceInputEnabled||voiceInputSuspended||savedState.quiet||!win.isVisible())return false;interruptSpeech();return microphone.start();});
+ipcMain.on('voice-input-finish',event=>{if(trusted(event))microphone.finish();});
+ipcMain.on('voice-input-cancel',event=>{if(trusted(event))microphone.cancel();});
+ipcMain.on('cancel-chat',event=>{if(trusted(event)){pendingManual?.abort();pendingAutomatic?.abort();}});
 function selectFile(file){pendingAutomatic?.abort();activeFile=file;selectedFileId=String(activity?.snapshot().contextId??0);selectedFileAt=Date.now();}
 function sendFile(file){selectFile(file);win.webContents.send('file-context',file);}
 async function pollEditorFile(){
@@ -154,10 +215,11 @@ ipcMain.handle('chat',async(event,payload)=>{
   if(!trusted(event)||!payload||typeof payload.message!=='string'||payload.message.length>1200)throw Error('Invalid message');
   if(savedState.chatMode!=='local')throw Error('Enable local AI in Settings first.');
   const automatic=payload.automatic===true;
-  if(automatic&&(!savedState.autoConversations||savedState.quiet||!savedState.pcAwareness||!win.isVisible()||powerMonitor.getSystemIdleTime()>savedState.idleAfter&&!gameActive(savedState,activity?.snapshot()||{})||Date.now()-lastAutoRequest<(gameActive(savedState,activity?.snapshot()||{})?60000:8000)))return '';
-  const connection=await refreshAI();if(!connection.ready)throw Error(connection.message);
+  if(automatic&&(pendingManual||['listening','transcribing'].includes(microphone.status().state)||!savedState.autoConversations||savedState.quiet||!savedState.pcAwareness||!win.isVisible()||powerMonitor.getSystemIdleTime()>savedState.idleAfter&&!gameActive(savedState,activity?.snapshot()||{})||Date.now()-lastAutoRequest<(gameActive(savedState,activity?.snapshot()||{})?60000:8000)))return '';
   if(automatic&&pendingAutomatic)return '';
-  pendingAutomatic?.abort();const controller=new AbortController();if(automatic){pendingAutomatic=controller;lastAutoRequest=Date.now();}
+  pendingAutomatic?.abort();const controller=new AbortController();if(automatic){pendingAutomatic=controller;lastAutoRequest=Date.now();}else{pendingManual?.abort();pendingManual=controller;}
+  try{
+  const connection=await refreshAI();if(controller.signal.aborted)return '';if(!connection.ready)throw Error(connection.message);
   const snapshot=activity?.snapshot()||{},contextKey=String(snapshot.contextId??0);
   if(automatic&&payload.contextId!==undefined&&String(payload.contextId)!==contextKey){if(pendingAutomatic===controller)pendingAutomatic=null;return '';}
   const editorName=basenameFromTitle(activity?.editorTitle()||'');
@@ -166,7 +228,6 @@ ipcMain.handle('chat',async(event,payload)=>{
   const asksAboutFile=/\b(file|code|function|project|script|import|class)\b/i.test(payload.message)||Boolean(activeFile&&payload.message.toLowerCase().includes(activeFile.name.toLowerCase()));
   const file=currentFile||!automatic&&asksAboutFile?activeFile:null,memory=savedState.projectMemories.find(m=>m.id===file?.projectId);
   const history=automatic?[]:savedState.chatHistory;
-  try{
     let image,previousImage,comparison,observationKind;
     const signature=contextKey+'\0'+(file?file.path+'\0'+createHash('sha256').update(String(file.excerpt||file.summary||'')).digest('hex'):'');
     const newContext=signature!==lastObservedSignature;
@@ -177,14 +238,16 @@ ipcMain.handle('chat',async(event,payload)=>{
     if(automatic&&!newContext&&(!comparison||!comparison.changed)){return {reply:'SILENCE',contextKey,observation:'unchanged'};}
     const result=await chatWithLocalModel({model:connection.model,message:payload.message,file,memory,history,recentComments,conversationStarter:!automatic&&payload.conversationStarter?.contextId===contextKey&&typeof payload.conversationStarter.text==='string'?payload.conversationStarter.text.slice(0,170):'',personalMemory:!automatic&&savedState.personalMemoryEnabled?savedState.personalMemory:null,name:savedState.name,personality:savedState.personality,gameMode:gameActive(savedState,snapshot),activity:snapshot,image,previousImage,observationKind,automatic,withReaction:automatic&&savedState.physicalReactions,think:connection.think,signal:controller.signal});
     const answer=typeof result==='string'?result:result?.reply||'SILENCE',reaction=['curious','surprised','celebrate'].includes(result?.reaction)?result.reaction:'none';
+    if(controller.signal.aborted)return '';
     if(automatic&&(controller.signal.aborted||!win.isVisible()||savedState.quiet||!savedState.pcAwareness||!savedState.autoConversations||contextKey!==String(activity?.snapshot().contextId??0)))return '';
     if(automatic){lastObservedSignature=signature;if(comparison&&savedState.screenAwareness&&savedState.pcAwareness)screenChanges.commit(comparison);}
     if(automatic&&answer!=='SILENCE')recentComments=[...recentComments,answer].slice(-4);
     return automatic?{reply:answer,reaction,contextKey,observation:observationKind||'new-context'}:answer;
-  }finally{if(pendingAutomatic===controller)pendingAutomatic=null;}
+  }finally{if(pendingAutomatic===controller)pendingAutomatic=null;if(pendingManual===controller)pendingManual=null;}
 });
-ipcMain.on('click-through',(event,ignore)=>{if(trusted(event)&&typeof ignore==='boolean')win.setIgnoreMouseEvents(!controlsOpen&&gameActive(savedState,activity?.snapshot()||{})&&savedState.gameClickThrough?true:ignore,{forward:true});});
-ipcMain.on('controls-open',(event,value)=>{if(trusted(event)&&typeof value==='boolean')controlsOpen=value;});
+ipcMain.on('renderer-ready',event=>{if(trusted(event))startup?.ready();});
+ipcMain.on('click-through',(event,ignore)=>{if(trusted(event)&&startup?.canInteract()&&typeof ignore==='boolean')win.setIgnoreMouseEvents(!controlsOpen&&gameActive(savedState,activity?.snapshot()||{})&&savedState.gameClickThrough?true:ignore,{forward:true});});
+ipcMain.on('controls-open',(event,value)=>{if(trusted(event)&&startup?.canInteract()&&typeof value==='boolean')controlsOpen=value;});
 ipcMain.handle('recover-overlay',event=>{if(!trusted(event))throw Error('Invalid sender');recoverOverlay();return overlayController.snapshot();});
 ipcMain.on('hide',event=>{if(trusted(event))win.hide();});
 ipcMain.on('quit',event=>{if(trusted(event))requestQuit();});
@@ -196,11 +259,11 @@ ipcMain.on('notify',(event,title,body)=>{
   if(Notification.isSupported())new Notification({title:title.slice(0,80),body:body.slice(0,160),icon:path.join(rendererRoot,'icon.png')}).show();
 });
 function requestQuit(){
-  if(quitRequested)return;quitRequested=true;
+  if(quitRequested)return;quitRequested=true;speech?.close();microphone?.stop();localVoice?.close();pendingManual?.abort();
   if(!win||win.isDestroyed()){quitting=true;app.quit();return;}
   win.webContents.send('before-quit');
   setTimeout(()=>{quitting=true;app.quit();},2000).unref();
 }
 app.on('before-quit',event=>{if(!quitting&&win&&!win.isDestroyed()){event.preventDefault();requestQuit();}});
-app.on('will-quit',()=>{globalShortcut.unregisterAll();clearInterval(clock);clearInterval(cursorTimer);clearInterval(activityTimer);clearInterval(fileTimer);activity?.stop();pendingAutomatic?.abort();resetObservations();});
+app.on('will-quit',()=>{startup?.dispose();speech?.close();microphone?.stop();localVoice?.close();pendingManual?.abort();globalShortcut.unregisterAll();clearInterval(clock);clearInterval(cursorTimer);clearInterval(activityTimer);clearInterval(fileTimer);activity?.stop();pendingAutomatic?.abort();resetObservations();});
 app.on('window-all-closed',()=>{if(quitting)app.quit();});

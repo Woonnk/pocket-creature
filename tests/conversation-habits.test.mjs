@@ -16,7 +16,7 @@ test('recent conversation retains detailed human turns, expires stale/unknown ti
 test('explicit topic changes isolate later conversation and migration preserves user preferences',()=>{
  const history=[{role:'user',content:'old project',at:1},{role:'user',content:'New topic: dragons',at:2},{role:'assistant',content:'tiny wings',at:3}];
  assert.deepEqual(recentConversation(history,'new topic: snacks',4),[]);assert.equal(recentConversation(history,'yes',4)[0].content,'New topic: dragons');assert.ok(startsNewTopic('Never mind, let’s play.'));assert.equal(startsNewTopic('I love the new topic feature'),false);
- const s=normalize({version:6,name:'Lil Wonks',coins:42,littleHabits:false,chatHistory:[{role:'user',content:'legacy'},{role:'assistant',content:'fresh',at:100}]});assert.equal(s.version,8);assert.equal(s.littleHabits,false);assert.equal(s.coins,42);assert.equal(s.chatHistory[0].at,0);assert.equal(s.chatHistory[1].at,100);assert.equal(normalize().littleHabits,true);
+ const s=normalize({version:6,name:'Lil Wonks',coins:42,littleHabits:false,chatHistory:[{role:'user',content:'legacy'},{role:'assistant',content:'fresh',at:100}]});assert.equal(s.version,11);assert.equal(s.littleHabits,false);assert.equal(s.coins,42);assert.equal(s.chatHistory[0].at,0);assert.equal(s.chatHistory[1].at,100);assert.equal(normalize().littleHabits,true);
 });
 test('short human answers can follow a recent question across app switches without reviving expired screen topics',()=>{
  const g=createConversationGuard();g.observe('What kind of game are you making?',1,0);

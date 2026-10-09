@@ -2,17 +2,45 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; media-src blob:; object-src 'none'; base-uri 'none'">
   <title>Pocket Creature — a little company, a little chaos</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect rx='10' width='32' height='32' fill='%239edac2'/%3E%3Ctext x='7' y='24' font-size='24'%3E✦%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="demo-only header"><div class="brand"><span class="brand-icon">✦</span> pocket creature<span class="version">EARLY ACCESS · 0.10</span></div><span class="header-note">a little company. a little chaos.</span></header>
+  <header class="demo-only header"><div class="brand"><span class="brand-icon">✦</span> pocket creature<span class="version">LOCAL PREVIEW · 0.15.1</span></div><span class="header-note">a little company. a little chaos.</span></header>
   <main id="world" aria-label="Creature playground">
     <div class="demo-only scenery" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="stars">✧</div><div class="moon"></div><div class="hill hill-back"></div><div class="hill hill-front"></div></div>
     <div class="demo-only scene-heading"><span class="eyebrow">YOUR LITTLE CORNER OF THE UNIVERSE</span><h1>Good company.<br>A tiny dragon.</h1><p>Make yourself at home. Ember already has.</p></div>
     <div class="demo-only scene-label"><span class="live-dot"></span> <span id="scene-state">Exploring the neighborhood</span></div>
+    <div id="little-home" class="little-home" aria-label="Dragon home">
+    <svg class="home-art" viewBox="0 0 320 170" aria-hidden="true">
+      <ellipse class="home-shadow" cx="160" cy="144" rx="147" ry="15" fill="#213d3630"/>
+      <g class="home-rug" stroke="#496653" stroke-width="2.5"><ellipse cx="155" cy="138" rx="138" ry="26" fill="#93b399"/><ellipse class="rug-stitch" cx="155" cy="138" rx="123" ry="19" fill="none" stroke-dasharray="4 5"/></g>
+      <g class="home-lamp" stroke="#586654" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <ellipse cx="204" cy="123" rx="22" ry="6" fill="#ad9f80"/>
+        <path d="M204 121V55" fill="none"/>
+        <g class="lamp-mushroom"><circle class="lamp-glow" cx="204" cy="68" r="46" fill="#ffd987" stroke="none" opacity=".12"/><path d="M171 64Q176 27 204 30Q232 27 237 64Q206 80 171 64Z" fill="#dba686"/><path d="M190 54h2m18-9h2m11 17h1" stroke="#faead0" stroke-width="7"/></g>
+        <g class="lamp-moon"><circle class="lamp-glow" cx="204" cy="48" r="43" fill="#d7e2c1" stroke="none" opacity=".12"/><path d="M215 23Q188 18 184 45Q181 72 209 78Q221 80 232 70Q201 77 196 50Q192 29 215 23Z" fill="#e6dbb8"/></g>
+      </g>
+      <g class="home-plant" stroke="#496653" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M39 99h35l-6 34H45Z" fill="#c59379"/><ellipse cx="56" cy="99" rx="18" ry="5" fill="#e8bd9b"/>
+        <g class="plant-fern" fill="#8cb29a"><path d="M56 99V48M55 73Q23 72 29 51Q53 52 55 73ZM57 81Q84 76 82 57Q60 58 57 81ZM55 59Q35 49 45 35Q58 43 55 59Z"/></g>
+        <g class="plant-flowers"><path d="M56 98L44 53M57 96L71 66M56 96V44" fill="none"/><path d="M53 85Q34 87 35 73Q49 71 53 85Z" fill="#8fb997"/><g fill="#dfb0a6" stroke="#bc897d" stroke-width="2"><circle cx="43" cy="49" r="11"/><circle cx="57" cy="40" r="10"/><circle cx="73" cy="62" r="10"/></g><g fill="#ebd298" stroke="none"><circle cx="43" cy="49" r="4"/><circle cx="57" cy="40" r="4"/><circle cx="73" cy="62" r="4"/></g></g>
+      </g>
+      <g class="home-bed" stroke="#746b54" stroke-width="3" stroke-linejoin="round">
+        <g class="bed-wicker"><path d="M47 108Q50 83 98 82Q146 84 152 108L141 136Q99 151 58 135Z" fill="#c8a581"/><ellipse cx="99" cy="108" rx="51" ry="18" fill="#e6d4b3"/><ellipse cx="99" cy="110" rx="38" ry="11" fill="#adc2b0"/><path d="M60 127Q98 140 137 127M61 132l5-13m13 18 3-14m15 17v-16m18 14-3-15m17 11-4-14" fill="none" stroke="#ab8967" stroke-width="2"/></g>
+        <g class="bed-cloud"><path d="M48 116Q33 92 57 90Q59 72 78 81Q97 63 112 80Q139 71 142 92Q162 92 151 116Q142 145 99 146Q56 146 48 116Z" fill="#d8d4e9"/><ellipse cx="99" cy="113" rx="39" ry="14" fill="#eee6ee"/><path d="M68 131Q99 141 130 131" fill="none" stroke="#b4aac6"/></g>
+        <g class="bed-leaf"><path d="M45 123Q43 73 83 76Q98 88 105 107Q111 71 149 76Q157 116 135 138Q88 157 45 123Z" fill="#8caf8e"/><path d="M53 117Q96 110 143 87M72 89l6 23m43-22-4 15m17 17-27-5" fill="none" stroke="#587d60"/><ellipse cx="100" cy="125" rx="33" ry="12" fill="#c1d0a4"/></g>
+      </g>
+      <g class="home-toys" stroke="#7b7059" stroke-width="3" stroke-linejoin="round">
+        <circle class="basket-ball" cx="236" cy="94" r="15" fill="#d4b46d"/><path class="basket-ball" d="M224 94h25m-12-15q-11 15 0 30" fill="none" stroke="#eee0af" stroke-width="2"/>
+        <path class="basket-star" d="M245 70l6 14 15 1-11 10 3 15-13-8-13 8 3-15-11-10 15-1Z" fill="#e4cb7b"/>
+        <path d="M219 106Q247 94 277 106L271 137Q246 149 224 135Z" fill="#b6a58c"/><ellipse cx="248" cy="106" rx="29" ry="8" fill="#d4c4a9"/><path d="M228 119q21 9 43 0m-42 8q20 9 39 0m-28-15v22m14-22v23" fill="none" stroke="#8d7f6a" stroke-width="2"/>
+      </g>
+    </svg>
+    </div>
+    <button id="home-handle" type="button" class="hit home-handle" aria-label="Move home with arrow keys or drag; Enter to decorate"><span aria-hidden="true">⠿</span> Home</button>
     <div id="ball" hidden aria-hidden="true"></div>
     <div id="pet" class="hit pet" role="button" tabindex="0" aria-label="Pet Ember. Drag to pick up; right click for controls.">
       <div class="bubble" id="bubble" hidden></div>
@@ -54,6 +82,8 @@
       <div class="pet-name"><span id="pet-name">Ember</span><span id="pet-mood">curious</span></div>
     </div>
     <div id="demo-window" class="demo-only demo-window" hidden><div class="demo-window-bar"><span>Preview window</span><button id="close-demo-window" type="button" aria-label="Close preview window">×</button></div><p>A little place to perch.</p><button id="move-demo-window" class="secondary" type="button">Move this window</button></div>
+    <button id="voice-stop" class="hit voice-stop" type="button" hidden title="Stop speaking (Ctrl + Shift + M)">■ Stop voice</button>
+    <div id="voice-dock" class="hit voice-dock" hidden aria-label="Voice conversation"><div class="voice-dock-actions"><button data-voice-hold type="button" class="primary">Hold to talk</button><button id="repeat-reply-dock" type="button" class="secondary" disabled>Repeat reply</button><button id="cancel-voice" type="button" class="secondary" hidden>Cancel</button><button id="review-voice" type="button" class="secondary" hidden>Review transcript</button></div><p id="voice-dock-status" role="status"></p><p id="voice-heard"></p></div>
     <div id="particles" aria-hidden="true"></div>
     <button id="focus-badge" class="hit" hidden title="Open focus timer"><span>✦ FOCUSING</span><strong id="badge-time">25:00</strong></button>
     <button id="launcher" class="hit" aria-label="Open companion controls" aria-expanded="true">✦<span>Companion</span></button>
@@ -63,56 +93,683 @@
       <p id="quick-status" role="status">Replies appear in his speech bubble.</p>
     </div>
     <aside id="panel" class="hit" aria-label="Companion controls">
-      <div class="panel-head"><div><span class="eyebrow">YOUR COMPANION</span><h2 id="panel-name">Meet Ember <span>✧</span></h2></div><button id="close-panel" class="icon-button" aria-label="Close controls">×</button></div>
-      <div class="profile-line"><span class="mood-pill" id="mood-pill">● Feeling curious</span><span class="coin-pill">✧ <b id="coins">0</b></span></div>
-      <div class="appearance-row"><label for="theme-selector">Appearance</label><select id="theme-selector"><option value="dark">Dark</option><option value="light">Light</option><option value="midnight">Midnight Blue</option><option value="forest">Forest Green</option><option value="system">Follow Windows</option></select></div>
-      <div class="ai-connection" role="status"><span id="ai-status">Checking local AI…</span><button id="check-ai" class="desktop-only" type="button">Reconnect</button></div>
-      <nav class="tabs" aria-label="Companion sections"><button class="active" data-tab="pet" aria-pressed="true">Creature</button><button data-tab="focus" aria-pressed="false">Focus</button><button data-tab="notes" aria-pressed="false">Notes</button><button data-tab="settings" aria-pressed="false">Settings</button></nav>
+      <div class="panel-head companion-head">
+      <div class="companion-avatar" aria-hidden="true">✦</div>
+      <div>
+      <span class="eyebrow">YOUR COMPANION</span>
+      <h2 id="panel-name">Meet Ember <span>✧</span>
+      </h2>
+      </div>
+      <div class="profile-line">
+      <span class="mood-pill" id="mood-pill">● Feeling curious</span>
+      <span class="coin-pill">✧ <b id="coins">0</b>
+      </span>
+      </div>
+      <button id="close-panel" class="icon-button" aria-label="Close controls">×</button>
+      </div>
+      <nav class="tabs" aria-label="Companion sections">
+      <button class="active" data-tab="pet" aria-pressed="true">Creature</button>
+      <button data-tab="focus" aria-pressed="false">Focus</button>
+      <button data-tab="notes" aria-pressed="false">Notes</button>
+      <button data-tab="settings" aria-pressed="false">Settings</button>
+      </nav>
+      <div class="panel-body" id="panel-body">
       <section id="tab-pet" class="tab-content">
-        <div class="stats"><div><span>Happiness</span><b id="happiness-text">90%</b><progress id="happiness" max="100" value="90"></progress></div><div><span>Energy</span><b id="energy-text">85%</b><progress id="energy" max="100" value="85"></progress></div></div>
-        <div class="action-grid"><button data-action="pet"><span>♡</span>Give love</button><button data-action="feed"><span>◒</span>Little snack</button><button data-action="ball"><span>◉</span>Play fetch</button><button data-action="sleep" id="sleep-button"><span>☾</span>Take a nap</button></div>
-        <div class="section-title"><span>A LITTLE PERSONALITY</span><small id="friendship">Friendship · 0</small></div>
-        <div class="palette" aria-label="Dragon color"><button data-color="mint" class="mint" aria-label="Mint dragon" aria-pressed="true"></button><button data-color="lavender" class="lavender" aria-label="Lavender dragon" aria-pressed="false"></button><button data-color="peach" class="peach" aria-label="Peach dragon" aria-pressed="false"></button><span>Same dragon.<br>Different energy.</span></div>
-        <div class="section-title"><span>THE TINY WARDROBE</span><small>Earn coins by playing</small></div>
-        <div class="wardrobe"><button data-hat="none">✧<span>Just me</span><small>Owned</small></button><button data-hat="sprout">♧<span>Sprout</span><small>10 coins</small></button><button data-hat="crown">♛<span>Crown</span><small>30 coins</small></button><button data-hat="wizard">✯<span>Wizard</span><small>50 coins</small></button></div>
-        <div class="awareness-card"><span class="eyebrow">A LITTLE MORE ALIVE</span><p id="activity-status">Watching your cursor</p><small id="activity-source">Reactions inside this playground</small><div class="demo-only activity-demo"><label for="activity-preview">Try an activity</label><select id="activity-preview"><option value="none">Just hanging out</option><option value="coding">Coding</option><option value="music">Music</option><option value="gaming">Gaming</option><option value="away">Step away</option><option value="return">Come back</option></select></div></div>
-        <div class="reaction-previews" aria-label="Try a physical reaction"><span>Try a reaction</span><div><button type="button" data-reaction-preview="curious">Curious</button><button type="button" data-reaction-preview="surprised">Surprised</button><button type="button" data-reaction-preview="celebrate">Celebrate</button></div></div>
-        <div class="reaction-previews" aria-label="Try a little habit"><span>Little habits · silent previews</span><div><button type="button" data-habit-preview="stretch">Stretch</button><button type="button" data-habit-preview="groom">Groom</button><button type="button" data-habit-preview="settle">Get comfy</button></div></div>
-        <p class="hint">Click your dragon to talk. Drag to pick it up.<br>Right-click it to open this little panel.</p>
+      <div class="page-intro">
+      <span class="eyebrow">YOUR LITTLE SIDEKICK</span>
+      <h3>A little time together.</h3>
+      <p>Care, play, and make him your own.</p>
+      </div>
+      <div class="stats">
+      <div>
+      <span>Happiness</span>
+      <b id="happiness-text">90%</b>
+      <progress id="happiness" max="100" value="90">
+      </progress>
+      </div>
+      <div>
+      <span>Energy</span>
+      <b id="energy-text">85%</b>
+      <progress id="energy" max="100" value="85">
+      </progress>
+      </div>
+      </div>
+      <div class="action-grid">
+      <button data-action="pet">
+      <span>♡</span>Give love</button>
+      <button data-action="feed">
+      <span>◒</span>Little snack</button>
+      <button data-action="ball">
+      <span>◉</span>Play fetch</button>
+      <button data-action="sleep" id="sleep-button">
+      <span>☾</span>Take a nap</button>
+      </div>
+      <details id="creature-home" class="creature-details">
+      <summary><span>A little home</span><small>Bed, toys &amp; decorations</small></summary>
+      <div class="home-settings">
+      <div id="home-preview" class="home-preview" aria-hidden="true"></div>
+      <p id="home-state" class="hint" role="status">A comfy corner of his own.</p>
+      <label class="toggle"><span><b>Show little home</b><small>Folds away automatically during games</small></span><input id="home-enabled" type="checkbox" checked></label>
+      <label class="toggle"><span><b>Home routines</b><small>Wake-up stretches, toy visits, and occasional solo play</small></span><input id="home-routines" type="checkbox" checked></label>
+      <div class="home-toolbar"><button id="home-move" type="button" class="secondary">Move home</button><button id="home-recenter" type="button" class="secondary">Reset position</button></div>
+      <nav class="home-categories" aria-label="Home decorations">
+      <button type="button" data-home-category="bed" aria-pressed="true">Beds</button><button type="button" data-home-category="rug" aria-pressed="false">Rugs</button><button type="button" data-home-category="plant" aria-pressed="false">Plants</button><button type="button" data-home-category="lamp" aria-pressed="false">Lamps</button><button type="button" data-home-category="toy" aria-pressed="false">Toys</button>
+      </nav><div id="home-catalog" class="home-catalog"></div>
+      <p class="hint">Buy once, switch anytime. Earn coins through care, fetch, and focus. Solo play is just for fun.</p>
+      <div class="home-toolbar"><button id="home-visit" type="button" class="secondary">Visit toy basket</button><button id="home-stretch" type="button" class="secondary">Try a stretch</button></div>
+      </div></details>
+      <details id="creature-style" class="creature-details">
+      <summary>
+      <span>Style your dragon</span>
+      <small>Colors &amp; tiny wardrobe</small>
+      </summary>
+      <div class="section-title">
+      <span>A LITTLE PERSONALITY</span>
+      <small id="friendship">Friendship · 0</small>
+      </div>
+      <div class="palette" aria-label="Dragon color">
+      <button data-color="mint" class="mint" aria-label="Mint dragon" aria-pressed="true">
+      </button>
+      <button data-color="lavender" class="lavender" aria-label="Lavender dragon" aria-pressed="false">
+      </button>
+      <button data-color="peach" class="peach" aria-label="Peach dragon" aria-pressed="false">
+      </button>
+      <span>Same dragon.<br>Different energy.</span>
+      </div>
+      <div class="section-title">
+      <span>THE TINY WARDROBE</span>
+      <small>Earn coins by playing</small>
+      </div>
+      <div class="wardrobe">
+      <button data-hat="none">✧<span>Just me</span>
+      <small>Owned</small>
+      </button>
+      <button data-hat="sprout">♧<span>Sprout</span>
+      <small>10 coins</small>
+      </button>
+      <button data-hat="crown">♛<span>Crown</span>
+      <small>30 coins</small>
+      </button>
+      <button data-hat="wizard">✯<span>Wizard</span>
+      <small>50 coins</small>
+      </button>
+      </div>
+      </details>
+      <details id="creature-extras" class="creature-details">
+      <summary>
+      <span>Activity &amp; little tricks</span>
+      <small>What he notices &amp; playful previews</small>
+      </summary>
+      <div class="awareness-card">
+      <span class="eyebrow">A LITTLE MORE ALIVE</span>
+      <p id="activity-status">Watching your cursor</p>
+      <small id="activity-source">Reactions inside this playground</small>
+      <div class="demo-only activity-demo">
+      <label for="activity-preview">Try an activity</label>
+      <select id="activity-preview">
+      <option value="none">Just hanging out</option>
+      <option value="coding">Coding</option>
+      <option value="browsing">Browsing</option><option value="music">Music</option>
+      <option value="gaming">Gaming</option>
+      <option value="away">Step away</option>
+      <option value="return">Come back</option>
+      </select>
+      </div>
+      </div>
+      <div class="reaction-previews" aria-label="Try a physical reaction">
+      <span>Try a reaction</span>
+      <div>
+      <button type="button" data-reaction-preview="curious">Curious</button>
+      <button type="button" data-reaction-preview="surprised">Surprised</button>
+      <button type="button" data-reaction-preview="celebrate">Celebrate</button>
+      </div>
+      </div>
+      <div class="reaction-previews" aria-label="Try a little habit">
+      <span>Little habits · silent previews</span>
+      <div>
+      <button type="button" data-habit-preview="stretch">Stretch</button>
+      <button type="button" data-habit-preview="groom">Groom</button>
+      <button type="button" data-habit-preview="settle">Get comfy</button>
+      </div>
+      </div>
+      </details>
+      <p class="hint">Click your dragon to talk. Drag to pick it up.<br>Right-click it to open this little panel.</p>
       </section>
       <section id="tab-focus" class="tab-content" hidden>
-        <div class="focus-card"><span class="eyebrow">LET’S DO ONE THING WELL</span><div id="focus-time">25:00</div><p id="focus-message">Your dragon will keep you company.</p></div>
-        <label class="field-label" for="focus-minutes">Session length</label><div class="duration-row"><input id="focus-minutes" type="number" value="25" min="1" max="180"><span>minutes</span></div>
-        <div class="focus-actions"><button id="focus-start" class="primary">Start focusing</button><button id="focus-reset" class="secondary" hidden>End session</button></div>
-        <p class="reward-note">✧ Finish a session: +15 coins & a happy dragon.</p>
-        <div class="section-title"><span>A GENTLE NUDGE</span><small>While the app is running</small></div>
-        <form id="reminder-form"><label class="field-label" for="reminder-title">Remind me to…</label><input id="reminder-title" maxlength="100" placeholder="Stretch, drink water, check the oven…" required><div class="reminder-row"><label for="reminder-minutes">In</label><input id="reminder-minutes" type="number" value="10" min="1" max="1440" required><span>minutes</span><button class="secondary" type="submit">Add</button></div></form>
-        <ul id="reminders" class="reminders"></ul>
-        <p class="hint"><span id="sessions">0</span> focus sessions completed. Small steps count.</p>
+      <div class="focus-card">
+      <span class="eyebrow">LET’S DO ONE THING WELL</span>
+      <div id="focus-time">25:00</div>
+      <p id="focus-message">Your dragon will keep you company.</p>
+      </div>
+      <label class="field-label" for="focus-minutes">Session length</label>
+      <div class="duration-row">
+      <input id="focus-minutes" type="number" value="25" min="1" max="180">
+      <span>minutes</span>
+      </div>
+      <div class="focus-actions">
+      <button id="focus-start" class="primary">Start focusing</button>
+      <button id="focus-reset" class="secondary" hidden>End session</button>
+      </div>
+      <p class="reward-note">✧ Finish a session: +15 coins &amp; a happy dragon.</p>
+      <div class="section-title">
+      <span>A GENTLE NUDGE</span>
+      <small>While the app is running</small>
+      </div>
+      <form id="reminder-form">
+      <label class="field-label" for="reminder-title">Remind me to…</label>
+      <input id="reminder-title" maxlength="100" placeholder="Stretch, drink water, check the oven…" required>
+      <div class="reminder-row">
+      <label for="reminder-minutes">In</label>
+      <input id="reminder-minutes" type="number" value="10" min="1" max="1440" required>
+      <span>minutes</span>
+      <button class="secondary" type="submit">Add</button>
+      </div>
+      </form>
+      <ul id="reminders" class="reminders">
+      </ul>
+      <p class="hint">
+      <span id="sessions">0</span> focus sessions completed. Small steps count.</p>
       </section>
-      <section id="tab-notes" class="tab-content" hidden><span class="eyebrow">A PLACE FOR YOUR THOUGHTS</span><h3>Your tiny notebook.</h3><p class="description">Ideas, tasks, that thing you keep forgetting.</p><label class="sr-only" for="notes">Your notes</label><textarea id="notes" maxlength="6000" placeholder="Something worth remembering…"></textarea><div class="note-footer"><span id="save-status">Saved on this device</span><span id="note-count">0 / 6000</span></div></section>
-      <section id="tab-settings" class="tab-content" hidden><label class="field-label" for="name-input">What should we call your dragon?</label><input id="name-input" maxlength="24" value="Ember"><label class="field-label" for="personality-setting">Dragon personality</label><select id="personality-setting"><option value="playful">Playful — tiny adventures &amp; snack jokes</option><option value="curious">Curious — a little explorer</option><option value="cozy">Cozy — calm company</option><option value="cheeky">Cheeky — gentle mischief</option></select><p id="personality-description" class="hint"></p><button id="personality-preview" class="secondary" type="button">Hear a little personality</button><label class="toggle"><span><b>Wandering</b><small>A little room to explore</small></span><input id="wander-setting" type="checkbox" checked></label><label class="toggle"><span><b>Quiet mode</b><small>Fewer spontaneous speech bubbles</small></span><input id="quiet-setting" type="checkbox"></label><label class="toggle"><span><b>Reduced motion</b><small>No wandering, bouncing, or tosses</small></span><input id="motion-setting" type="checkbox"></label>
-        <label class="field-label" for="talkativeness">How chatty should Ember be?</label><select id="talkativeness"><option value="chatty">Chatty — frequent activity comments</option><option value="balanced">Balanced — occasional company</option><option value="minimal">Minimal — mostly useful moments</option></select>
-        <label class="field-label" for="chat-mode">Conversation engine</label><select id="chat-mode"><option value="builtin">Built-in — works immediately</option><option value="local">Local AI — Ollama on this PC</option></select><div id="local-ai-settings" hidden><label class="field-label" for="local-model">Installed local model name</label><input id="local-model" list="installed-models" maxlength="100" placeholder="Auto-select an installed model"><datalist id="installed-models"></datalist><p class="hint">Start Ollama locally and choose an installed model. Installed models are detected automatically. Activity, file samples, memory, and optional screen snapshots are sent only to the local Ollama endpoint.</p></div>
-        <label class="toggle"><span><b>Automatic AI conversations</b><small>Start comments from files and PC activity</small></span><input id="automatic-setting" type="checkbox" checked></label>
-        <label class="toggle"><span><b>Automatic project memory</b><small>Remember observed filenames and project facts you mention</small></span><input id="memory-setting" type="checkbox" checked></label>
-        <label class="toggle"><span><b>Little habits</b><small>Silent stretches, grooming, and comfy moments</small></span><input id="habits-setting" type="checkbox" checked></label>
-        <label class="toggle"><span><b>Physical reactions</b><small>Let his pose match what he notices</small></span><input id="reaction-setting" type="checkbox" checked></label>
-        <label class="toggle"><span><b>Screen awareness</b><small>React to meaningful changes using local before/after snapshots</small></span><input id="screen-setting" type="checkbox"></label><p id="screen-status" class="hint">Off · screen snapshots are never saved.</p><p id="auto-status" class="hint">Automatic comments are ready when local AI connects.</p>
-<details id="perching-settings" class="files-settings"><summary>Window perching</summary><label class="toggle"><span><b>Sit on window edges</b><small>Follow a restored window on this monitor</small></span><input id="perch-setting" type="checkbox" checked></label><p id="perch-status" class="hint"></p><p class="hint">Leave room above the window for your dragon. Drag him away to take a break, or drop him near the top edge to choose a spot.</p><button id="perch-preview" class="secondary demo-only" type="button">Try a preview window</button></details>
-<details id="personal-memory-settings" class="files-settings"><summary>Personal memory</summary><label class="toggle"><span><b>Remember personal details</b><small>Only clear things you tell him</small></span><input id="personal-memory-setting" type="checkbox" checked></label><p id="personal-memory-status" class="hint"></p><form id="personal-memory-form"><label class="field-label" for="personal-nickname">Your nickname</label><input id="personal-nickname" maxlength="40" placeholder="What should he call you?"><label class="field-label" for="personal-favoriteGames">Favorite games</label><input id="personal-favoriteGames" maxlength="240" placeholder="Your favorite adventures"><label class="field-label" for="personal-interests">Interests</label><input id="personal-interests" maxlength="240" placeholder="Things you enjoy learning about"><label class="field-label" for="personal-likes">Things you like</label><input id="personal-likes" maxlength="240"><label class="field-label" for="personal-dislikes">Things you dislike</label><input id="personal-dislikes" maxlength="240"><button class="primary" type="submit">Save personal memory</button></form><button id="forget-personal-memory" class="secondary" type="button">Forget personal memory &amp; recent chat</button><p class="hint">Try telling him “Call me Noodle” or “My favorite game is Minecraft.” Details stay on this device and are used for relevant manual replies, not automatic screen commentary.</p></details>
-<details id="files-settings" class="files-settings"><summary>Files &amp; memory</summary>
-        <div class="chat-tools"><button id="show-file" class="primary">Show a file</button><button id="connect-folder" class="secondary desktop-only">Connect folder</button></div>
-        <input id="browser-file" class="sr-only" type="file" accept=".py,.js,.mjs,.cjs,.jsx,.ts,.tsx,.json,.html,.css,.md,.txt,.cpp,.c,.h,.hpp,.cs,.rs,.go,.java,.lua,.luau,.toml,.yaml,.yml,.xml,.sql,.vue,.svelte,.sh,.ps1">
-        <p id="file-status" class="description">Files opened in supported editors spark automatic curiosity. Connect a project folder once to allow reading its contents.</p><ul id="connected-folders" class="connected-folders"></ul>
-        <div id="file-card" class="file-card" hidden><div><strong id="current-file-name"></strong><button id="clear-file" class="icon-button" aria-label="Clear selected file">×</button></div><small id="current-project"></small><p id="file-summary"></p><details id="file-details"><summary>Text sample</summary><pre id="file-excerpt"></pre></details></div>
-        <form id="project-memory-form" hidden><details id="memory-details"><summary>Project memory</summary><label class="field-label" for="project-description">Tell me about this project</label><input id="project-description" maxlength="500" placeholder="I’m building a horror game…"><div class="chat-tools"><button type="submit" class="secondary">Remember this</button><button type="button" id="forget-project" class="secondary">Forget project</button></div><p id="memory-status" class="hint"></p><p id="observed-files" class="hint"></p></details></form>
-      </details><p id="conversation-status" class="hint"></p><div class="chat-footer"><span id="chat-engine">Built-in observations</span><button id="clear-chat" type="button">Forget recent conversation</button></div>
-        <details id="game-settings" class="files-settings"><summary>Game mode</summary><label class="field-label" for="game-mode">When to use game mode</label><select id="game-mode"><option value="auto">Automatic — games &amp; fullscreen apps</option><option value="on">Always on — use for an unrecognized game</option><option value="off">Off — normal desktop behavior</option></select><label class="field-label" for="game-corner">Dragon’s corner</label><select id="game-corner"><option value="bottom-right">Bottom right</option><option value="bottom-left">Bottom left</option><option value="top-right">Top right</option><option value="top-left">Top left</option></select><label class="toggle"><span><b>Click through dragon</b><small>Your game receives clicks over him; controls remain usable</small></span><input id="game-click-setting" type="checkbox" checked></label><label class="toggle desktop-only"><span><b>Follow game monitor</b><small>Move to the foreground game’s display, return afterward</small></span><input id="game-monitor-setting" type="checkbox" checked></label><p id="game-status" class="hint" role="status">Game mode is standing by.</p><button id="recover-overlay" type="button" class="secondary desktop-only">Bring dragon over game</button><p class="hint">Ctrl + Shift + G also brings him forward without taking focus from your game. If he stays hidden, set the game to Borderless Fullscreen or Windowed. Exclusive fullscreen may block desktop overlays.</p></details>
-        <label class="field-label" for="frame-mode">Animation quality</label><select id="frame-mode"><option value="smooth">Smooth — follow display refresh</option><option value="economy">Economy — 30 FPS</option></select><p class="hint" id="frame-rate">Display sync</p>
-        <label class="toggle"><span><b>React to my activity</b><small>Enable the companion’s PC reactions</small></span><input id="awareness-setting" type="checkbox" checked></label><label class="toggle"><span><b>Cursor curiosity</b><small>Look around and chase quick movements</small></span><input id="cursor-setting" type="checkbox" checked></label><label class="toggle"><span><b>Typing buddy</b><small>Tiny keyboard, activity counts only</small></span><input id="typing-setting" type="checkbox" checked></label><label class="toggle"><span><b>Activity outfits</b><small>Glasses, headphones, and gaming gear</small></span><input id="outfits-setting" type="checkbox" checked></label><label class="toggle"><span><b>Idle naps</b><small>Rest while you’re away, wake quietly</small></span><input id="idle-setting" type="checkbox" checked></label><label class="field-label" for="idle-after">Nap after</label><select id="idle-after"><option value="60">1 minute away</option><option value="120" selected>2 minutes away</option><option value="300">5 minutes away</option></select>
-        <div class="settings-note">Reactions use the current window title, app category, idle time, and typing counts. Window titles are transient and aren’t saved; a reply may mention what it observes. Supported editor titles spark filename reactions automatically. File contents are inspected inside folders you connect once. You can also choose a file explicitly. Typed text isn’t collected; file samples and screenshots stay out of saved memory; conversation may quote observations.</div><div class="desktop-only desktop-actions"><button id="hide-app" class="secondary">Hide creature</button><button id="quit-app" class="secondary">Quit app</button><p class="hint">Bring it back from the tray or Ctrl + Shift + P.<br>Drag and pet as usual. Empty space stays clickable.</p></div><div class="demo-only settings-note">The playground reacts within this page. The Windows app can react while you use other apps.</div></section>
-    </aside>
+      <section id="tab-notes" class="tab-content" hidden>
+      <span class="eyebrow">A PLACE FOR YOUR THOUGHTS</span>
+      <h3>Your tiny notebook.</h3>
+      <p class="description">Ideas, tasks, that thing you keep forgetting.</p>
+      <label class="sr-only" for="notes">Your notes</label>
+      <textarea id="notes" maxlength="6000" placeholder="Something worth remembering…">
+      </textarea>
+      <div class="note-footer">
+      <span id="save-status">Saved on this device</span>
+      <span id="note-count">0 / 6000</span>
+      </div>
+      </section>
+      <section id="tab-settings" class="tab-content" hidden>
+      <div class="settings-top">
+      <div>
+      <span class="eyebrow">MAKE IT YOURS</span>
+      <h3>Settings</h3>
+      </div>
+      <label class="settings-search">
+      <span class="sr-only">Search settings</span>
+      <span aria-hidden="true">⌕</span>
+      <input id="settings-search" type="search" maxlength="80" placeholder="Find a setting…" autocomplete="off" aria-controls="settings-search-results">
+      </label>
+      </div>
+      <div id="settings-search-results" class="settings-search-results" hidden>
+      <p id="settings-search-status" role="status">
+      </p>
+      <div id="settings-search-list">
+      </div>
+      </div>
+      <div id="settings-workspace" class="settings-workspace">
+      <nav class="settings-nav" aria-label="Settings categories">
+      <button id="settings-nav-general" type="button" data-settings-tab="general" aria-pressed="true" aria-controls="settings-general">
+      <span aria-hidden="true">◈</span>General</button>
+      <button id="settings-nav-voice" type="button" data-settings-tab="voice" aria-pressed="false" aria-controls="settings-voice">
+      <span aria-hidden="true">♫</span>Voice</button>
+      <button id="settings-nav-ai" type="button" data-settings-tab="ai" aria-pressed="false" aria-controls="settings-ai">
+      <span aria-hidden="true">✦</span>Local AI</button>
+      <button id="settings-nav-activity" type="button" data-settings-tab="activity" aria-pressed="false" aria-controls="settings-activity">
+      <span aria-hidden="true">↝</span>Activity</button>
+      <button id="settings-nav-games" type="button" data-settings-tab="games" aria-pressed="false" aria-controls="settings-games">
+      <span aria-hidden="true">◉</span>Games</button>
+      <button id="settings-nav-memory" type="button" data-settings-tab="memory" aria-pressed="false" aria-controls="settings-memory">
+      <span aria-hidden="true">♡</span>Memory</button>
+      <button id="settings-nav-files" type="button" data-settings-tab="files" aria-pressed="false" aria-controls="settings-files">
+      <span aria-hidden="true">▤</span>Projects</button>
+      <button id="settings-nav-privacy" type="button" data-settings-tab="privacy" aria-pressed="false" aria-controls="settings-privacy">
+      <span aria-hidden="true">◇</span>Privacy</button>
+      </nav>
+      <div class="settings-pages">
+      <section id="settings-general" class="settings-page" data-settings-page="general" aria-labelledby="settings-nav-general">
+      <div class="settings-page-head">
+      <h3>General</h3>
+      <p>Name, personality, appearance, and motion.</p>
+      </div>
+      <div class="settings-card">
+      <h4>Make yourself at home</h4>
+      <div class="appearance-row">
+      <label for="theme-selector">Appearance</label>
+      <select id="theme-selector">
+      <option value="dark">Dark</option>
+      <option value="light">Light</option>
+      <option value="midnight">Midnight Blue</option>
+      <option value="forest">Forest Green</option>
+      <option value="system">Follow Windows</option>
+      </select>
+      </div>
+      <label class="field-label" for="name-input">What should we call your dragon?</label>
+      <input id="name-input" maxlength="24" value="Ember">
+      <label class="field-label" for="personality-setting">Dragon personality</label>
+      <select id="personality-setting">
+      <option value="playful">Playful — tiny adventures &amp; snack jokes</option>
+      <option value="curious">Curious — a little explorer</option>
+      <option value="cozy">Cozy — calm company</option>
+      <option value="cheeky">Cheeky — gentle mischief</option>
+      </select>
+      <p id="personality-description" class="hint">
+      </p>
+      <button id="personality-preview" class="secondary" type="button">Hear a little personality</button>
+      <label class="toggle">
+      <span>
+      <b>Reduced motion</b>
+      <small>No wandering, bouncing, or tosses</small>
+      </span>
+      <input id="motion-setting" type="checkbox">
+      </label>
+      <label class="field-label" for="frame-mode">Animation quality</label>
+      <select id="frame-mode">
+      <option value="smooth">Smooth — follow display refresh</option>
+      <option value="economy">Economy — 30 FPS</option>
+      </select>
+      <p class="hint" id="frame-rate">Display sync</p>
+      </div>
+      </section>
+      <section id="settings-voice" class="settings-page" data-settings-page="voice" aria-labelledby="settings-nav-voice" hidden>
+      <div class="settings-page-head">
+      <h3>Voice</h3>
+      <p>Speak together, at your own pace.</p>
+      </div>
+      <div id="voice-settings" class="settings-card">
+      <h4>Voice</h4>
+      <label class="toggle">
+      <span>
+      <b>Spoken replies</b>
+      <small>Read his replies using an installed local voice</small>
+      </span>
+      <input id="speech-enabled" type="checkbox">
+      </label>
+      <label class="field-label" for="speech-engine">Voice engine</label>
+      <select id="speech-engine">
+      <option value="windows">Windows — installed voices</option>
+      <option value="kokoro">Kokoro — natural local voices</option>
+      </select>
+      <details id="kokoro-setup" class="advanced-settings" hidden>
+      <summary>Kokoro setup</summary>Requires the separate Kokoro local service. With Docker Desktop running, start it using:<code class="voice-command">docker run -d --name pocket-kokoro -p 127.0.0.1:8880:8880 ghcr.io/remsky/kokoro-fastapi-cpu:latest</code>First setup downloads the image and voice model. After it starts, click Refresh voices.</details>
+      <label class="field-label" for="speech-voice">His voice</label>
+      <select id="speech-voice">
+      <option value="">Windows default voice</option>
+      </select>
+      <label class="field-label" for="speech-volume">Volume <output id="speech-volume-value">65%</output>
+      </label>
+      <input id="speech-volume" type="range" min="0" max="1" step=".05">
+      <details id="voice-advanced" class="advanced-settings">
+      <summary>Delivery &amp; game options</summary>
+      <label class="field-label" for="speech-rate">Speaking pace <output id="speech-rate-value">1.00×</output>
+      </label>
+      <input id="speech-rate" type="range" min=".7" max="1.4" step=".05">
+      <label class="field-label" for="speech-chatter">Which comments should he say aloud?</label>
+      <select id="speech-chatter">
+      <option value="replies">Replies only — chat, care &amp; reminders</option>
+      <option value="balanced">Balanced — occasional automatic comments</option>
+      <option value="chatty">More often — up to one automatic line every 15 seconds</option>
+      </select>
+      <label class="toggle">
+      <span>
+      <b>Expressive pace</b>
+      <small>Gentler when sleepy, livelier when playful</small>
+      </span>
+      <input id="speech-expression" type="checkbox" checked>
+      </label>
+      <label class="toggle">
+      <span>
+      <b>Speak during games</b>
+      <small>Off by default; automatic lines at least a minute apart</small>
+      </span>
+      <input id="speech-games" type="checkbox">
+      </label>
+      </details>
+      <div class="chat-tools">
+      <button id="test-voice" type="button" class="secondary">Test voice</button>
+      <button id="refresh-voices" type="button" class="secondary">Refresh voices</button>
+      <button id="speech-stop" type="button" class="secondary">Stop speaking</button>
+      <button id="repeat-reply" type="button" class="secondary" disabled>Repeat last reply</button>
+      </div>
+      <p id="speech-status" class="hint" role="status">
+      </p>
+      <details class="advanced-settings">
+      <summary>Voice help &amp; shortcuts</summary>
+      <p class="hint">Voice works without Ollama. Windows voice quality depends on the installed voice. Ctrl + Shift + M stops speech; Quiet mode mutes it.</p>
+      </details>
+      </div>
+      <div class="settings-card voice-input-settings">
+      <h4>Talk to your dragon</h4>
+      <label class="toggle">
+      <span>
+      <b>Push-to-talk</b>
+      <small>Microphone opens only while holding the button or shortcut</small>
+      </span>
+      <input id="voice-input-enabled" type="checkbox">
+      </label>
+      <label class="field-label" for="voice-input-key">Hold this shortcut to talk</label>
+      <select id="voice-input-key">
+      <option value="f9">Ctrl + Shift + F9</option>
+      <option value="f8">Ctrl + Shift + F8</option>
+      <option value="f10">Ctrl + Shift + F10</option>
+      </select>
+      <label class="toggle">
+      <span>
+      <b>Review before sending</b>
+      <small>Check your words before he replies; uncertain speech always needs review</small>
+      </span>
+      <input id="voice-input-review" type="checkbox">
+      </label>
+      <button type="button" data-voice-hold class="secondary">Hold to talk</button>
+      <p id="voice-input-status" class="hint" role="status">
+      </p>
+      <details class="advanced-settings">
+      <summary>Commands you can say</summary>
+      <p class="hint">“Take a nap”, “go home”, “check your toys”, “wake up”, “give him a snack”, “play fetch”, “start a 25-minute focus session”, “pause focus”, “resume focus”, “end focus”, “repeat that”, “stop talking”, or “be quiet”. These run on this device without Ollama. Other messages continue your conversation. You can type commands too.</p>
+      </details>
+      <details class="advanced-settings">
+      <summary>How push-to-talk works</summary>
+      <p class="hint">Offline Windows dictation. Release to send; each recording is limited to 20 seconds and held in memory only. Conversation text enters your normal chat history; creature commands do not. Enable Spoken replies to hear his answer. Quiet mode pauses the shortcut. Turn Quiet off using the Companion toggle to talk again.</p>
+      </details>
+      </div>
+      </section>
+      <section id="settings-ai" class="settings-page" data-settings-page="ai" aria-labelledby="settings-nav-ai" hidden>
+      <div class="settings-page-head">
+      <h3>Local AI</h3>
+      <p>Choose how he notices and starts conversations.</p>
+      </div>
+      <div class="settings-card">
+      <h4>Conversations on your PC</h4>
+      <div class="ai-connection" role="status">
+      <span id="ai-status">Checking local AI…</span>
+      <button id="check-ai" class="desktop-only" type="button">Reconnect</button>
+      </div>
+      <label class="field-label" for="talkativeness">How chatty should Ember be?</label>
+      <select id="talkativeness">
+      <option value="chatty">Chatty — frequent activity comments</option>
+      <option value="balanced">Balanced — occasional company</option>
+      <option value="minimal">Minimal — mostly useful moments</option>
+      </select>
+      <label class="field-label" for="chat-mode">Conversation engine</label>
+      <select id="chat-mode">
+      <option value="builtin">Built-in — works immediately</option>
+      <option value="local">Local AI — Ollama on this PC</option>
+      </select>
+      <div id="local-ai-settings" hidden>
+      <label class="field-label" for="local-model">Installed local model name</label>
+      <input id="local-model" list="installed-models" maxlength="100" placeholder="Auto-select an installed model">
+      <datalist id="installed-models">
+      </datalist>
+      <p class="hint">Start Ollama locally and choose an installed model. Installed models are detected automatically. Activity, file samples, memory, and optional screen snapshots are sent only to the local Ollama endpoint.</p>
+      </div>
+      <label class="toggle">
+      <span>
+      <b>Automatic AI conversations</b>
+      <small>Start comments from files and PC activity</small>
+      </span>
+      <input id="automatic-setting" type="checkbox" checked>
+      </label>
+      <label class="toggle">
+      <span>
+      <b>Screen awareness</b>
+      <small>React to meaningful changes using local before/after snapshots</small>
+      </span>
+      <input id="screen-setting" type="checkbox">
+      </label>
+      <p id="screen-status" class="hint">Off · screen snapshots are never saved.</p>
+      <p id="auto-status" class="hint">Automatic comments are ready when local AI connects.</p>
+      </div>
+      </section>
+      <section id="settings-activity" class="settings-page" data-settings-page="activity" aria-labelledby="settings-nav-activity" hidden>
+      <div class="settings-page-head">
+      <h3>Activity</h3>
+      <p>Decide how your dragon reacts to your day.</p>
+      </div>
+      <div class="settings-card">
+      <h4>Options</h4>
+      <label class="toggle">
+      <span>
+      <b>Wandering</b>
+      <small>A little room to explore</small>
+      </span>
+      <input id="wander-setting" type="checkbox" checked>
+      </label>
+      <label class="toggle">
+      <span>
+      <b>Little habits</b>
+      <small>Silent stretches, grooming, and comfy moments</small>
+      </span>
+      <input id="habits-setting" type="checkbox" checked>
+      </label>
+      <label class="toggle">
+      <span>
+      <b>Physical reactions</b>
+      <small>Let his pose match what he notices</small>
+      </span>
+      <input id="reaction-setting" type="checkbox" checked>
+      </label>
+      <label class="toggle"><span><b>Task gestures</b><small>Notice app switches and typing pauses with brief, quiet poses</small></span><input id="task-setting" type="checkbox" checked></label>
+      </div>
+      <div id="perching-settings" class="settings-card">
+      <h4>Window perching</h4>
+      <label class="toggle">
+      <span>
+      <b>Sit on window edges</b>
+      <small>Follow a restored window on this monitor</small>
+      </span>
+      <input id="perch-setting" type="checkbox" checked>
+      </label>
+      <p id="perch-status" class="hint">
+      </p>
+      <p class="hint">Leave room above the window for your dragon. Drag him away to take a break, or drop him near the top edge to choose a spot.</p>
+      <button id="perch-preview" class="secondary demo-only" type="button">Try a preview window</button>
+      </div>
+      <div class="settings-card">
+      <h4>A little more alive</h4>
+      <label class="toggle">
+      <span>
+      <b>React to my activity</b>
+      <small>Enable the companion’s PC reactions</small>
+      </span>
+      <input id="awareness-setting" type="checkbox" checked>
+      </label>
+      <label class="toggle">
+      <span>
+      <b>Cursor curiosity</b>
+      <small>Look around and chase quick movements</small>
+      </span>
+      <input id="cursor-setting" type="checkbox" checked>
+      </label>
+      <label class="toggle">
+      <span>
+      <b>Typing buddy</b>
+      <small>Tiny keyboard, activity counts only</small>
+      </span>
+      <input id="typing-setting" type="checkbox" checked>
+      </label>
+      <label class="toggle">
+      <span>
+      <b>Activity outfits</b>
+      <small>Glasses, headphones, and gaming gear</small>
+      </span>
+      <input id="outfits-setting" type="checkbox" checked>
+      </label>
+      <label class="toggle">
+      <span>
+      <b>Idle naps</b>
+      <small>Rest while you’re away, wake quietly</small>
+      </span>
+      <input id="idle-setting" type="checkbox" checked>
+      </label>
+      <label class="field-label" for="idle-after">Nap after</label>
+      <select id="idle-after">
+      <option value="60">1 minute away</option>
+      <option value="120" selected>2 minutes away</option>
+      <option value="300">5 minutes away</option>
+      </select>
+      </div>
+      </section>
+      <section id="settings-games" class="settings-page" data-settings-page="games" aria-labelledby="settings-nav-games" hidden>
+      <div class="settings-page-head">
+      <h3>Games</h3>
+      <p>A little company that stays out of the way.</p>
+      </div>
+      <div id="game-settings" class="settings-card">
+      <h4>Game mode</h4>
+      <label class="field-label" for="game-mode">When to use game mode</label>
+      <select id="game-mode">
+      <option value="auto">Automatic — games &amp; fullscreen apps</option>
+      <option value="on">Always on — use for an unrecognized game</option>
+      <option value="off">Off — normal desktop behavior</option>
+      </select>
+      <label class="field-label" for="game-corner">Dragon’s corner</label>
+      <select id="game-corner">
+      <option value="bottom-right">Bottom right</option>
+      <option value="bottom-left">Bottom left</option>
+      <option value="top-right">Top right</option>
+      <option value="top-left">Top left</option>
+      </select>
+      <label class="toggle">
+      <span>
+      <b>Click through dragon</b>
+      <small>Your game receives clicks over him; controls remain usable</small>
+      </span>
+      <input id="game-click-setting" type="checkbox" checked>
+      </label>
+      <label class="toggle desktop-only">
+      <span>
+      <b>Follow game monitor</b>
+      <small>Move to the foreground game’s display, return afterward</small>
+      </span>
+      <input id="game-monitor-setting" type="checkbox" checked>
+      </label>
+      <p id="game-status" class="hint" role="status">Game mode is standing by.</p>
+      <button id="recover-overlay" type="button" class="secondary desktop-only">Bring dragon over game</button>
+      <p class="hint">Ctrl + Shift + G also brings him forward without taking focus from your game. If he stays hidden, set the game to Borderless Fullscreen or Windowed. Exclusive fullscreen may block desktop overlays.</p>
+      </div>
+      </section>
+      <section id="settings-memory" class="settings-page" data-settings-page="memory" aria-labelledby="settings-nav-memory" hidden>
+      <div class="settings-page-head">
+      <h3>Memory</h3>
+      <p>The things you choose to tell him.</p>
+      </div>
+      <div id="personal-memory-settings" class="settings-card">
+      <h4>Personal memory</h4>
+      <label class="toggle">
+      <span>
+      <b>Remember personal details</b>
+      <small>Only clear things you tell him</small>
+      </span>
+      <input id="personal-memory-setting" type="checkbox" checked>
+      </label>
+      <p id="personal-memory-status" class="hint">
+      </p>
+      <form id="personal-memory-form">
+      <label class="field-label" for="personal-nickname">Your nickname</label>
+      <input id="personal-nickname" maxlength="40" placeholder="What should he call you?">
+      <label class="field-label" for="personal-favoriteGames">Favorite games</label>
+      <input id="personal-favoriteGames" maxlength="240" placeholder="Your favorite adventures">
+      <label class="field-label" for="personal-interests">Interests</label>
+      <input id="personal-interests" maxlength="240" placeholder="Things you enjoy learning about">
+      <label class="field-label" for="personal-likes">Things you like</label>
+      <input id="personal-likes" maxlength="240">
+      <label class="field-label" for="personal-dislikes">Things you dislike</label>
+      <input id="personal-dislikes" maxlength="240">
+      <button class="primary" type="submit">Save personal memory</button>
+      </form>
+      <button id="forget-personal-memory" class="secondary" type="button">Forget personal memory &amp; recent chat</button>
+      <p class="hint">Try telling him “Call me Noodle” or “My favorite game is Minecraft.” Details stay on this device and are used for relevant manual replies, not automatic screen commentary.</p>
+      </div>
+      <div class="settings-card">
+      <h4>Recent conversation</h4>
+      <p id="conversation-status" class="hint">
+      </p>
+      <div class="chat-footer">
+      <span id="chat-engine">Built-in observations</span>
+      <button id="clear-chat" type="button">Forget recent conversation</button>
+      </div>
+      </div>
+      </section>
+      <section id="settings-files" class="settings-page" data-settings-page="files" aria-labelledby="settings-nav-files" hidden>
+      <div class="settings-page-head">
+      <h3>Projects</h3>
+      <p>Files, connected folders, and project memory.</p>
+      </div>
+      <div class="settings-card">
+      <h4>Options</h4>
+      <label class="toggle">
+      <span>
+      <b>Automatic project memory</b>
+      <small>Remember observed filenames and project facts you mention</small>
+      </span>
+      <input id="memory-setting" type="checkbox" checked>
+      </label>
+      </div>
+      <div id="files-settings" class="settings-card">
+      <h4>Files &amp; memory</h4>
+      <div class="chat-tools">
+      <button id="show-file" class="primary">Show a file</button>
+      <button id="connect-folder" class="secondary desktop-only">Connect folder</button>
+      </div>
+      <input id="browser-file" class="sr-only" type="file" accept=".py,.js,.mjs,.cjs,.jsx,.ts,.tsx,.json,.html,.css,.md,.txt,.cpp,.c,.h,.hpp,.cs,.rs,.go,.java,.lua,.luau,.toml,.yaml,.yml,.xml,.sql,.vue,.svelte,.sh,.ps1">
+      <p id="file-status" class="description">Files opened in supported editors spark automatic curiosity. Connect a project folder once to allow reading its contents.</p>
+      <ul id="connected-folders" class="connected-folders">
+      </ul>
+      <div id="file-card" class="file-card" hidden>
+      <div>
+      <strong id="current-file-name">
+      </strong>
+      <button id="clear-file" class="icon-button" aria-label="Clear selected file">×</button>
+      </div>
+      <small id="current-project">
+      </small>
+      <p id="file-summary">
+      </p>
+      <details id="file-details">
+      <summary>Text sample</summary>
+      <pre id="file-excerpt">
+      </pre>
+      </details>
+      </div>
+      <form id="project-memory-form" hidden>
+      <details id="memory-details">
+      <summary>Project memory</summary>
+      <label class="field-label" for="project-description">Tell me about this project</label>
+      <input id="project-description" maxlength="500" placeholder="I’m building a horror game…">
+      <div class="chat-tools">
+      <button type="submit" class="secondary">Remember this</button>
+      <button type="button" id="forget-project" class="secondary">Forget project</button>
+      </div>
+      <p id="memory-status" class="hint">
+      </p>
+      <p id="observed-files" class="hint">
+      </p>
+      </details>
+      </form>
+      </div>
+      </section>
+      <section id="settings-privacy" class="settings-page" data-settings-page="privacy" aria-labelledby="settings-nav-privacy" hidden>
+      <div class="settings-page-head">
+      <h3>Privacy</h3>
+      <p>Understand what he sees and what stays saved.</p>
+      </div>
+      <div class="settings-card">
+      <h4>Your data &amp; controls</h4>
+      <div class="settings-note">Reactions use the current window title, app category, idle time, and typing counts. Window titles are transient and aren’t saved; a reply may mention what it observes. Supported editor titles spark filename reactions automatically. File contents are inspected inside folders you connect once. You can also choose a file explicitly. Typed text isn’t collected; file samples and screenshots stay out of saved memory; conversation may quote observations.</div>
+      <div class="desktop-only desktop-actions">
+      <button id="hide-app" class="secondary">Hide creature</button>
+      <button id="quit-app" class="secondary">Quit app</button>
+      <p class="hint">Bring it back from the tray or Ctrl + Shift + P.<br>Drag and pet as usual. Empty space stays clickable.</p>
+      </div>
+      <div class="demo-only settings-note">The playground reacts within this page. The Windows app can react while you use other apps.</div>
+      </div>
+      </section>
+      </div>
+      </div>
+      </section>
+      </div>
+      <div class="panel-footer">
+      <span class="panel-save">
+      <span aria-hidden="true">●</span> Stays on this device</span>
+      <label class="panel-quiet" title="Quiet mode pauses push-to-talk and mutes voices">
+      <span>Quiet</span>
+      <input id="quiet-setting" type="checkbox">
+      </label>
+      </div>
+      </aside>
     <div id="toast" role="status" aria-live="polite" hidden></div>
     <footer class="demo-only playground-footer"><span>MADE FOR SMALL MOMENTS</span><span>Pet · Play · Focus · Repeat</span><span>✦</span></footer>
   </main>

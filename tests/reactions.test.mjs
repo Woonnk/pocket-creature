@@ -5,7 +5,7 @@ import {normalize} from '../renderer/core.mjs';
 import {decodeObservation,createReactionController} from '../renderer/reactions.mjs';
 const require=createRequire(import.meta.url),{chatWithLocalModel}=require('../desktop/chat.cjs');
 test('old saves acquire physical reactions without losing preferences and rewards',()=>{
- const old=normalize({version:5,name:'Lil Wonks',coins:42,theme:'forest',gameMode:'on'});assert.equal(old.version,8);assert.equal(old.physicalReactions,true);assert.equal(old.coins,42);assert.equal(old.theme,'forest');assert.equal(normalize({physicalReactions:false}).physicalReactions,false);assert.equal(normalize({physicalReactions:'yes'}).physicalReactions,true);
+ const old=normalize({version:5,name:'Lil Wonks',coins:42,theme:'forest',gameMode:'on'});assert.equal(old.version,11);assert.equal(old.physicalReactions,true);assert.equal(old.coins,42);assert.equal(old.theme,'forest');assert.equal(normalize({physicalReactions:false}).physicalReactions,false);assert.equal(normalize({physicalReactions:'yes'}).physicalReactions,true);
 });
 test('model reactions require concrete evidence and image-backed errors/victories',()=>{
  const event=(event,evidence)=>({reply:'A little observation.',event,evidence});assert.equal(decodeObservation(event('discovery','enemy.py'),{fileName:'enemy.py'}).reaction,'curious');assert.equal(decodeObservation(event('discovery','unrelated.txt'),{fileName:'enemy.py'}).reaction,'none');

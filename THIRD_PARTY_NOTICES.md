@@ -7,3 +7,5 @@ The packaged application uses Electron, Chromium, and Node.js. Preserve the pack
 Electron Builder and Playwright are development/test tools pinned in package-lock.json. Their own licenses remain with their installed packages. Browser test binaries are not shipped as part of the application.
 
 Ollama and local models are optional, separately installed components. This project does not bundle their code or model weights; consult those components' own licenses.
+
+Kokoro-FastAPI, its voice model, and Docker are optional, separately installed components. This application includes a local HTTP adapter and setup instructions only; it does not bundle those components or their model weights. Consult their own licenses and notices.

@@ -1,6 +1,6 @@
 {
   "name": "pocket-creature",
-  "version": "0.10.0",
+  "version": "0.15.1",
   "private": true,
   "description": "A tiny dragon companion for your Windows desktop.",
   "main": "desktop/main.cjs",
@@ -22,6 +22,7 @@
   "build": {
     "appId": "com.pocketcreature.companion",
     "productName": "Pocket Creature",
+    "afterPack": "./scripts/clean-windows-package.cjs",
     "files": [
       "desktop/**/*",
       "renderer/**/*",
@@ -37,7 +38,9 @@
       "output": "release"
     },
     "asarUnpack": [
-      "desktop/activity.ps1"
+      "desktop/activity.ps1",
+      "desktop/speech.ps1",
+      "desktop/voice-input.ps1"
     ]
   },
   "license": "MIT",

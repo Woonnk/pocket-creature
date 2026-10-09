@@ -4,7 +4,10 @@ import {fileURLToPath} from 'node:url';
 const root=new URL('../',import.meta.url);
 let html=await readFile(new URL('renderer/index.html',root),'utf8');
 const css=await readFile(new URL('renderer/style.css',root),'utf8');
-const core=(await readFile(new URL('renderer/core.mjs',root),'utf8')).replace(/export /g,'');
+const home=(await readFile(new URL('renderer/home.mjs',root),'utf8')).replace(/export /g,'');
+const homeView=(await readFile(new URL('renderer/home-view.mjs',root),'utf8')).replace(/^import .+\n/gm,'').replace(/export /g,'');
+const taskReactions=(await readFile(new URL('renderer/task-reactions.mjs',root),'utf8')).replace(/export /g,'');
+const core=(await readFile(new URL('renderer/core.mjs',root),'utf8')).replace(/^import .+\n/gm,'').replace(/export /g,'');
 const personality=(await readFile(new URL('renderer/personality.mjs',root),'utf8')).replace(/export /g,'');
 const companion=(await readFile(new URL('renderer/companion.mjs',root),'utf8')).replace(/^import .+\n/gm,'').replace(/export /g,'');
 const conversation=(await readFile(new URL('renderer/conversation.mjs',root),'utf8')).replace(/export /g,'');
@@ -13,8 +16,11 @@ const autonomy=(await readFile(new URL('renderer/autonomy.mjs',root),'utf8')).re
 const reactions=(await readFile(new URL('renderer/reactions.mjs',root),'utf8')).replace(/export /g,'');
 const perching=(await readFile(new URL('renderer/perching.mjs',root),'utf8')).replace(/export /g,'');
 const personalMemory=(await readFile(new URL('renderer/personal-memory.mjs',root),'utf8')).replace(/^import .+\n/gm,'').replace(/export /g,'');
+const speech=(await readFile(new URL('renderer/speech.mjs',root),'utf8')).replace(/export /g,'');
+const voiceInput=(await readFile(new URL('renderer/voice-input.mjs',root),'utf8')).replace(/export /g,'');
+const voiceCommands=(await readFile(new URL('renderer/voice-commands.mjs',root),'utf8')).replace(/export /g,'');
 const app=(await readFile(new URL('renderer/app.mjs',root),'utf8')).replace(/^import .+\n/gm,'');
-const js='\n'+core+'\n'+personality+'\n'+companion+'\n'+conversation+'\n'+habits+'\n'+autonomy+'\n'+reactions+'\n'+perching+'\n'+personalMemory+'\n'+app+'\n';
+const js='\n'+home+'\n'+homeView+'\n'+taskReactions+'\n'+core+'\n'+personality+'\n'+companion+'\n'+conversation+'\n'+habits+'\n'+autonomy+'\n'+reactions+'\n'+perching+'\n'+personalMemory+'\n'+speech+'\n'+voiceInput+'\n'+voiceCommands+'\n'+app+'\n';
 const hash=createHash('sha256').update(js).digest('base64');
 html=html.replace('script-src \'self\'',`script-src 'sha256-${hash}'`)
   .replace('<link rel="stylesheet" href="style.css">',`<style>${css}</style>`)
