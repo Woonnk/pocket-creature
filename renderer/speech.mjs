@@ -1,3 +1,4 @@
+import {wavEnvelope} from './voice-motion.mjs';
 // Speech output reads existing dialogue. Microphone input lives in voice-input.mjs.
 export function speechAllowed(settings,context={},automatic=false,preview=false){
   if((!settings.speechEnabled&&!preview)||settings.quiet||context.hidden||context.listening||settings.speechVolume<=0)return false;
@@ -35,7 +36,7 @@ export function createSpeaker({bridge,getSettings,getContext,onState=()=>{},prep
     const at=now(),interval=context.inGame?60000:settings.speechChatter==='chatty'?15000:45000;
     if(automatic&&(at-lastAutomatic<interval||text===lastText&&at-lastAt<120000))return false;
     stop();
-    const id=++sequence;current={id,automatic};onState({id,state:'pending',automatic});
+    const id=++sequence;current={id,automatic};onState({id,state:'pending',automatic,text});
     const payload={id,text,automatic,preview,voice:settings.speechVoice,volume:settings.speechVolume,...speechDelivery(settings,mood)};
     Promise.resolve().then(prepare).then(()=>current?.id===id?bridge.speak(payload):true).then(ok=>{
       if(!ok)update({id,state:'error',message:'Voice unavailable. Check the voice settings.'});
@@ -59,6 +60,7 @@ export function createBrowserSpeechBridge(host=globalThis){
       this.stopSpeech();const item=new host.SpeechSynthesisUtterance(payload.text);utterance=item;
       item.voice=selected;item.lang=selected.lang;item.volume=payload.volume;item.rate=payload.rate;item.pitch=payload.pitch;
       item.onstart=()=>{if(utterance===item)listener({id:payload.id,state:'speaking'});};
+      item.onboundary=event=>{if(utterance===item)listener({id:payload.id,state:'timing',kind:'word',index:event.charIndex,length:event.charLength||4});};
       item.onend=()=>{if(utterance===item){utterance=null;listener({id:payload.id,state:'ended'});}};
       item.onerror=()=>{if(utterance===item){utterance=null;listener({id:payload.id,state:'error',message:'Browser voice could not play. Try Test voice again.'});}};
       synth.speak(item);return true;
@@ -66,8 +68,8 @@ export function createBrowserSpeechBridge(host=globalThis){
   };
 }
 export function createDesktopSpeechBridge(native,{getSettings,host=globalThis}){
-  let listener=()=>{},audio=null,url=null,generation=0,playbackTimer=null;
-  function stopAudio(){generation++;clearTimeout(playbackTimer);playbackTimer=null;if(audio){audio.pause();audio.src='';audio=null;}if(url){host.URL.revokeObjectURL(url);url=null;}}
+  let listener=()=>{},audio=null,url=null,generation=0,playbackTimer=null,timingTimer=null;
+  function stopAudio(){generation++;clearTimeout(playbackTimer);clearInterval(timingTimer);timingTimer=null;playbackTimer=null;if(audio){audio.pause();audio.src='';audio=null;}if(url){host.URL.revokeObjectURL(url);url=null;}}
   native.onSpeechState?.(event=>{if(event.state==='cancelled')stopAudio();listener(event);});
   return {
     speechStatus:()=>native.speechStatus?.(),
@@ -79,9 +81,16 @@ export function createDesktopSpeechBridge(native,{getSettings,host=globalThis}){
       const result=await native.synthesize?.(payload);if(token!==generation)return true;
       if(!result?.audio||result.id!==payload.id)return false;
       const bytes=new Uint8Array(result.audio);url=host.URL.createObjectURL(new host.Blob([bytes],{type:'audio/wav'}));
-      const item=new host.Audio(url);audio=item;item.volume=payload.volume;
+      const item=new host.Audio(url);audio=item;item.volume=payload.volume;let buffering=false;
+      const envelope=wavEnvelope(bytes);
       function finish(state,message){if(token!==generation)return;stopAudio();listener({id:payload.id,state,message});}
-      item.onplaying=()=>{if(token===generation)listener({id:payload.id,state:'speaking'});};
+      item.onplaying=()=>{if(token!==generation)return;buffering=false;listener({id:payload.id,state:'speaking'});
+        if(envelope&&!timingTimer){timingTimer=setInterval(()=>{if(token!==generation)return;
+          const value=buffering||item.paused||item.seeking?0:envelope.values[Math.floor(item.currentTime/envelope.step)]||0;
+          listener({id:payload.id,state:'timing',kind:'amplitude',value});
+        },20);timingTimer.unref?.();}
+      };
+      item.onpause=item.onwaiting=item.onseeking=()=>{buffering=true;if(token===generation)listener({id:payload.id,state:'timing',kind:'amplitude',value:0});};
       item.onended=()=>finish('ended');item.onerror=()=>finish('error','Natural voice audio could not play.');
       playbackTimer=setTimeout(()=>finish('error','Voice playback timed out.'),60000);
       try{await item.play();return true;}catch{finish('error','Audio playback was blocked. Try Test voice.');return false;}

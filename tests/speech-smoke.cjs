@@ -8,7 +8,7 @@ async function run(){
  try{
   await page.addInitScript(()=>{
    window.speechCalls=[];window.stopCalls=0;window.saved=[];
-   window.companion={loadState:async()=>({chatMode:'builtin',wander:false}),saveState:async s=>window.saved.push(JSON.parse(JSON.stringify(s))),setClickThrough(){},setControlsOpen(){},notify(){},onOpenControls:fn=>window.controls=fn,onBeforeQuit(){},onClock(){},onCursor:fn=>window.cursor=fn,onActivity:fn=>window.activity=fn,
+   window.companion={loadState:async()=>({littleInteractions:false,chatMode:'builtin',wander:false}),saveState:async s=>window.saved.push(JSON.parse(JSON.stringify(s))),setClickThrough(){},setControlsOpen(){},notify(){},onOpenControls:fn=>window.controls=fn,onBeforeQuit(){},onClock(){},onCursor:fn=>window.cursor=fn,onActivity:fn=>window.activity=fn,
     speechStatus:async()=>({ready:true,voices:[{name:'Local dragon',lang:'en-US'}],message:'Installed Windows voices ready.'}),onSpeechState:fn=>window.voiceEvent=fn,stopSpeech:()=>window.stopCalls++,speak:async payload=>{window.speechCalls.push(payload);window.voiceEvent({id:payload.id,state:'speaking'});return true;}};
   });
   await page.goto('http://127.0.0.1:4173');await page.waitForSelector('body.desktop');await page.evaluate(()=>window.controls());

@@ -2,6 +2,10 @@ const {contextBridge,ipcRenderer}=require('electron');
 const subscribe=(channel,fn)=>{const handler=(_event,value)=>fn(value);ipcRenderer.on(channel,handler);return()=>ipcRenderer.removeListener(channel,handler);};
 contextBridge.exposeInMainWorld('companion',Object.freeze({
   rendererReady:()=>ipcRenderer.send('renderer-ready'),
+  startupStatus:()=>ipcRenderer.invoke('startup-status'),
+  setStartup:enabled=>ipcRenderer.invoke('set-startup',enabled),
+  exportBackup:()=>ipcRenderer.invoke('export-backup'),
+  importBackup:()=>ipcRenderer.invoke('import-backup'),
   loadState:()=>ipcRenderer.invoke('load-state'),
   saveState:state=>ipcRenderer.invoke('save-state',state),
   setClickThrough:ignore=>ipcRenderer.send('click-through',ignore),

@@ -17,7 +17,7 @@ export function createAutoScheduler(){
     begin(settings,context,now=Date.now(),urgent=false){
       const baseGap={chatty:18000,balanced:45000,minimal:120000}[settings.talkativeness]||18000;
       const gap=context.gameMode||context.category==='gaming'?Math.max(60000,baseGap):baseGap;
-      if(busy||!settings.autoConversations||!settings.pcAwareness||settings.quiet||context.sleeping||context.dragging||context.playing||context.away||context.userBusy||!context.ready||now-last<(urgent&&!context.gameMode?8000:gap))return null;
+      if(busy||!settings.autoConversations||!settings.pcAwareness||settings.quiet||context.sleeping||context.dragging||context.playing||context.away||context.typing||context.focus||context.hidden||context.speaking||context.userBusy||!context.ready||now-last<(urgent&&!context.gameMode?8000:gap))return null;
       busy=true;last=now;started=revision;return started;
     },
     finish(token){busy=false;return token===revision&&token===started;},
@@ -31,11 +31,11 @@ export function createConversationGuard(){
     hold(now=Date.now()){holdUntil=Math.max(holdUntil,now+90000);},
     blocked(now=Date.now()){return now<holdUntil;},
     observe(text,contextId,now=Date.now()){
-      starter={text,contextId:String(contextId),expires:now+180000};
-      if(text.includes('?'))holdUntil=Math.max(holdUntil,now+120000);
+      const question=text.includes('?');starter={text,contextId:String(contextId),expires:now+(question?600000:180000)};
+      if(question)holdUntil=Math.max(holdUntil,now+300000);
     },
-    replyTo(contextId,now=Date.now(),message=''){return starter&&now<starter.expires&&(starter.contextId===String(contextId)||starter.text.includes('?')&&answersRecentQuestion(message))?{text:starter.text,contextId:String(contextId)}:null;},
-    clear(){starter=null;}
+    replyTo(contextId,now=Date.now(),message=''){if(/^(?:new topic|change (?:the )?(?:topic|subject)|never ?mind|forget (?:this|that)|moving on)\b/i.test(message.trim()))return null;return starter&&now<starter.expires&&(starter.contextId===String(contextId)||starter.text.includes('?')&&answersRecentQuestion(message))?{text:starter.text,contextId:String(contextId)}:null;},
+    clear(){starter=null;holdUntil=0;}
   };
 }
 // Speech bubbles stay readable even when a local model ignores the length request.
@@ -56,11 +56,15 @@ export function briefReply(value,automatic=false){
 }
 export function createCommentFilter(){
   const recent=[];
-  const words=line=>new Set(line.toLowerCase().match(/[a-z0-9]+/g)||[]);
-  return {accept(line){
+  const filler=new Set('i im ive me my we our you your a an the this that it is are was were be been to in on at of for and with just noticed notice spotted see seeing looks look little tiny really very again'.split(' '));
+  const tokens=line=>new Set((String(line).toLowerCase().normalize('NFKC').match(/[\p{L}\p{N}]+/gu)||[]).filter(w=>!filler.has(w)));
+  const key=line=>String(line).toLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim();
+  function canAccept(line,now=Date.now()){
     if(!line||line==='SILENCE')return false;
-    const next=words(line);if(!next.size)return false;
-    if(recent.some(previous=>{const matches=[...next].filter(w=>previous.has(w)).length;return matches/(next.size+previous.size-matches)>=.7;}))return false;
-    recent.push(next);if(recent.length>4)recent.shift();return true;
-  }};
+    while(recent.length&&now-recent[0].at>=600000)recent.shift();
+    const next=tokens(line),canonical=key(line);if(!canonical)return false;
+    return !recent.some(p=>{if(p.key===canonical)return true;const matches=[...next].filter(w=>p.words.has(w)).length,union=next.size+p.words.size-matches;return next.size>=2&&p.words.size>=2&&matches/union>=.65;});
+  }
+  function record(line,now=Date.now()){recent.push({key:key(line),words:tokens(line),at:now});if(recent.length>8)recent.shift();}
+  return {canAccept,record,accept(line,now=Date.now()){if(!canAccept(line,now))return false;record(line,now);return true;}};
 }

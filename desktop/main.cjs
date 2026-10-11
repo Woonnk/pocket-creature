@@ -19,18 +19,22 @@ const {pathToFileURL} = require('node:url');
 const rendererRoot=path.join(__dirname,'..','renderer');
 const {rendererFiles}=require('./renderer-files.cjs');
 const {createStartupGuard}=require('./startup.cjs');
+const {createLoginController}=require('./login.cjs');
+let loginController,encodeBackup;
 let startup,pendingControls=false;
 const HOME='pocket://companion/index.html';
 protocol.registerSchemesAsPrivileged([{scheme:'pocket',privileges:{standard:true,secure:true,supportFetchAPI:true,corsEnabled:true}}]);
 let win,tray,normalize,gameActive,windowInOverlay,savedState,clock,cursorTimer,activityTimer,activity,fileService,fileTimer,activeFile=null,lastFileKey='',dismissedTitle='',fileBusy=false,fileSelection=0,lastFileError='',quitting=false,quitRequested=false,displayIndex=0;
 let aiConnection={ready:false,model:'',vision:false,models:[]},aiChecked=0,aiChecking=null,pendingAutomatic=null,lastAutoRequest=0;
-let foregroundId,selectedFileId='',selectedFileAt=0,recentComments=[],overlayController,controlsOpen=false;
+let foregroundTitle,foregroundId,selectedFileId='',selectedFileTitle='',selectedFileAt=0,recentComments=[],overlayController,controlsOpen=false;
 const single=app.requestSingleInstanceLock();
 if(!single)app.quit();
 else{
   app.on('second-instance',()=>showControls());
   app.whenReady().then(async()=>{
     ({normalize,gameActive}=await import('../renderer/core.mjs'));
+    ({encodeBackup}=await import('../renderer/backup.mjs'));
+    loginController=createLoginController(app);
     ({speechAllowed}=await import('../renderer/speech.mjs'));
     localVoice=createLocalVoiceAdapter();
     microphone=createVoiceInputAdapter(value=>{if(value.state==='listening'){interruptSpeech();pendingAutomatic?.abort();pendingManual?.abort();}if(win&&!win.isDestroyed())win.webContents.send('voice-input',value);});
@@ -65,7 +69,7 @@ else{
       if(!win.isVisible()||powerMonitor.getSystemIdleTime()>savedState.idleAfter&&!gameActive(savedState,signal))pendingAutomatic?.abort();
       if(gameActive(savedState,signal)&&!savedState.speechInGames)speech.stop();
       if(powerMonitor.getSystemIdleTime()>savedState.idleAfter&&!gameActive(savedState,signal))speech.stopAutomatic();
-      if(foregroundId!==signal.contextId){speech.stopAutomatic();foregroundId=signal.contextId;pendingAutomatic?.abort();screenChanges.reset();}
+      if(foregroundId!==signal.contextId||foregroundTitle!==signal.windowTitle){speech.stopAutomatic();foregroundId=signal.contextId;foregroundTitle=signal.windowTitle;pendingAutomatic?.abort();screenChanges.reset();}
       refreshOverlay();
       const perchWindow=savedState.pcAwareness&&savedState.windowPerching?windowInOverlay(signal.windowSurface,win.getBounds(),rect=>process.platform==='win32'?screen.screenToDipRect(null,rect):rect):null;
       win.webContents.send('activity',{...signal,windowSurface:undefined,perchWindow,idleSeconds:powerMonitor.getSystemIdleTime()});
@@ -152,6 +156,21 @@ function persist(state){
 }
 ipcMain.handle('load-state',event=>{if(!trusted(event))throw Error('Invalid sender');return savedState;});
 ipcMain.handle('save-state',(event,value)=>{if(!trusted(event))throw Error('Invalid sender');if(JSON.stringify(value).length>120000)throw Error('Save too large');persist(value);return true;});
+ipcMain.handle('startup-status',event=>{if(!trusted(event))throw Error('Invalid sender');return loginController.status();});
+ipcMain.handle('set-startup',(event,enabled)=>{if(!trusted(event))throw Error('Invalid sender');return loginController.set(enabled);});
+ipcMain.handle('export-backup',async event=>{
+  if(!trusted(event))throw Error('Invalid sender');
+  const result=await dialog.showSaveDialog(win,{title:'Export Pocket Creature save',defaultPath:'Pocket-Creature-Backup.json',filters:[{name:'Pocket Creature backup',extensions:['json']}]});
+  if(result.canceled||!result.filePath)return false;
+  await fs.promises.writeFile(result.filePath,encodeBackup(savedState),'utf8');return true;
+});
+ipcMain.handle('import-backup',async event=>{
+  if(!trusted(event))throw Error('Invalid sender');
+  const result=await dialog.showOpenDialog(win,{title:'Choose Pocket Creature backup',properties:['openFile'],filters:[{name:'Pocket Creature backup',extensions:['json']}]});
+  if(result.canceled||!result.filePaths[0])return null;
+  const handle=await fs.promises.open(result.filePaths[0],'r');
+  try{if((await handle.stat()).size>120000)throw Error('Choose a backup smaller than 120 KB.');const bytes=Buffer.alloc(120001),read=await handle.read(bytes,0,bytes.length,0);if(read.bytesRead>120000)throw Error('Backup is too large.');return bytes.subarray(0,read.bytesRead).toString('utf8');}finally{await handle.close();}
+});
 ipcMain.handle('speech-status',event=>{if(!trusted(event))throw Error('Invalid sender');return savedState.speechEngine==='kokoro'?localVoice.status():speech.status();});
 ipcMain.handle('speak',(event,payload)=>{
   if(!trusted(event)||!payload||typeof payload.text!=='string'||payload.text.length>280||!Number.isSafeInteger(payload.id))throw Error('Invalid speech');
@@ -178,7 +197,7 @@ ipcMain.handle('voice-input-start',event=>{if(!trusted(event))throw Error('Inval
 ipcMain.on('voice-input-finish',event=>{if(trusted(event))microphone.finish();});
 ipcMain.on('voice-input-cancel',event=>{if(trusted(event))microphone.cancel();});
 ipcMain.on('cancel-chat',event=>{if(trusted(event)){pendingManual?.abort();pendingAutomatic?.abort();}});
-function selectFile(file){pendingAutomatic?.abort();activeFile=file;selectedFileId=String(activity?.snapshot().contextId??0);selectedFileAt=Date.now();}
+function selectFile(file){pendingAutomatic?.abort();activeFile=file;selectedFileId=String(activity?.snapshot().contextId??0);selectedFileTitle=String(activity?.snapshot().windowTitle||'');selectedFileAt=Date.now();}
 function sendFile(file){selectFile(file);win.webContents.send('file-context',file);}
 async function pollEditorFile(){
   if(fileBusy||!savedState.pcAwareness||!fileService||!win||win.isDestroyed())return;
@@ -215,7 +234,7 @@ ipcMain.handle('chat',async(event,payload)=>{
   if(!trusted(event)||!payload||typeof payload.message!=='string'||payload.message.length>1200)throw Error('Invalid message');
   if(savedState.chatMode!=='local')throw Error('Enable local AI in Settings first.');
   const automatic=payload.automatic===true;
-  if(automatic&&(pendingManual||['listening','transcribing'].includes(microphone.status().state)||!savedState.autoConversations||savedState.quiet||!savedState.pcAwareness||!win.isVisible()||powerMonitor.getSystemIdleTime()>savedState.idleAfter&&!gameActive(savedState,activity?.snapshot()||{})||Date.now()-lastAutoRequest<(gameActive(savedState,activity?.snapshot()||{})?60000:8000)))return '';
+  if(automatic&&(pendingManual||['listening','transcribing'].includes(microphone.status().state)||!savedState.autoConversations||savedState.quiet||!savedState.pcAwareness||savedState.focus.status!=='idle'||activity?.snapshot().typingCount>0||!win.isVisible()||powerMonitor.getSystemIdleTime()>savedState.idleAfter&&!gameActive(savedState,activity?.snapshot()||{})||Date.now()-lastAutoRequest<(gameActive(savedState,activity?.snapshot()||{})?60000:8000)))return '';
   if(automatic&&pendingAutomatic)return '';
   pendingAutomatic?.abort();const controller=new AbortController();if(automatic){pendingAutomatic=controller;lastAutoRequest=Date.now();}else{pendingManual?.abort();pendingManual=controller;}
   try{
@@ -223,23 +242,23 @@ ipcMain.handle('chat',async(event,payload)=>{
   const snapshot=activity?.snapshot()||{},contextKey=String(snapshot.contextId??0);
   if(automatic&&payload.contextId!==undefined&&String(payload.contextId)!==contextKey){if(pendingAutomatic===controller)pendingAutomatic=null;return '';}
   const editorName=basenameFromTitle(activity?.editorTitle()||'');
-  const currentFile=activeFile&&(editorName?.toLowerCase()===activeFile.name.toLowerCase()||selectedFileId===contextKey&&Date.now()-selectedFileAt<15000);
+  const currentFile=activeFile&&(editorName?.toLowerCase()===activeFile.name.toLowerCase()||selectedFileId===contextKey&&selectedFileTitle===String(snapshot.windowTitle||'')&&Date.now()-selectedFileAt<15000);
   // Selected files remain available for explicit questions; automatic comments follow the foreground.
   const asksAboutFile=/\b(file|code|function|project|script|import|class)\b/i.test(payload.message)||Boolean(activeFile&&payload.message.toLowerCase().includes(activeFile.name.toLowerCase()));
   const file=currentFile||!automatic&&asksAboutFile?activeFile:null,memory=savedState.projectMemories.find(m=>m.id===file?.projectId);
   const history=automatic?[]:savedState.chatHistory;
     let image,previousImage,comparison,observationKind;
-    const signature=contextKey+'\0'+(file?file.path+'\0'+createHash('sha256').update(String(file.excerpt||file.summary||'')).digest('hex'):'');
+    const signature=contextKey+'\0'+snapshot.category+'\0'+String(snapshot.windowTitle||'').slice(0,200)+'\0'+(file?file.path+'\0'+createHash('sha256').update(String(file.excerpt||file.summary||'')).digest('hex'):'');
     const newContext=signature!==lastObservedSignature;
     if(savedState.screenAwareness&&connection.vision&&savedState.pcAwareness){
       if(automatic){const frame=await captureScreen(true);image=frame.image;comparison=screenChanges.inspect(frame,contextKey+':'+frame.display.id,normalizedExclusions(payload.screenExclusions,win.getBounds(),frame.display.bounds||frame.display.workArea));if(comparison.changed&&comparison.kind==='screen-change'){previousImage=comparison.previousImage;observationKind='screen-change';}else if(newContext)observationKind='new-context';}
       else image=await captureScreen();if(controller.signal.aborted)throw Error('Request cancelled.');if(!savedState.screenAwareness||!savedState.pcAwareness)image=undefined;}
-    if(automatic&&contextKey!==String(activity?.snapshot().contextId??0))return '';
+    if(automatic&&(contextKey!==String(activity?.snapshot().contextId??0)||snapshot.windowTitle!==activity?.snapshot().windowTitle))return '';
     if(automatic&&!newContext&&(!comparison||!comparison.changed)){return {reply:'SILENCE',contextKey,observation:'unchanged'};}
     const result=await chatWithLocalModel({model:connection.model,message:payload.message,file,memory,history,recentComments,conversationStarter:!automatic&&payload.conversationStarter?.contextId===contextKey&&typeof payload.conversationStarter.text==='string'?payload.conversationStarter.text.slice(0,170):'',personalMemory:!automatic&&savedState.personalMemoryEnabled?savedState.personalMemory:null,name:savedState.name,personality:savedState.personality,gameMode:gameActive(savedState,snapshot),activity:snapshot,image,previousImage,observationKind,automatic,withReaction:automatic&&savedState.physicalReactions,think:connection.think,signal:controller.signal});
     const answer=typeof result==='string'?result:result?.reply||'SILENCE',reaction=['curious','surprised','celebrate'].includes(result?.reaction)?result.reaction:'none';
     if(controller.signal.aborted)return '';
-    if(automatic&&(controller.signal.aborted||!win.isVisible()||savedState.quiet||!savedState.pcAwareness||!savedState.autoConversations||contextKey!==String(activity?.snapshot().contextId??0)))return '';
+    if(automatic&&(controller.signal.aborted||!win.isVisible()||savedState.quiet||!savedState.pcAwareness||!savedState.autoConversations||savedState.focus.status!=='idle'||activity?.snapshot().typingCount>0||contextKey!==String(activity?.snapshot().contextId??0)||snapshot.windowTitle!==activity?.snapshot().windowTitle))return '';
     if(automatic){lastObservedSignature=signature;if(comparison&&savedState.screenAwareness&&savedState.pcAwareness)screenChanges.commit(comparison);}
     if(automatic&&answer!=='SILENCE')recentComments=[...recentComments,answer].slice(-4);
     return automatic?{reply:answer,reaction,contextKey,observation:observationKind||'new-context'}:answer;

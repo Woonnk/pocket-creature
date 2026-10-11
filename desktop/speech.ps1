@@ -13,6 +13,10 @@ using System.Speech.Synthesis;
 using System.Threading;
 using System.Web.Script.Serialization;
 public static class PocketSpeech {
+  private static readonly object OutputLock = new object();
+  private static void Emit(JavaScriptSerializer json, object value) {
+    lock (OutputLock) { Console.WriteLine(json.Serialize(value)); Console.Out.Flush(); }
+  }
   public static void Run(string input, int parentPid) {
     var json = new JavaScriptSerializer();
     using (var watch = new Timer(delegate(object state) {
@@ -43,9 +47,15 @@ public static class PocketSpeech {
           synth.Volume = Math.Max(0, Math.Min(100, Convert.ToInt32(command["volume"])));
           synth.Rate = Math.Max(-5, Math.Min(5, Convert.ToInt32(command["rate"])));
           synth.SetOutputToDefaultAudioDevice();
-          synth.SpeakStarted += delegate { Console.WriteLine("{\"state\":\"speaking\"}"); Console.Out.Flush(); };
+          synth.SpeakStarted += delegate { Emit(json, new { state = "speaking" }); };
+          synth.VisemeReached += delegate(object sender, VisemeReachedEventArgs e) {
+            Emit(json, new { state = "timing", kind = "viseme", value = e.Viseme, duration = e.Duration.TotalMilliseconds });
+          };
+          synth.SpeakProgress += delegate(object sender, SpeakProgressEventArgs e) {
+            Emit(json, new { state = "timing", kind = "word", index = e.CharacterPosition, length = e.CharacterCount });
+          };
           synth.Speak(text);
-          Console.WriteLine("{\"state\":\"ended\"}");
+          Emit(json, new { state = "ended" });
         }
       } catch { Console.WriteLine("{\"state\":\"error\"}"); }
     }

@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="demo-only header"><div class="brand"><span class="brand-icon">✦</span> pocket creature<span class="version">LOCAL PREVIEW · 0.15.1</span></div><span class="header-note">a little company. a little chaos.</span></header>
+  <header class="demo-only header"><div class="brand"><span class="brand-icon">✦</span> pocket creature<span class="version">PUBLIC BETA · 0.23.0</span></div><span class="header-note">a little company. a little chaos.</span></header>
   <main id="world" aria-label="Creature playground">
     <div class="demo-only scenery" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="stars">✧</div><div class="moon"></div><div class="hill hill-back"></div><div class="hill hill-front"></div></div>
     <div class="demo-only scene-heading"><span class="eyebrow">YOUR LITTLE CORNER OF THE UNIVERSE</span><h1>Good company.<br>A tiny dragon.</h1><p>Make yourself at home. Ember already has.</p></div>
@@ -45,31 +45,35 @@
     <div id="pet" class="hit pet" role="button" tabindex="0" aria-label="Pet Ember. Drag to pick up; right click for controls.">
       <div class="bubble" id="bubble" hidden></div>
       <svg id="dragon" viewBox="0 0 240 220" aria-hidden="true">
-        <ellipse class="shadow" cx="118" cy="205" rx="62" ry="9"/>
-        <g id="reaction-art"><g id="habit-art"><g id="dragon-art">
-          <g class="tail"><path class="pet-dark outline" d="M151 171 Q214 203 225 146 Q228 135 219 142 Q204 169 175 150Z"/><path class="pet-light" d="M206 163l12-19-1 24Z"/></g>
-          <g class="wing"><path class="pet-dark outline" d="M148 128 Q171 82 199 90 L190 113 L207 116 L185 132 L190 145 L163 148Z"/><path class="outline no-fill" d="M157 141L191 108M163 141L189 129"/></g>
-          <ellipse class="pet-dark outline leg leg-back" cx="148" cy="185" rx="22" ry="16"/>
-          <path class="pet-main outline" d="M83 110 Q160 96 177 151 Q190 190 146 197 L100 194 Q65 181 73 149Z"/>
-          <ellipse class="belly" cx="118" cy="159" rx="28" ry="34" transform="rotate(-12 118 159)"/>
-          <ellipse class="pet-main outline leg leg-front" cx="88" cy="186" rx="23" ry="17"/>
-          <path class="claw" d="M77 190v6M86 192v6M96 191v6M141 192v5M150 191v5"/>
-          <g class="head">
-            <path class="horn outline" d="M97 70 Q85 25 104 39 L115 68Z"/>
-            <path class="horn outline" d="M136 63 Q140 22 153 39 L155 74Z"/>
-            <path class="pet-main outline" d="M81 67 Q117 47 154 69 Q176 85 166 114 Q156 143 113 139 Q72 138 62 115 Q51 90 81 67Z"/>
-            <path class="pet-dark outline" d="M155 75 Q184 61 182 81 Q181 96 166 96"/>
-            <path class="pet-light" d="M70 91 Q84 69 107 72 Q80 78 78 95Z"/>
+        <ellipse data-motion-part="shadow" class="shadow" cx="118" cy="205" rx="62" ry="9"/>
+        <g id="reaction-art"><g id="habit-art"><g id="dragon-art"><g id="motion-art" data-motion-part="body">
+          <g data-motion-part="tail"><g class="tail"><path data-sprite-part="tail" class="pet-dark outline" d="M151 171 Q214 203 225 146 Q228 135 219 142 Q204 169 175 150Z"/><path data-sprite-part="tail-tip" class="pet-light" d="M206 163l12-19-1 24Z"/></g></g>
+          <g data-motion-part="wing"><g class="wing"><path data-sprite-part="wing" class="pet-dark outline" d="M148 128 Q171 82 199 90 L190 113 L207 116 L185 132 L190 145 L163 148Z"/><path data-sprite-part="wing-veins" class="outline no-fill" d="M157 141L191 108M163 141L189 129"/></g></g>
+          <g data-motion-part="back"><ellipse class="pet-dark outline leg leg-back" cx="148" cy="185" rx="22" ry="16"/><path class="claw" d="M141 192v5M150 191v5"/></g>
+          <path data-sprite-part="body" class="pet-main outline" d="M83 110 Q160 96 177 151 Q190 190 146 197 L100 194 Q65 181 73 149Z"/>
+          <ellipse data-sprite-part="belly" class="belly" cx="118" cy="159" rx="28" ry="34" transform="rotate(-12 118 159)"/>
+          <g data-motion-part="front"><ellipse class="pet-main outline leg leg-front" cx="88" cy="186" rx="23" ry="17"/><path class="claw" d="M77 190v6M86 192v6M96 191v6"/></g>
+          <path data-sprite-part="detail" class="sprite-detail" d=""/>
+          <g data-motion-part="head"><g class="head">
+            <path data-sprite-part="horn-left" class="horn outline" d="M97 70 Q85 25 104 39 L115 68Z"/>
+            <path data-sprite-part="horn-right" class="horn outline" d="M136 63 Q140 22 153 39 L155 74Z"/>
+            <path data-sprite-part="head" class="pet-main outline" d="M81 67 Q117 47 154 69 Q176 85 166 114 Q156 143 113 139 Q72 138 62 115 Q51 90 81 67Z"/>
+            <path data-sprite-part="ear" class="pet-dark outline" d="M155 75 Q184 61 182 81 Q181 96 166 96"/>
+            <path data-sprite-part="highlight" class="pet-light" d="M70 91 Q84 69 107 72 Q80 78 78 95Z"/>
             <ellipse class="cheek" cx="82" cy="113" rx="12" ry="7"/><ellipse class="cheek" cx="146" cy="113" rx="10" ry="6"/>
-            <g class="gaze"><g class="eyes"><ellipse cx="89" cy="98" rx="6" ry="9"/><ellipse cx="138" cy="98" rx="6" ry="9"/><circle class="eye-glint" cx="91" cy="95" r="2"/><circle class="eye-glint" cx="140" cy="95" r="2"/></g></g>
+            <path data-sprite-part="face-detail" class="sprite-detail" d=""/>
+            <g class="gaze"><g data-motion-part="blink"><g class="eyes"><ellipse cx="89" cy="98" rx="6" ry="9"/><ellipse cx="138" cy="98" rx="6" ry="9"/><circle class="eye-glint" cx="91" cy="95" r="2"/><circle class="eye-glint" cx="140" cy="95" r="2"/></g></g></g>
             <ellipse class="reaction-mouth" cx="113" cy="122" rx="6" ry="8"/>
             <path class="mouth" d="M104 116q9 10 18 0"/>
+            <g class="voice-mouth" aria-hidden="true"><ellipse class="voice-jaw" cx="113" cy="120" rx="7" ry="5"/><path class="voice-tongue" d="M109 122q4-3 8 0"/></g>
+            <g class="emotion-face"><path class="emotion-brows" d="M81 82q6-5 13 0M131 82q6-5 13 0"/><path class="emotion-smile" d="M101 117q12 15 24 0"/><path class="emotion-soft-eyes" d="M82 98q7-7 14 0M131 98q7-7 14 0"/></g>
             <path class="brow" d="M81 84l12-2M132 82l12 2"/>
             <g class="accessory accessory-sprout"><path class="outline no-fill" d="M118 63V40"/><path fill="#c5df98" class="outline" d="M117 49Q90 27 103 24Q125 22 117 49ZM119 45Q145 20 143 37Q139 52 119 45Z"/></g>
             <g class="accessory accessory-crown"><path fill="#f2c86e" class="outline" d="M91 62l-5-29 20 14 13-23 13 23 20-14-5 29Z"/><circle fill="#d88476" cx="119" cy="51" r="4"/></g>
             <g class="accessory accessory-wizard"><path fill="#9c8dcc" class="outline" d="M83 60L117 9 141 60Z"/><ellipse fill="#b2a2e1" class="outline" cx="113" cy="61" rx="40" ry="8"/><path fill="#f4d488" d="M117 28l3 7 7 1-6 5 2 7-6-4-6 4 2-7-6-5 8-1Z"/></g>
-          </g>
-          <g class="arm"><path class="pet-main outline" d="M81 135Q53 133 63 153Q72 161 87 153"/></g>
+          </g></g>
+          <g data-motion-part="arm"><g class="arm"><path class="pet-main outline" d="M81 135Q53 133 63 153Q72 161 87 153"/></g></g>
+          <g class="moment-toy"><circle class="moment-ball" cx="65" cy="149" r="13"/><path class="moment-star" d="M65 132l5 10 12 1-9 8 3 12-11-6-10 6 2-12-8-8 12-1Z"/></g>
           <g class="focus-glasses"><rect x="77" y="89" width="25" height="21" rx="6"/><rect x="125" y="89" width="25" height="21" rx="6"/><path d="M102 96h23"/></g>
           <g class="activity-headphones"><path d="M69 95Q65 53 113 54Q159 53 163 95"/><rect x="61" y="88" width="16" height="31" rx="7"/><rect x="156" y="88" width="16" height="31" rx="7"/></g>
           <g class="activity-helmet"><path d="M65 88Q67 48 116 48Q164 48 171 88L152 84L143 96H90L80 84Z"/><path d="M109 53h15v33h-15Z"/></g>
@@ -77,7 +81,7 @@
           <g class="dizzy-mark"><text x="66" y="53">✦</text><text x="158" y="41">✧</text></g>
           <g class="sleep-z"><text x="163" y="62">z</text><text x="180" y="38">z</text></g>
         </g>
-        </g></g>
+        </g></g></g>
       </svg>
       <div class="pet-name"><span id="pet-name">Ember</span><span id="pet-mood">curious</span></div>
     </div>
@@ -87,6 +91,7 @@
     <div id="particles" aria-hidden="true"></div>
     <button id="focus-badge" class="hit" hidden title="Open focus timer"><span>✦ FOCUSING</span><strong id="badge-time">25:00</strong></button>
     <button id="launcher" class="hit" aria-label="Open companion controls" aria-expanded="true">✦<span>Companion</span></button>
+    <button id="attention-tag" type="button" class="hit attention-tag" hidden><span class="attention-dot" aria-hidden="true">◉</span><span id="attention-tag-label">Hanging out with you</span></button>
     <div id="quick-talk" class="hit quick-talk" role="dialog" aria-label="Talk to your dragon" hidden>
       <div class="quick-head"><label id="quick-label" for="chat-input">Say something to Ember</label><button id="close-talk" class="icon-button" type="button" aria-label="Close message">×</button></div>
       <form id="chat-form"><input id="chat-input" maxlength="1200" placeholder="Hey, what do you think?" required><button id="chat-send" class="primary" type="submit">Send</button></form>
@@ -144,6 +149,26 @@
       <button data-action="sleep" id="sleep-button">
       <span>☾</span>Take a nap</button>
       </div>
+      <details id="creature-bond" class="creature-details">
+      <summary><span>Our bond</span><small id="bond-summary">Getting acquainted</small></summary>
+      <div class="bond-overview"><strong id="bond-level">Getting acquainted</strong><p id="bond-next" class="hint"></p><progress id="bond-progress" max="10" value="0" aria-label="Progress toward next friendship milestone"></progress></div>
+      <div class="bond-favorites"><div><span>His favorite snack</span><strong id="bond-snack">Still learning</strong><small id="bond-snack-source"></small></div><div><span>Your favorite moment together</span><strong id="bond-interaction">Still learning</strong><small id="bond-interaction-source"></small></div><div><span>Your favorite games</span><strong id="bond-games">Tell him in chat</strong><small id="bond-games-source"></small></div></div>
+      <div class="home-toolbar"><button id="bond-enjoy" type="button" class="secondary" disabled>Enjoy favorite moment</button></div>
+      <p class="hint">Care and completed play teach favorites after three visits, at least a minute apart. Quiet solo play doesn’t count. Tell him “my favorite game is…” in chat.</p>
+      <div class="section-title"><span>FRIENDSHIP MILESTONES</span><small>New gestures, earned together</small></div><div id="bond-milestones" class="bond-milestones"></div><p id="bond-gesture-status" class="hint" role="status">Gestures wait for a quiet moment on the ground.</p><button id="bond-stop" type="button" class="secondary" hidden>Stop gesture</button>
+      <details class="bond-edit"><summary>Edit favorites &amp; learning</summary>
+      <label class="toggle"><span><b>Learn from care and play</b><small>Remembers snack choices and completed moments on this device</small></span><input id="bond-learning" type="checkbox" checked></label>
+      <form id="bond-form"><label class="field-label" for="bond-next-snack">Next little snack</label><select id="bond-next-snack"><option value="berries">Berry bites</option><option value="honey">Honey crisps</option><option value="cookies">Moon cookies</option></select>
+      <label class="field-label" for="bond-snack-pin">His favorite snack</label><select id="bond-snack-pin"><option value="auto">Learn from visits</option><option value="none">No favorite</option><option value="berries">Berry bites</option><option value="honey">Honey crisps</option><option value="cookies">Moon cookies</option></select>
+      <label class="field-label" for="bond-interaction-pin">Favorite moment together</label><select id="bond-interaction-pin"><option value="auto">Learn from visits</option><option value="none">No favorite</option><option value="pet">Give love</option><option value="fetch">Play fetch</option><option value="scratch">Head scratch</option><option value="paw">Offer a paw</option><option value="toy">Bring a toy</option><option value="settle">Settle nearby</option></select>
+      <label class="field-label" for="bond-games-input">Your favorite games</label><input id="bond-games-input" type="text" maxlength="240" placeholder="Only games you tell him you like"><p class="hint">Games use Personal memory. Editing or forgetting games also clears recent conversation.</p><button type="submit" class="primary">Save favorites</button></form>
+      <div class="home-toolbar"><button id="bond-forget" type="button" class="secondary">Forget care &amp; play favorites</button><button id="bond-forget-games" type="button" class="secondary">Forget games</button></div><p id="bond-learning-status" class="hint" role="status"></p></details>
+      </details>
+      <details id="little-assistance" class="creature-details">
+      <summary><span>A little help</span><small>Focus &amp; file questions</small></summary>
+      <p id="assistance-status" class="hint" role="status">Ask “remind me in 10 minutes to drink water”, or show me a file.</p>
+      <div class="home-toolbar"><button id="assist-focus" type="button" class="secondary">Focus together · 25 min</button><button id="assist-file" type="button" class="secondary">Explain selected file</button><button id="assist-dismiss" type="button" class="secondary" hidden>Dismiss offer</button></div>
+      </details>
       <details id="creature-home" class="creature-details">
       <summary><span>A little home</span><small>Bed, toys &amp; decorations</small></summary>
       <div class="home-settings">
@@ -161,12 +186,14 @@
       <details id="creature-style" class="creature-details">
       <summary>
       <span>Style your dragon</span>
-      <small>Colors &amp; tiny wardrobe</small>
+      <small>Dragon looks, colors &amp; tiny wardrobe</small>
       </summary>
       <div class="section-title">
       <span>A LITTLE PERSONALITY</span>
       <small id="friendship">Friendship · 0</small>
       </div>
+      <div id="sprite-gallery" class="sprite-gallery" role="group" aria-label="Dragon look"></div>
+      <p class="sprite-hint">Every look is free. His personality and progress stay with him.</p>
       <div class="palette" aria-label="Dragon color">
       <button data-color="mint" class="mint" aria-label="Mint dragon" aria-pressed="true">
       </button>
@@ -174,7 +201,7 @@
       </button>
       <button data-color="peach" class="peach" aria-label="Peach dragon" aria-pressed="false">
       </button>
-      <span>Same dragon.<br>Different energy.</span>
+      <span>Pick a color.<br>Any dragon look.</span>
       </div>
       <div class="section-title">
       <span>THE TINY WARDROBE</span>
@@ -195,6 +222,15 @@
       </button>
       </div>
       </details>
+      <details id="little-moments" class="creature-details"><summary><span>Little moments</span><small>Expressions &amp; quiet company</small></summary><div class="trick-school-body">
+      <p id="emotion-status" class="hint" role="status"></p><label class="toggle"><span><b>Expressive moods</b><small>Faces follow care, play, learning, rest, and focus</small></span><input id="emotion-setting" type="checkbox" checked></label><label class="toggle"><span><b>Little interactions</b><small>Quiet paw offers, toy visits, and settling nearby</small></span><input id="moments-setting" type="checkbox" checked></label>
+      <label class="field-label" for="moment-choice">A moment together</label><select id="moment-choice"><option value="scratch">Head scratch</option><option value="paw">Offer a paw</option><option value="toy">Bring a toy</option><option value="settle">Settle nearby</option></select><div class="home-toolbar"><button id="moment-start" type="button" class="secondary">Try this moment</button><button id="moment-stop" type="button" class="secondary" hidden>Stop moment</button></div><p id="moment-status" class="hint" role="status">Silent moments, just for company. No coins or extra AI requests.</p></div></details>
+      <details id="animation-preview" class="creature-details"><summary><span>Try his animations</span><small>Six-second previews, right where he is</small></summary><label class="field-label" for="animation-choice">Pick a move</label><select id="animation-choice"><option value="stroll">Little stroll</option><option value="wings">Wing stretch</option><option value="tail">Tail wiggle</option><option value="bounce">Soft bounce</option></select><div class="home-toolbar"><button id="animation-start" type="button" class="secondary">Preview animation</button><button id="animation-stop" type="button" class="secondary" hidden>Stop preview</button></div><p id="animation-status" class="hint" role="status">Animations follow your motion level. Previews pause for games, reduced motion, and other activities.</p></details>
+      <details id="trick-school" class="creature-details"><summary><span>Trick school</span><small>Teach, practice &amp; perform</small></summary>
+      <div class="trick-school-body"><label class="field-label" for="trick-choice">Choose a trick</label><select id="trick-choice"><option value="wave">Wave</option><option value="bow">Bow</option><option value="spin">Spin</option><option value="hop">Hop</option></select>
+      <p id="trick-description" class="hint"></p><div class="trick-progress"><progress id="trick-progress" max="3" value="0" aria-label="Completed trick practices"></progress><span id="trick-progress-label">0 / 3 practices</span></div>
+      <p id="trick-status" class="hint" role="status">Three completed practices teach a trick. Interruptions don’t count.</p>
+      <div class="home-toolbar"><button id="practice-trick" type="button" class="secondary">Practice together</button><button id="perform-trick" type="button" class="secondary" disabled>Perform trick</button></div><p class="hint">Try typing or saying “practice wave” or, once learned, “do a wave”. Learning saves; practice earns no coins.</p></div></details>
       <details id="creature-extras" class="creature-details">
       <summary>
       <span>Activity &amp; little tricks</span>
@@ -204,6 +240,7 @@
       <span class="eyebrow">A LITTLE MORE ALIVE</span>
       <p id="activity-status">Watching your cursor</p>
       <small id="activity-source">Reactions inside this playground</small>
+      <div id="attention-card" class="attention-card"><span class="eyebrow">CURRENT ATTENTION</span><p id="attention-label" role="status">Waiting for activity</p><p id="attention-detail" class="hint"></p><p id="attention-snapshots" class="hint"></p><div class="home-toolbar"><button id="attention-activity" type="button" class="secondary">Activity settings</button><button id="attention-files" type="button" class="secondary">File settings</button></div></div>
       <div class="demo-only activity-demo">
       <label for="activity-preview">Try an activity</label>
       <select id="activity-preview">
@@ -356,6 +393,9 @@
       </span>
       <input id="motion-setting" type="checkbox">
       </label>
+      <label class="field-label" for="motion-level">How much he moves</label>
+      <select id="motion-level"><option value="gentle">Gentle — slower, fewer adventures</option><option value="normal">Normal — his personality sets the pace</option><option value="lively">Lively — quicker, more adventures</option></select>
+      <p class="hint">Movement and chatter have separate controls. Daily routines are silent.</p>
       <label class="field-label" for="frame-mode">Animation quality</label>
       <select id="frame-mode">
       <option value="smooth">Smooth — follow display refresh</option>
@@ -363,6 +403,15 @@
       </select>
       <p class="hint" id="frame-rate">Display sync</p>
       </div>
+      <details class="advanced-settings"><summary>Startup &amp; backups</summary>
+      <label class="toggle"><span><b>Start with Windows</b><small>Keep your portable app in a permanent folder</small></span><input id="startup-setting" type="checkbox" disabled></label>
+      <p id="startup-status" class="hint" role="status">Checking startup settings…</p>
+      <div class="home-toolbar"><button id="export-backup" type="button" class="secondary">Export save</button><button id="import-backup" type="button" class="secondary">Import save</button></div>
+      <input id="backup-file" type="file" accept=".json,application/json" hidden>
+      <p id="backup-status" class="hint" role="status">Backups include your notes and conversations. Import keeps this PC’s current observation and voice permissions.</p>
+      <div id="backup-confirm" hidden><p id="backup-preview" class="hint"></p><button id="backup-restore" type="button" class="secondary">Replace current save</button><button id="backup-cancel" type="button" class="secondary">Cancel</button></div>
+      </details>
+      <details class="advanced-settings"><summary>Local connections</summary><p id="connection-ai" class="hint" role="status"></p><p id="connection-voice" class="hint" role="status"></p><button id="refresh-connections" type="button" class="secondary">Check connections</button></details>
       </section>
       <section id="settings-voice" class="settings-page" data-settings-page="voice" aria-labelledby="settings-nav-voice" hidden>
       <div class="settings-page-head">
@@ -424,6 +473,14 @@
       <button id="speech-stop" type="button" class="secondary">Stop speaking</button>
       <button id="repeat-reply" type="button" class="secondary" disabled>Repeat last reply</button>
       </div>
+      <details id="dragon-expressions" class="advanced-settings">
+      <summary>Dragon expressions &amp; sounds</summary>
+      <label class="toggle"><span><b>Speaking gestures &amp; personality posture</b><small>Small nods and paw gestures follow phrases. Mouth movement follows voice timing.</small></span><input id="speech-gestures" type="checkbox" checked></label>
+      <label class="toggle"><span><b>Little dragon sounds</b><small>Chirps for play, happy squeaks for care, and a sleepy yawn. Muted during speech, focus, quiet mode, and games.</small></span><input id="dragon-sounds" type="checkbox"></label>
+      <label class="field-label" for="dragon-sound-volume">Dragon sound volume <output id="dragon-sound-volume-value">25%</output></label>
+      <input id="dragon-sound-volume" type="range" min="0" max=".75" step=".05">
+      <button id="test-dragon-sound" type="button" class="secondary">Try a chirp</button>
+      </details>
       <p id="speech-status" class="hint" role="status">
       </p>
       <details class="advanced-settings">
@@ -458,7 +515,7 @@
       </p>
       <details class="advanced-settings">
       <summary>Commands you can say</summary>
-      <p class="hint">“Take a nap”, “go home”, “check your toys”, “wake up”, “give him a snack”, “play fetch”, “start a 25-minute focus session”, “pause focus”, “resume focus”, “end focus”, “repeat that”, “stop talking”, or “be quiet”. These run on this device without Ollama. Other messages continue your conversation. You can type commands too.</p>
+      <p class="hint">“Take a nap”, “go home”, “check your toys”, “wake up”, “give him a snack”, “play fetch”, “start a 25-minute focus session”, “pause focus”, “resume focus”, “end focus”, “repeat that”, “stop talking”, or “be quiet”, or “remind me in 10 minutes to drink water”. These run on this device without Ollama. Other messages continue your conversation. You can type commands too.</p>
       </details>
       <details class="advanced-settings">
       <summary>How push-to-talk works</summary>
@@ -519,6 +576,10 @@
       <p>Decide how your dragon reacts to your day.</p>
       </div>
       <div class="settings-card">
+      <h4>Daily life</h4>
+      <label class="toggle"><span><b>Daily routines</b><small>Morning curiosity, daytime play, and evening coziness</small></span><input id="daily-setting" type="checkbox" checked></label>
+      <p id="daily-status" class="hint" role="status"></p><button id="daily-preview" type="button" class="secondary">Try a little routine</button>
+      <label class="toggle"><span><b>Helpful offers</b><small>Offer focus when you mention studying; you choose when to start</small></span><input id="helpful-setting" type="checkbox" checked></label>
       <h4>Options</h4>
       <label class="toggle">
       <span>
@@ -543,6 +604,7 @@
       </label>
       <label class="toggle"><span><b>Task gestures</b><small>Notice app switches and typing pauses with brief, quiet poses</small></span><input id="task-setting" type="checkbox" checked></label>
       </div>
+      <div class="settings-card" id="adventure-settings"><h4>Screen adventures</h4><label class="toggle"><span><b>Quiet little adventures</b><small>Window-edge climbs, screen-edge peeks, and a peek when you return</small></span><input id="adventures-setting" type="checkbox" checked></label><p id="adventure-status" class="hint" role="status"></p><div class="home-toolbar"><button id="adventure-edge" type="button" class="secondary">Try an edge peek</button><button id="adventure-window" type="button" class="secondary">Explore window edge</button><button id="adventure-stop" type="button" class="secondary" hidden>Stop adventure</button></div><p class="hint">Automatic exploring follows Wandering. Games, focus, typing, conversations, and reduced motion pause adventures. Window climbs need a usable perch; peeks stay inside this screen.</p><label class="toggle"><span><b>Attention badge</b><small>Show what he notices while the Companion panel is closed</small></span><input id="attention-setting" type="checkbox" checked></label><p class="hint">Hiding the badge doesn’t disable PC awareness. Attention details stay in Creature → Activity &amp; little tricks.</p></div>
       <div id="perching-settings" class="settings-card">
       <h4>Window perching</h4>
       <label class="toggle">

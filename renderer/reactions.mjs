@@ -19,6 +19,32 @@ export function decodeObservation(value,{hasImage=false,fileName=''}={}){
   return {reply,reaction};
 }
 export const REACTION_MOODS={curious:'inquisitive',surprised:'surprised',celebrate:'delighted'};
+// Foreground identity stays current immediately; comments wait for a stable, fresh signal.
+export function createActivityTiming(){
+  let key=null,changedAt=0,seenAt=-Infinity,inputAt=-Infinity,revision=0;
+  return {
+    observe(signal,now=Date.now()){
+      const next=JSON.stringify([String(signal.contextId??0),signal.category||'none',signal.windowTitle||'']);
+      const changed=next!==key;if(changed){key=next;changedAt=now;revision++;}
+      seenAt=now;if(signal.typingCount>0)inputAt=now;return changed;
+    },
+    ready(now=Date.now()){return key!==null&&now-changedAt>=2000&&now-inputAt>=2500&&now-seenAt<=6000;},
+    get revision(){return revision;},
+  };
+}
+export function createFileNotice(){
+  let pending=null;
+  return {
+    offer(line,file,revision,now=Date.now()){pending={line,path:file.path,name:file.name,revision,at:now};},
+    take(file,revision,{ready=false,busy=false}={},now=Date.now()){
+      if(!pending)return null;
+      if(!file||pending.path!==file.path||pending.name!==file.name||pending.revision!==revision||busy||now-pending.at>12000){pending=null;return null;}
+      if(!ready||now-pending.at<1200)return null;
+      const line=pending.line;pending=null;return line;
+    },
+    clear(){pending=null;},
+  };
+}
 export function createReactionController(){
   let active=null,last=-Infinity;
   const allowed=(settings,context,manual=false)=>settings.physicalReactions!==false&&(manual||settings.pcAwareness&&!settings.quiet)&&!context.sleeping&&!context.dragging&&!context.playing&&!context.typing&&!context.focus&&!context.userBusy&&!context.away&&!context.dizzy&&!context.airborne;

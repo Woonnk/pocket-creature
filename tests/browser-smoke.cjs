@@ -35,7 +35,7 @@ async function run(){
     nativePage.on('pageerror',e=>errors.push(e.message));
     await nativePage.addInitScript(()=>{
       window.nativeCalls={clicks:[],notifications:[],saves:[]};
-      window.companion={loadState:async()=>({name:'Native Ember',focus:{status:'running',end:Date.now()-1000,duration:60000,remaining:0},reminders:[{id:'r1',title:'Native reminder',at:Date.now()-1000}]}),saveState:async s=>window.nativeCalls.saves.push(JSON.parse(JSON.stringify(s))),setClickThrough:x=>window.nativeCalls.clicks.push(x),notify:(a,b)=>window.nativeCalls.notifications.push([a,b]),hide:()=>{},quit:()=>{},readyToQuit:()=>{},onOpenControls:fn=>window.openNativeControls=fn,onBeforeQuit:fn=>window.beforeNativeQuit=fn,onClock:fn=>{window.nativeClock=fn;setInterval(fn,1000);},onCursor:fn=>window.nativeCursor=fn};
+      window.companion={loadState:async()=>({littleInteractions:false,name:'Native Ember',focus:{status:'running',end:Date.now()-1000,duration:60000,remaining:0},reminders:[{id:'r1',title:'Native reminder',at:Date.now()-1000}]}),saveState:async s=>window.nativeCalls.saves.push(JSON.parse(JSON.stringify(s))),setClickThrough:x=>window.nativeCalls.clicks.push(x),notify:(a,b)=>window.nativeCalls.notifications.push([a,b]),hide:()=>{},quit:()=>{},readyToQuit:()=>{},onOpenControls:fn=>window.openNativeControls=fn,onBeforeQuit:fn=>window.beforeNativeQuit=fn,onClock:fn=>{window.nativeClock=fn;setInterval(fn,1000);},onCursor:fn=>window.nativeCursor=fn};
     });
     await nativePage.goto('http://127.0.0.1:4173');await nativePage.waitForSelector('body.desktop');
     assert.equal(await nativePage.locator('#panel').isVisible(),false);assert.equal(await nativePage.locator('.scene-heading').isVisible(),false);

@@ -8,7 +8,7 @@ const {createSpeechAdapter}=createRequire(import.meta.url)('../desktop/speech.cj
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
 test('voice migration preserves progress and starts muted with bounded settings',()=>{
   const s=normalize({version:8,coins:48,speechVolume:Infinity,speechRate:8,speechVoice:'x'.repeat(500),speechChatter:'unknown',speechEnabled:'yes'});
-  assert.equal(s.version,11);assert.equal(s.coins,48);assert.equal(s.speechEnabled,false);assert.equal(s.speechInGames,false);assert.equal(s.speechVolume,.65);assert.equal(s.speechRate,1.4);assert.equal(s.speechVoice.length,120);assert.equal(s.speechChatter,'balanced');
+  assert.equal(s.version,15);assert.equal(s.coins,48);assert.equal(s.speechEnabled,false);assert.equal(s.speechInGames,false);assert.equal(s.speechVolume,.65);assert.equal(s.speechRate,1.4);assert.equal(s.speechVoice.length,120);assert.equal(s.speechChatter,'balanced');
 });
 test('speech policy gates quiet, hidden, game, zero volume, and automatic distractions; explicit preview works while disabled',()=>{
   const s=normalize({speechEnabled:true});assert.equal(speechAllowed(s),true);
@@ -61,4 +61,12 @@ test('native voice discovery is deduplicated, bounded and shut down with the app
   fake.jobs[0].stdout.emit('data',JSON.stringify({voices:[{name:'David',lang:'en-US'},{name:5,lang:'en'}]}));fake.jobs[0].emit('exit',0);assert.deepEqual((await probe).voices,[{name:'David',lang:'en-US'}]);
   adapter.speak({id:4,text:'Fail'});fake.jobs[1].emit('error',Error('No voice'));assert.equal(events.at(-1).state,'error');
   const pending=adapter.status();adapter.close();assert.equal(fake.jobs[2].killed,true);assert.equal((await pending).ready,false);
+});
+test('native voice timing validates jaw/word data and discards remaining output after completion',()=>{
+  const fake=fakeProcesses(),events=[],adapter=createSpeechAdapter(e=>events.push(e),{platform:'win32',spawnProcess:fake.spawnProcess});
+  adapter.speak({id:1,text:'Hello there.',volume:.5});
+  const job=fake.jobs[0];job.stdout.emit('data','{"state":"speaking"}\n{"state":"timing","kind":"viseme","value":2,"duration":150}\n{"state":"timing","kind":"word","index":6,"length":5}\n');
+  assert.equal(events[1].kind,'viseme');assert.equal(events[2].index,6);
+  const count=events.length;job.stdout.emit('data','{"state":"timing","kind":"viseme","value":99,"duration":150}\n{"state":"timing","kind":"word","index":500,"length":5}\n');assert.equal(events.length,count);
+  job.stdout.emit('data','{"state":"ended"}\n{"state":"speaking"}\n');assert.equal(events.at(-1).state,'ended');assert.equal(events.length,count+1);adapter.close();
 });

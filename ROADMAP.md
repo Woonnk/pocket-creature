@@ -1,143 +1,47 @@
 # Pocket Creature roadmap
 
-Public beta version: **0.15.1**. Voice, Companion layout, creature commands, and home improvements are included in this update before stable 1.0.
+Current public beta: **0.23.0**. Stable 1.0 follows the native acceptance checks in [QA.md](QA.md).
 
-## Next — 1.0 readiness
+## Included in 0.23
 
-- Verify native window perching, mixed-DPI monitors, game visibility, and existing-save migration on Windows; fix reported issues.
-- Add optional launch at startup and validated save export/import.
-- Make local-model connection and sensing status easier to understand.
-- Complete live Ollama, tray, shortcut, sleep/resume, and notification checks.
-- Review the prepared README, screenshots, license, contribution/security guides, CI, and release workflow; use beta feedback to finish the stable 1.0 release.
+| Area | Implemented |
+| --- | --- |
+| Desktop companion | Care, fetch, customization, themes, personalities, window perching, game corners and startup/input recovery |
+| Optional local conversation | Ollama discovery/reconnection, short current-context observations, protected conversations and editable/forgettable memory |
+| Voice | Windows/Kokoro speech, opt-in push-to-talk, local creature commands, voice timing, phrase gestures and optional dragon sounds |
+| Home and expression | Movable bed/toys/decor, quiet routines, expressions, little moments, tricks, screen adventures and attention badge |
+| Appearance and motion | Four looks, independent joints, natural motion and eased pose transitions |
+| Bond and favorites | Learned snacks/activities, editable games, learning controls and four earned friendship gestures |
+| Everyday helpers | Focus, local reminders, notes, startup controls, save backups and connection status |
 
-After 1.0, expand the home and toys, task/focus improvements, then documented character packs. Music integrations and multiple creatures can follow once the core companion is stable. Voice recognition and local voice quality need native acceptance checks.
+Version-by-version changes are in [CHANGELOG.md](CHANGELOG.md).
 
-## 0.2 reactive companion — implemented
+## Before stable 1.0
 
-Cursor tracking/chasing, aggregate typing reactions, app-category outfits, idle naps and silent returns, independent toggles, and display-synced composited movement. Browser and simulated native tests cover the behavior; real Windows signal collection remains pending verification.
+- Complete native Windows launch, microphone/audio, Ollama/Kokoro and existing-save checks.
+- Verify window perching, mixed-DPI monitors, monitor switching, game visibility, click-through, shortcuts, lock/sleep and recovery.
+- Check startup paths and backup/restore on a disposable Windows profile.
+- Fix beta reports and keep setup, connection status and controls understandable.
 
-Updates preserve the companion loop and save data. Further toys and home expansion remain future work.
+CI builds and helper compilation support these checks; they do not replace direct native acceptance.
 
-The first milestone is a complete companion loop: interact → earn coins → personalize → focus together → come back to a familiar dragon.
+## Next companion improvements
 
-## 0.1 — first playable beta
+- Personal routines and mood continuity, with clear controls and no punishment for being away.
+- Focus/break cycles and optional task lists.
+- Reminder snooze, recurrence and history.
+- More home toys and quiet interactions.
+- Documented data-only character packs after the shared animation system is stable.
 
-Implemented: animated dragon, petting, dragging/tossing, fetch, snacks, naps, moods, friendship, coins, three palettes, accessories, naming, focus sessions, reminders, notebook, local saves, reduced motion, and a Windows desktop shell.
+## Later exploration
 
-Before calling desktop behavior stable: run the native Windows checklist in QA.md. Fix any transparency, click-through, tray, shortcut, DPI, or notification problems reported there.
+- Reliable wandering across multiple monitors and more verified perching surfaces.
+- Optional PC status reactions and explicitly configured music integrations.
+- Multiple companions and simple shared interactions.
+- User-selected app/folder shortcuts, kept separate from AI suggestions and conversation.
 
-## 0.3 file-aware conversations — implemented
+These are ideas, not promised release dates.
 
-Scoped file inspection, supported-editor title lookup, file greetings, structural questions, explicit project memory, a conversation panel, configurable activity commentary, and an optional localhost Ollama adapter. Browser and mock-native checks cover the workflow; editor detection and a real local model still need on-PC verification.
+## Principles
 
-## Future — personality and toys
-
-- More personality habits and additional toys beyond the implemented stretch, grooming, and settling behaviors.
-- More activities: cardboard box, laser pointer, catching stars, idle treasure discoveries.
-- Small event journal and completed-reminder history.
-- More home interactions and decor beyond the implemented bed, toy basket, and unlockable sets.
-- Export/import saves with schema validation; browser and desktop can then share progress intentionally.
-- Better cooldown indicators and configurable sound effects.
-
-## 0.4 automatic local AI — implemented
-
-Thinking-aware Ollama requests with one bounded empty-answer retry, connection/model discovery, custom-name prompts, automatic activity/file comments, factual project memory, five readable themes, and optional transient screen snapshots for local vision models. Logic and mock-native tests pass; actual Windows capture and live model responses still need verification.
-
-## 0.5 focused bubble companion — implemented
-
-Click-to-talk input beside the creature replaces the Talk tab and conversation feed. File/memory tools move to Settings. First-person short prompts and enforced bubble bounds reduce rambling; automatic comments exclude manual conversation history and stale selected files. Foreground app/tab changes invalidate replies, settle briefly, and request fresh observations. Near-duplicate comments are suppressed. Current window titles are transient local context. New automatic comments are not saved in conversation history.
-
-## 0.6 personality and game spectator mode — implemented
-
-Four personality presets affect local-model prompts, built-in comments, and care reactions. Automatic/forced/off game mode, four corner choices, smaller pinned dragon, quiet spectator prompts, one-minute minimum automatic commentary, no roaming/cursor chasing/fetch, controller-friendly idle behavior, click-through creature with usable controls, and game-monitor following. Desktop recovery raises the overlay without focusing it, respects manual hide, restores normal bounds afterward, and adds Ctrl+Shift+G/tray recovery. Exclusive-fullscreen compatibility still requires testing and may need borderless display mode.
-
-## Future — useful companion
-
-- Task list and completion rewards, plus custom focus/break cycles.
-- User-selected app/folder/website shortcuts. Keep native actions separate from the behavior engine.
-- Optional PC status display (RAM, CPU, battery) with restrained reactions.
-- Optional launch on startup, idle performance controls, and richer gameplay integrations.
-- Reminder improvements: snooze, recurring reminders, and history.
-
-## Future — desktop world
-
-- More perching surfaces, after native top-edge perching is verified.
-- Reliable multi-monitor wandering and negative-coordinate/DPI handling.
-- Obstacle behavior around desktop windows, with easy disable controls.
-- Multiple companions with simple interactions.
-
-Real window tracking requires Windows-specific code. Keep it behind an adapter so the renderer remains testable in the standalone playground.
-
-## Future — optional intelligence and community
-
-- Broader optional AI context and conversation improvements. Core pet behaviors continue to work offline.
-- Extend the implemented care/focus voice commands with carefully scoped creature actions.
-- Music reactions through an explicitly configured integration.
-- Documented character packs: assets, animation states, palette, personality defaults. Start with data-only packs rather than executable community plugins.
-
-## Architecture boundaries
-
-1. Core model owns progress, rewards, deadlines, normalization, and portable simulation helpers.
-2. Behavior layer chooses one primary activity at a time. Dragging overrides other actions; sleeping and focus override wandering/fetch; reduced motion overrides animation physics.
-3. Presentation maps state to animations and controls.
-4. Platform adapter owns only desktop features: window/tray, notifications, persistence, and future Windows integrations.
-5. Future conversation adapters can propose creature dialogue and actions through a bounded interface; they should never gain arbitrary system execution.
-
-## Experience requirements
-
-No friendship loss or illness for being away. Always provide tray access, hiding, quiet mode, reduced motion, and manual control. Added features should make the companion more useful or more expressive without requiring the user to constantly manage it.
-
-## 0.6.1 conversation continuity — implemented
-
-Greeting removal before sentence trimming, silent startup/idle wake, protected manual conversations, two-minute space after automatic questions, and transient current-context starters passed to manual Ollama replies. Meaningful screen-change reactions are added in 0.7.
-
-## 0.7 screen-change reactions — implemented
-
-Local sampled-pixel checks skip unchanged views and tiny motion. Overlay masks, transient before/after vision prompts, current-app/monitor boundaries, quiet game instructions, and event-only title/file observations reduce repetition. Existing conversation pauses, short output, and cancellation remain active. Actual Windows capture and local-model semantic recognition require on-PC evidence.
-
-## 0.8 physical reactions — implemented
-
-Curious lean/head tilt, surprised face/startle, and small celebration, paired with the same automatic observation through bounded event/evidence metadata. File discovery and completed focus sessions have deterministic reactions. Independent setting, explicit previews, expiration/cooldowns, activity priorities, static game/reduced-motion poses, and preserved conversation pauses. Connected follow-ups and personal habits arrive in 0.9.
-
-## 0.9 connected conversations and little habits — implemented
-
-Recent manual conversation persists across foreground app switches with a 20-minute relevance window and ten-message prompt budget. Answered automatic starters become part of the explicit conversation; unattended observations stay transient. Explicit new-topic commands reset the thread. Forgetting discards pending replies, and failed sends restore prior history. Follow-up prompts favor an answer and one specific question only when useful, preserving all automatic conversation pauses and short output limits.
-
-Silent stretching, grooming, and settling habits use personality preferences, cooldowns, and interaction priorities. Separate toggles and previews make them inspectable. Games and reduced motion use still poses; cosmetic habits require no model or extra screen access. Automated logic and browser checks cover the behavior; live model tone and Windows overlay behavior remain subject to on-PC verification.
-
-## 0.10 window perching and personal memory — implemented
-
-Restored-window top-edge perching uses bounded transient Windows geometry, a stable-window delay, smooth following, manual near-edge drops, and a 45-second pause after dragging away. Invalid/closed/minimized/maximized/fullscreen surfaces release the perch; game mode takes priority. PC reactions and a separate toggle control tracking. Browser previews and geometry/priority tests cover the behavior; real Windows/DPI checks remain pending.
-
-A bounded editable profile stores a nickname, favorite games, interests, likes, and dislikes from clear first-person messages or direct edits. It is never inferred from screen/file content or AI replies. Local recall works without a model. Manual model replies can use enabled personal memory; automatic observations exclude it. Edit/forget/pause cancels stale pending replies and clears recent conversation. Schema-8 migration preserves earlier progress.
-
-GitHub preparation includes project documentation/screenshots, MIT licensing and runtime notices, contribution/security guides, issue/PR templates, ignored generated/private files, Windows/Linux CI, package verification, checksummed release assets, and explicit beta publication/1.x draft-release workflows. The 0.10 beta is intended for public feedback before the stable 1.0 release.
-
-## 0.11 spoken replies — included in the 0.15.1 beta
-
-Installed Windows voices, expression through pace, voice/volume/speed/chatter settings, game mute, stop controls, and speech lifecycle safeguards. Await direct Windows audio verification. This output milestone is followed by the 0.12 microphone and optional Kokoro integration below.
-
-
-## 0.12 voice conversations — included in the 0.15.1 beta
-
-Opt-in Windows offline push-to-talk, held shortcuts/buttons, transient in-memory capture, uncertain-transcript review, conversation lifecycle indicators/cancellation, and no self-listening during speech. Optional Kokoro synthesis uses a separate fixed-loopback service; Repeat last reply reuses the existing bubble. Schema 10 preserves progress and voice settings. Logic and browser checks pass; Windows capture/recognition and live local voice quality remain pending.
-
-
-## 0.13 Companion redesign — included in the 0.15.1 beta
-
-A wider panel, focused care/play home, expandable customization/tricks, categorized settings, search/focus, collapsed advanced voice controls, persistent navigation/Quiet, and responsive voice-dock clearance. Existing save schema and feature behavior are preserved.
-
-
-## 0.14 creature voice commands — included in the 0.15.1 beta
-
-Explicit whole-message care/focus requests run without Ollama and support spoken minute counts, reviewed speech, and typed commands. Ordinary questions and quoted examples remain conversation. Nap/wake and focus controls preserve existing state on duplicate requests; fetch respects focus and games. A listening lean, thinking tilt, and short confirmation nod stay within the dragon artwork, with still game/reduced-motion poses. Command help is expandable and commands do not enter conversation/personal memory. Native Windows recognition/audio quality remains pending.
-
-
-## 0.15 little home and task reactions — included in the 0.15.1 beta
-
-Movable, saved desktop corner with sleeping/toy baskets, permanent coin-unlocked decor, nap travel/curl, wake stretches, focus settling, and occasional autonomous toy play without rewards. Games fold away the home; roaming/routine controls, explicit previews, interruption priorities, and reduced-motion stillness keep behavior manageable. Existing voice/text commands gain home/toy requests. Coarse current-app/typing signals add fresh-context poses and bounded window-title comments without extra model calls or audio sensing. Schema 11 preserves previous progress. Windows overlay/placement acceptance remains pending.
-
-
-## 0.15.1 desktop startup fix — included in the 0.15.1 beta
-
-A shared constrained renderer inventory fixes blocked module imports. Trusted readiness gates overlay visibility/input, and timeout/page/preload/crash/unresponsive cleanup releases the desktop. The new tests cover actual registered desktop routes, the full import graph, and failed-import readiness. The user reports the corrected launch works; broader native checks remain open.
+Core care, play and timers work offline. AI and voice remain optional. One primary activity takes priority at a time; conversation, dragging, rest, focus, games and reduced motion constrain autonomous behavior. Personal memory comes from the user, and learning stays inspectable and forgettable. Always retain tray access, hiding, Quiet, reduced motion and manual controls. There is no friendship loss or illness for being away.

@@ -1,7 +1,7 @@
 const {spawn}=require('node:child_process');
 const path=require('node:path');
 const root=path.join(__dirname,'..');
-const suites=['desktop-startup','home','voice-commands','panel','voice-conversation','speech','perching-memory','conversation-habits','conversation-timing','physical-reactions','autonomy','reactivity','conversation','game-mode','browser'];
+const suites=['bond','desktop-startup','voice-motion','reaction-transitions','motion','sprites','expressive','adventures','living','home','voice-commands','panel','voice-conversation','speech','perching-memory','conversation-habits','conversation-timing','physical-reactions','autonomy','reactivity','conversation','game-mode','browser'];
 let server;
 async function ready(){
  server=spawn(process.execPath,['scripts/serve.cjs'],{cwd:root,env:{...process.env,POCKET_PORT:'4173'},stdio:['ignore','pipe','inherit']});

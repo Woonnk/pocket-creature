@@ -46,8 +46,8 @@ test('automatic greetings are removed before trimming the useful observation',()
  assert.equal(briefReply('Hi! How are you?'),'Hi! How are you?');
 });
 test('conversation guard waits for answers, protects manual turns, and expires context',()=>{
- const guard=createConversationGuard();guard.observe('What is chase() doing?',7,0);assert.equal(guard.blocked(119999),true);assert.equal(guard.blocked(120000),false);assert.deepEqual(guard.replyTo(7,1000),{text:'What is chase() doing?',contextId:'7'});assert.equal(guard.replyTo(8,1000),null);assert.equal(guard.replyTo(7,180000),null);
- guard.hold(120000);assert.equal(guard.blocked(209999),true);assert.equal(guard.blocked(210000),false);guard.clear();assert.equal(guard.replyTo(7,130000),null);
+ const guard=createConversationGuard();guard.observe('What is chase() doing?',7,0);assert.equal(guard.blocked(299999),true);assert.equal(guard.blocked(300000),false);assert.deepEqual(guard.replyTo(7,1000),{text:'What is chase() doing?',contextId:'7'});assert.equal(guard.replyTo(8,1000),null);assert.equal(guard.replyTo(7,600000),null);
+ guard.clear();guard.hold(300000);assert.equal(guard.blocked(389999),true);assert.equal(guard.blocked(390000),false);guard.clear();assert.equal(guard.replyTo(7,130000),null);
 });
 test('manual replies continue the current automatic starter without polluting automatic context',async()=>{
  let body;const fetchImpl=async(_url,options)=>{body=JSON.parse(options.body);return {ok:true,json:async()=>({message:{content:'That is a nice choice.'}})};};

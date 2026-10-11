@@ -18,8 +18,14 @@ function createSpeechAdapter(onState,{platform=process.platform,spawnProcess=spa
     const job={child,id:payload.id,automatic:payload.automatic===true,buffer:'',timer:null};current=job;
     function finish(state,message){if(current!==job)return;current=null;clearTimeout(job.timer);child.kill();onState({id:job.id,state,message});}
     child.stdout.setEncoding('utf8');child.stdout.on('data',chunk=>{
-      if(current!==job)return;job.buffer+=chunk;if(job.buffer.length>8192){finish('error','Voice helper returned too much data.');return;}
-      const lines=job.buffer.split(/\r?\n/);job.buffer=lines.pop();for(const line of lines)try{const data=JSON.parse(line);if(data.state==='speaking')onState({id:job.id,state:'speaking'});else if(data.state==='ended')finish('ended');else if(data.state==='error')finish('error','Windows voice could not play. Try another installed voice.');}catch{}
+      if(current!==job)return;job.buffer+=chunk;if(job.buffer.length>65536){finish('error','Voice helper returned too much data.');return;}
+      const lines=job.buffer.split(/\r?\n/);job.buffer=lines.pop();for(const line of lines)try{
+        if(current!==job)break;const data=JSON.parse(line);
+        if(data.state==='speaking')onState({id:job.id,state:'speaking'});
+        else if(data.state==='timing'&&data.kind==='viseme'&&Number.isInteger(data.value)&&data.value>=0&&data.value<=21&&Number.isFinite(data.duration)&&data.duration>=0&&data.duration<=1000)onState({id:job.id,state:'timing',kind:'viseme',value:data.value,duration:data.duration});
+        else if(data.state==='timing'&&data.kind==='word'&&Number.isInteger(data.index)&&data.index>=0&&data.index<command.text.length&&Number.isInteger(data.length)&&data.length>0&&data.length<=command.text.length)onState({id:job.id,state:'timing',kind:'word',index:data.index,length:data.length});
+        else if(data.state==='ended')finish('ended');else if(data.state==='error')finish('error','Windows voice could not play. Try another installed voice.');
+      }catch{}
     });
     child.stderr.on('data',()=>{});child.once('error',()=>finish('error','Windows speech could not start.'));child.once('exit',()=>finish('error','Windows speech stopped unexpectedly.'));
     job.timer=setTimeout(()=>finish('error','Voice playback timed out.'),timeout);job.timer.unref?.();return true;

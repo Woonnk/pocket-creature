@@ -1,6 +1,6 @@
 {
   "name": "pocket-creature",
-  "version": "0.15.1",
+  "version": "0.23.0",
   "private": true,
   "description": "A tiny dragon companion for your Windows desktop.",
   "main": "desktop/main.cjs",

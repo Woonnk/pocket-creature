@@ -1,6 +1,6 @@
 # Publishing GitHub releases
 
-The repository is `Woonnk/pocket-creature`. The current beta is 0.15.1; stable 1.0 follows the readiness checks below.
+The repository is `Woonnk/pocket-creature`. The current beta is 0.23.0; stable 1.0 follows the readiness checks below.
 
 ## Publish a 0.x beta
 
@@ -12,7 +12,7 @@ The 0.10 beta remains in release history. The user's 0.15.1 launch/Kokoro smoke 
 
 ## Before 1.0
 
-Complete direct Windows checks in QA.md, including perching, mixed-DPI monitors, game visibility, memory edits/forgetting, Ollama replies, voice input/output, tray/shortcuts, and save migration. Finish launch-at-startup, save export/import, and clearer connection status. CI/package success is not native runtime evidence.
+Complete direct Windows checks in QA.md, including perching, mixed-DPI monitors, game visibility, memory edits/forgetting, Ollama replies, voice input/output, tray/shortcuts, and save migration. Verify the implemented launch-at-startup, save export/import, and connection controls on Windows. CI/package success is not native runtime evidence.
 
 ## Prepare a versioned build
 

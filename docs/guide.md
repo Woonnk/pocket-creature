@@ -2,11 +2,11 @@
 
 A little company. A little chaos. A tiny animated dragon for your Windows desktop.
 
-**Version 0.15.1 — voice conversations, a little home, and safer desktop startup.** No account, API key, or paid AI service is required.
+**Version 0.23.0 — public beta.** No account, API key, or paid AI service is required.
 
 ## Try it
 
-**Windows:** Run `Pocket-Creature-0.15.1-Windows.exe`, the separate portable download. It launches over your desktop. Open its controls from the **Companion** button or tray icon. The app is unsigned. The user reports the corrected launch and Kokoro setup work on their PC; broader native checks remain open. Earlier user screenshots confirm the overlay, readable themes, and live Ollama replies. See [QA.md](../QA.md) for remaining native checks. Quit the old version from its tray before launching this update; existing progress stays in the same desktop save location.
+**Windows:** Run `Pocket-Creature-0.23.0-Windows.exe`, the portable download from the [0.23 beta release](https://github.com/Woonnk/pocket-creature/releases/tag/v0.23.0). It launches over your desktop. Open its controls from the **Companion** button or tray icon. The app is unsigned. The user reports the corrected launch and Kokoro setup work on their PC; broader native checks remain open. Earlier user screenshots confirm the overlay, readable themes, and live Ollama replies. See [QA.md](../QA.md) for remaining native checks. Quit the old version from its tray before launching this update; existing progress stays in the same desktop save location.
 
 **No installation:** Open `dist/Pocket-Creature-Playground.html` in a current desktop browser. This is a self-contained playground with the same creature, games, timers, and notebook. Browser progress belongs to that browser and file location; it is separate from desktop progress.
 
@@ -31,7 +31,7 @@ Turn on **Settings → Screen awareness** once to include occasional snapshots o
 
 Automatic project memory saves observed project filenames and recognizes statements such as “I'm building a horror game” in your conversation. It uses observations and your statements rather than model-invented facts. The expandable Project memory section lets you inspect or edit the description. Forget project removes the saved facts and prevents immediate automatic recreation for that project until you explicitly save a description again. Forget recent conversation in Settings separately removes the last 20 explicit conversation messages. New automatic observations are shown only in bubbles; a starter enters saved history only when you explicitly answer it. Raw file samples and screenshots are not saved, but conversation messages can quote observations or content.
 
-At the top of the Companion panel, **Appearance** switches Dark (default), Light, Midnight Blue, Forest Green, or Follow Windows. The palette covers the panel, text, inputs, buttons, speech bubbles, launcher, and timer. Follow Windows responds to system color preference changes. Theme choice persists locally.
+**Settings → General → Companion theme** switches Dark (default), Light, Midnight Blue, Forest Green, or Follow Windows. The palette covers the panel, text, inputs, buttons, speech bubbles, launcher, and timer. Follow Windows responds to system color preference changes. Theme choice persists locally.
 
 Files must be supported text/code formats and no larger than 256 KB. At most the first 32 KB are inspected; AI receives up to 16,000 characters of that sample, reduced to 6,000 when two comparison images are attached. Eight connected folders and 30 project memories are supported. Folder lookup scans at most 5,000 entries, 500 directories, and five nested levels, skipping dependency/output folders, hidden directories, and symlinks. Broad folders can exceed these limits; connect a specific project folder. A newly created or renamed file may take up to 30 seconds to appear in the index.
 
@@ -217,6 +217,14 @@ Windows output uses the bundled PowerShell/System.Speech helper and installed SA
 The browser playground only uses voices marked local by the browser. It reports unavailable when none are offered, rather than choosing a remote voice. Click Test voice to allow playback in browsers that require a user gesture. Actual Windows sound/quality has not been verified on the Linux build host. The browser playground does not capture a microphone or call Kokoro.
 
 
+## Voice animation and dragon sounds — 0.22
+
+Kokoro mouth opening follows the playing WAV samples, including silent gaps and buffering. Windows voices supply native mouth-position events when available, with approximate word-timed movement for voices that supply only word boundaries. Browser voices use word timing; a voice without timing keeps a still mouth. Stopping or replacing speech clears old animation events. Games and reduced motion keep the mouth still.
+
+Open **Settings → Voice → Dragon expressions & sounds** to turn speaking gestures/personality posture on or off. Small nods and paws follow phrase starts; cozy relaxes, curious leans in, cheeky gives side glances, and playful adds light emphasis. Motion level scales them. Movement, typing, microphone capture, tricks and other action poses take priority. This does not generate more dialogue or change speaking pace.
+
+**Little dragon sounds** starts off and has its own volume control. Enable it and try a chirp. Care can produce happy squeaks, play a chirp, and sleep a soft yawn. Sounds are synthesized locally and muted during speech, microphone activity, focus, quiet mode and games. They do not require Windows voice or Kokoro. Existing save progress and preferences remain compatible.
+
 ## Voice conversations — 0.12
 
 ### Talk to him
@@ -309,3 +317,65 @@ Built-in replies can name a changed foreground window title. They use a bounded 
 If 0.15 shows a full playground without your dragon and blocks desktop clicks, quit that copy using its tray menu or Task Manager, then run **Pocket-Creature-0.15.1-Windows.exe**. Keep your existing save. This patch fixes required modules being blocked by the desktop route.
 
 The overlay stays hidden and click-through until the dragon and controls finish initializing. Opening tray controls during loading waits for that initialization. If startup cannot complete within 15 seconds, a page/preload fails, or the renderer crashes/stops responding, the app hides/releases the overlay and exits with an error message. The usual Ctrl + Shift + P show/hide and Ctrl + Shift + G recovery shortcuts remain available after startup.
+
+
+## Living Companion — 0.16 local preview
+
+Daily routines use your PC’s local time: morning 6–11, afternoon 11–17, evening 17–22, and night 22–6. They are silent and never start a nap while you are working. Playful tends toward hops, Curious peeks around, Cozy settles more slowly, and Cheeky explores a little faster. **Settings → Activity → Daily routines** can disable or preview them. Talking, typing, games, focus, dragging, home activity, and perching take priority.
+
+**General → How much he moves** chooses Gentle, Normal, or Lively. Conversation frequency remains under Local AI; spoken chatter remains under Voice. Reduced motion pauses daily routines and wandering. New poses animate the artwork without moving the desktop hit area.
+
+Page or document changes inside one window reset pending observations. Built-in commentary briefly recognizes a recent return, and local AI ignores a completed reply for an obsolete title. Titles only identify the activity; file contents still require showing a file or a connected folder, and screen interpretation still requires optional vision awareness.
+
+Type or say **“remind me in 10 minutes to drink water”** or **“remind me in 2 hours to check the oven”**. These create local reminders with durations from 1 minute to 24 hours, up to 20 at a time. Notes/questions/quoted examples and model output never create reminders. They use the existing reminder clock and notification settings; the app must remain running to deliver them, and overdue reminders appear when reopened.
+
+Mention homework or studying to get a focus offer under **Creature → A little help**. **Focus together** starts 25 minutes when you choose it. **Explain selected file** asks about the text/code file you showed. Helpful offers can be disabled in Activity; explicit buttons and reminders remain available.
+
+**General → Startup & backups** enables Windows startup only for the packaged Windows app. Keep its executable in a permanent folder; moving/deleting it breaks the registration. When updating versions, disable startup in the old copy before enabling it in the new one. Windows Startup Apps can also disable an item, which the status reports. Registration is independent of your save and never changes just because you import a backup.
+
+**Export save** writes a JSON backup containing name, progress, decor, preferences, notes, memories, reminders, and recent conversation. **Import save** accepts a supported backup smaller than 120 KB, shows the name/coins/sessions, and waits for **Replace current save**. Cancel leaves progress unchanged. Restoration keeps this PC’s observation, microphone, speech, and automatic-conversation permissions. Folder grants remain local. Browser and desktop saves are separate; JSON export/import lets you transfer progress deliberately.
+
+**General → Local connections → Check connections** refreshes Ollama, your selected voice engine, and Windows startup status. Ollama is checked periodically in local mode; Kokoro remains a separate local service that you start yourself. No new account, API key, background microphone, or hosted AI service is introduced.
+
+
+## Little Adventures — 0.17 local preview
+
+**Creature → Trick school** teaches Wave, Bow, Spin, and Hop. Select a trick and choose **Practice together**. Three completed practices unlock **Perform trick**; take a short breather between practices of the same trick. Learning saves automatically and travels with your JSON backup. Typing, dragging, switching tasks, talking, sleep, focus, and games interrupt practice without adding progress. There are no coin rewards or costs. Reduced motion uses still poses and keeps practice available.
+
+Type or say **“practice wave”**, **“practice bow”**, **“practice spin”**, or **“practice hop”**. Once learned, use **“do a wave”**, **“do a bow”**, **“do a spin”**, or **“do a hop”**. These run locally without Ollama. Questions, negations, quotations, and combined commands remain conversation; model replies never execute tricks.
+
+**Settings → Activity → Screen adventures** controls silent exploring. Automatic adventures require Wandering; Gentle/Normal/Lively and personality affect their pace. **Try an edge peek** explores the screen edge and comes back. **Explore window edge** moves along a usable current perch, climbs a short distance down/up its edge, peeks, and returns. Move the window and the route uses its updated geometry; losing the surface cancels the route. **Stop adventure** cancels it immediately. Peeks stay inside the overlay; the companion does not actually hide behind Windows’ taskbar or other applications.
+
+A usable perch requires PC awareness, window perching, and a restored window with room above its top edge. Maximized/exclusive-fullscreen/clipped windows do not provide a climbing route. In the browser playground use **Try a preview window** under Window perching. On Windows, underlying clicks remain available outside the companion’s existing interactive regions. Adventures introduce no new screen-reading service or permissions and pause for typing, conversation, other routines, focus, games, hidden/away state, and reduced motion. A return peek can wait up to 15 seconds for the wake-up stretch to finish.
+
+The **attention badge** appears when the Companion panel is closed and hides in games. Click it to open **Creature → Activity & little tricks → Current attention**. A window title does not mean its contents have been read. **Filename only** means the companion has not read the file. **Read text sample** means the inspected text/code sample is available; a partial sample is explicitly identified. Unknown or stale activity is shown as waiting rather than guessed. Push-to-talk, conversation, focus, and rest take priority. A title change within one window ends the old file’s automatic grace period; explicit file questions remain available.
+
+Turn off **Attention badge** in Activity to hide it. This does not turn off PC awareness, file access, or optional snapshots; use their existing settings for that. The badge is excluded from optional AI screen captures so it cannot become its own observed task. Attention titles and route positions are transient and are never added to the companion save or memories by these features.
+
+
+## Expressive Companion — 0.18 local preview
+
+Open **Creature → Little moments**. **Expressive moods** adds facial expressions derived from care, energy, personality, play, focus, and real achievements. Head scratches show affection; completing a learned trick or a focus session brings brief pride. Game wins are not inferred. Existing voice, reaction, routine, and trick poses have priority over these faces.
+
+Choose **Head scratch**, **Offer a paw**, **Bring a toy**, or **Settle nearby**, then **Try this moment**. Use **Stop moment** to cancel. A toy visit requires a visible home and an unperched creature. He walks to the current basket, collects the equipped ball/star, and returns to his starting position. Moving the home updates the collection target; hiding the home or an interruption cancels the visit. Reduced motion shows a still toy pose with no travel.
+
+Automatic paw offers, settling, and toy visits wait until idle and yield to typing, conversations, focus, sleep, games, dragging, and other activities. Toy travel follows Wandering; quiet stationary moments remain available with Wandering off. These moments are silent and add no coins, friendship rewards, or AI requests. Disable **Little interactions** to pause both previews and automatic moments. Preferences travel with your saved progress and JSON backup; moment coordinates and temporary emotions are not saved.
+
+Automatic commentary pauses while you type, focus, or read another bubble. A reply already being prepared is discarded if typing starts. A question protects the topic for five minutes and its context remains available for ten minutes, including short answers after switching apps. Answering clears the question pause; the usual 90-second manual conversation pause follows. Explicit **new topic** requests clear the old question. Similar delivered observations are suppressed for ten minutes; rejected/interrupted replies do not consume that repeat history. Manual answers and reminders retain their existing behavior.
+
+
+## Dragon looks and smooth motion — 0.19–0.21
+
+Open **Creature → Style your dragon** for Original, Cloud Drake, Night Wyvern or River Dragon. All four are free and keep your personality, colors, hats and progress. **Try his animations** previews a little stroll, wing stretch, tail wiggle or soft bounce in place. Motion level scales the animation; games and reduced motion keep it still. Walking, landings, blinks and idle movement use shared joints, with eased transitions between poses.
+
+Reactions wait for foreground context to settle and for a pause after typing. Replaced file events and stale observations are discarded. A new task should not cut off an ongoing conversation; existing conversation protections remain active.
+
+## Our bond and favorites — 0.23
+
+Open **Creature → Our bond** for learned favorites, progress and friendship gestures. **Edit favorites & learning** contains the next-snack selector, manual favorite pins, favorite games and learning controls. Select Berry bites, Honey crisps or Moon cookies, then use Little snack. Three visits at least a minute apart teach care/play preferences. Give love, completed fetch catches and completed manual moments count; automatic solo play, interrupted moments and gesture previews do not.
+
+Favorite snacks get a short care reply, Enjoy favorite moment repeats the chosen activity, and eligible quiet moments lean toward a favorite. A pinned choice stays as you chose it. No favorite hides that category's preference. Forget care & play favorites clears evidence and pauses learning until you enable it again.
+
+Favorite games share Personal memory. Tell him a clear favorite in chat or edit it here. Games are not inferred from titles/screenshots and remain unused in replies while Personal memory is paused. Editing or forgetting games also clears recent conversation; Forget games clears the shared field on both pages.
+
+Existing friendship unlocks Tiny nuzzle (10), Paw promise (25), Wing hug (50) and Happy flourish (100) without replaying old notices. Newly crossed tiers announce once through a toast. Try gestures while he is settled on the ground; they stay in place and earn no extra rewards. Conversation, typing, voice, focus, sleep, dragging, games and reduced motion retain priority. Bond settings and evidence are included in save backups.

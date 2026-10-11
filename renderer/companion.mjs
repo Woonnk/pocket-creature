@@ -47,7 +47,7 @@ const CHAT_LINES={
 };
 export function createCommentator(){
   let stable='none',candidate='none',candidateSince=0,lastSpoke=-Infinity,lastTyping=false,nextAmbient=0;
-  const indices=new Map();
+  const indices=new Map(),seenActivities=new Map();
   const lineFor=(key,personality)=>{const token=personality+':'+key,i=indices.get(token)||0;indices.set(token,i+1);indices.set(key,i+1);return personalityLine(personality,key,i);};
   return {
     hold(now){lastSpoke=now;},
@@ -56,17 +56,20 @@ export function createCommentator(){
       const gap=context.gameMode?Math.max(60000,{chatty:7000,balanced:18000,minimal:45000}[settings.talkativeness]||7000):{chatty:7000,balanced:18000,minimal:45000}[settings.talkativeness]||7000;
       const ambient={chatty:24000,balanced:65000,minimal:180000}[settings.talkativeness]||24000;
       const category=CHAT_LINES[context.category]?context.category:'none';
-      const activityKey=context.contextId===undefined?category:category+':'+String(context.contextId);
+      const activityKey=context.contextId===undefined?category:category+':'+String(context.contextId)+':'+String(context.windowTitle||'').slice(0,160);
       if(activityKey!==candidate){candidate=activityKey;candidateSince=now;}
+      if(!force&&context.contextId!==undefined&&candidate!==stable&&now-candidateSince<1200)return null;
       const changed=candidate!==stable&&now-candidateSince>=1200;
       const typingStarted=context.typing&&!lastTyping;
       if(force||now-lastSpoke>=gap&&(changed||typingStarted||now>=nextAmbient)){
-        if(changed)stable=candidate;
+        const revisiting=changed&&seenActivities.has(candidate)&&now-seenActivities.get(candidate)<1800000;
+        if(changed){stable=candidate;seenActivities.delete(candidate);seenActivities.set(candidate,now);if(seenActivities.size>24)seenActivities.delete(seenActivities.keys().next().value);}
         const key=context.focus?'focus':typingStarted?'typing':category;
         lastSpoke=now;lastTyping=context.typing;nextAmbient=now+(context.gameMode?Math.max(60000,ambient):context.focus?ambient*2:ambient);
         const line=lineFor(key,settings.personality||'playful');
         const title=typeof context.windowTitle==='string'?context.windowTitle.replace(/[\x00-\x1f]/g,'').trim().slice(0,64):'';
         if(changed&&!context.focus&&!context.typing&&title&&settings.contextReactions!==false){
+          if(revisiting)return `Back to “${title}”. I’ll settle in beside you.`;
           if(category==='browsing')return `You switched to “${title}”. What caught your eye?`;
           if(category==='coding'&&!context.fileName)return `Working in “${title}”? I’ll keep you company.`;
           if(category==='music')return `I noticed “${title}”. Got a soundtrack in mind?`;

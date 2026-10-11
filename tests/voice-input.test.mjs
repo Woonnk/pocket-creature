@@ -7,7 +7,7 @@ import {createVoiceInputSession} from '../renderer/voice-input.mjs';
 const {createVoiceInputAdapter}=createRequire(import.meta.url)('../desktop/voice-input.cjs');
 test('microphone upgrades stay opt-in, keep voice preferences, and bound the shortcut and engine',()=>{
  const s=normalize({version:9,coins:33,speechEnabled:true,speechVoice:'David',voiceInputEnabled:'yes',voiceInputKey:'password',speechEngine:'https://cloud',kokoroVoice:'../../secret'});
- assert.equal(s.version,11);assert.equal(s.coins,33);assert.equal(s.speechEnabled,true);assert.equal(s.speechVoice,'David');assert.equal(s.voiceInputEnabled,false);assert.equal(s.voiceInputReview,false);assert.equal(s.voiceInputKey,'f9');assert.equal(s.speechEngine,'windows');assert.equal(s.kokoroVoice,'secret');
+ assert.equal(s.version,15);assert.equal(s.coins,33);assert.equal(s.speechEnabled,true);assert.equal(s.speechVoice,'David');assert.equal(s.voiceInputEnabled,false);assert.equal(s.voiceInputReview,false);assert.equal(s.voiceInputKey,'f9');assert.equal(s.speechEngine,'windows');assert.equal(s.kokoroVoice,'secret');
 });
 test('voice input needs listening then release, submits once, and ignores stale/duplicate transcripts',()=>{
  const s=normalize({voiceInputEnabled:true}),submitted=[],reviewed=[],states=[];

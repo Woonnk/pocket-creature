@@ -1,63 +1,83 @@
 # Pocket Creature
 
-A tiny dragon that lives on your Windows desktop: a little company, a little curiosity, and occasional snack opinions.
+A little company. A little curiosity. A tiny dragon for your Windows desktop.
 
-**Version 0.15.1 · Voice, a little home, and the desktop startup fix — public beta.** Windows desktop behavior is still being verified before the stable 1.0 release. See [QA.md](QA.md) for tested behavior and remaining native checks.
+**0.23.0 · public beta** · Windows 10/11 x64 · Optional local AI · MIT
 
-![Pocket Creature browser playground](docs/screenshots/companion.png)
+[**Download the Windows app**](https://github.com/Woonnk/pocket-creature/releases/download/v0.23.0/Pocket-Creature-0.23.0-Windows.exe) · [Release notes](https://github.com/Woonnk/pocket-creature/releases/tag/v0.23.0) · [Setup guide](docs/guide.md) · [Report a bug](https://github.com/Woonnk/pocket-creature/issues/new/choose)
 
-**0.15.1 fixes a desktop startup failure in 0.15:** missing module routes left the playground covering the desktop without the dragon. The overlay now waits for completed initialization and hides/releases input on startup failure, a crash, or an unresponsive renderer. Existing saves and home features remain.
+![Current Companion panel and dragon, shown in the browser playground](docs/screenshots/companion.png)
 
-## What he does
+Meet your dragon, give him a home, teach him tricks, and let him keep you company while you work or play. Built-in care, movement, timers and reactions work without a model. Optional Ollama adds short conversations and observations; optional Windows or Kokoro voices let him speak.
 
-- Pet, feed, drag, toss, play fetch, and customize your dragon.
-- Give him a movable home with a sleeping basket, toy basket, and coin-unlocked decorations.
-- Watch him visit his toys, stretch after waking, and settle beside his bed for focus.
-- Notice supported apps, typing activity, editor filenames, and idle time.
-- Sit on a restored window’s top edge and follow it as it moves.
-- Talk through short speech bubbles, with optional local Ollama replies.
-- Optionally speak existing replies with local Windows voices, expressive pace, volume controls, and instant interruption.
-- Hold a button or shortcut to talk using offline Windows recognition; release to send.
-- Choose optional Kokoro local voices and repeat the last reply without another AI request.
-- Keep recent conversations connected across app switches.
-- Remember clear personal details you tell him, with editable/forgettable memory.
-- Stretch, groom, and settle down with personality-specific silent habits.
-- Keep a small, quiet corner during games; recover the overlay with Ctrl + Shift + G.
-- Use five readable themes, four personalities, focus sessions, reminders, and a notebook.
+## What's new since 0.15.1
 
-### Window perching and personal memory
+| Feature | What it adds |
+| --- | --- |
+| Four dragon looks | Original, Cloud Drake, Night Wyvern and River Dragon. Free switching keeps your personality and progress. |
+| Smoother motion | Moving paws, breathing, wings, tail, blinks, soft landings and eased pose transitions. |
+| Better reaction timing | Current app/file context settles before a reaction. Typing and conversations take priority; stale observations are discarded. |
+| Voice expressions | Mouth movement follows supported voice timing, with small phrase gestures and personality posture. Optional local chirps start off. |
+| Favorites and friendship | Repeated care and completed play teach favorites. Friendship unlocks four gestures. Review, edit or forget what he learns. |
+| More quiet company | Facial expressions, paw offers, toy visits, trick practice, small adventures and an honest attention badge. |
+| Everyday helpers | Local reminders, focus sessions, opt-in startup, save backups and clearer connection status. |
 
-Browser playground previews are shown below. Native Windows perching and live-model personalization still require direct PC verification.
+![Original, Cloud Drake, Night Wyvern and River Dragon](docs/screenshots/dragon-looks.png)
 
-![Dragon perched on a preview window](docs/screenshots/perching.png)
-![Editable personal memory](docs/screenshots/personal-memory.png)
+## Start in a minute
 
-## Try it
+1. [Download Pocket-Creature-0.23.0-Windows.exe](https://github.com/Woonnk/pocket-creature/releases/download/v0.23.0/Pocket-Creature-0.23.0-Windows.exe).
+2. Quit an older copy from its tray, then launch the new app. Your existing desktop save stays in the same location.
+3. Open **Companion** or the tray controls. Click the dragon to talk, drag to move him, or right-click for controls.
+4. Try **Creature → Style your dragon**, **Little moments**, or **Our bond**. Change themes under **Settings → General**.
 
-**Windows 10/11 x64:** download [Pocket-Creature-0.15.1-Windows.exe](https://github.com/Woonnk/pocket-creature/releases/download/v0.15.1/Pocket-Creature-0.15.1-Windows.exe) from the [0.15.1 beta release](https://github.com/Woonnk/pocket-creature/releases/tag/v0.15.1) and launch it. Quit an older copy from its tray first. Your local save stays in the same location. Use **Companion** or the tray for controls; click the creature for a message, drag to move, or right-click for controls. Ctrl + Shift + P shows/hides the creature. The executable is unsigned.
+The download is a portable Windows app. Keep it in a permanent folder before enabling launch at startup. The executable is unsigned. This is a beta before stable 1.0; the [verification record](QA.md) distinguishes automated checks from direct Windows acceptance.
 
-**Browser playground:** download and open [Pocket-Creature-Playground.html](https://github.com/Woonnk/pocket-creature/releases/download/v0.15.1/Pocket-Creature-Playground.html), or run the demo from source. It has simulated window perching and built-in file observations; PC-wide sensing and Ollama calls require the desktop app.
+| Shortcut | Action |
+| --- | --- |
+| Ctrl + Shift + P | Show or hide the dragon |
+| Ctrl + Shift + G | Recover the overlay over a game |
+| Ctrl + Shift + F9 | Hold to talk, after enabling push-to-talk; F8/F10 are selectable |
+| Ctrl + Shift + M | Stop spoken output |
+| Escape | Cancel current voice activity or close the open controls |
 
-**Optional Ollama:** start Ollama on this PC and install a local model. Settings discovers installed models and reconnects automatically. Screen awareness requires a vision model and is off by default. No account or API key is required by the companion.
+## A companion with favorites
 
-Open **Settings → Voice**, refresh/select an installed voice, test it, and enable **Spoken replies**. Enable **Push-to-talk**, then hold **Ctrl + Shift + F9** or **Hold to talk**; release to send a creature command or continue your conversation. Recognition uses an installed Windows speech recognizer and closes the microphone before transcribing. Uncertain words need review. Games mute spoken replies by default. **Repeat last reply** replays the last bubble without another AI call. Say “take a nap”, “give him a snack”, “start a 25-minute focus session”, “pause focus”, “resume focus”, “end focus”, “repeat that”, or “be quiet”. These commands run without Ollama and also work when typed. Listening/thinking poses and a confirmation nod show what he is doing. Command examples are under **Settings → Voice → Commands you can say**. Quiet pauses the microphone; use the toggle to turn it off again.
+Open **Creature → Our bond** to see what he's learned and how your friendship is growing.
 
-Windows voices need no separate service. Optional **Kokoro** voices need a local service installed separately; setup and troubleshooting are in the [voice guide](docs/guide.md#voice-conversations--012-local-preview). Ctrl + Shift + M stops output; Cancel in the voice dock stops the current voice conversation.
+- Choose **Berry bites, Honey crisps, or Moon cookies** under **Edit favorites & learning → Next little snack**, then use **Little snack**.
+- Three visits at least a minute apart teach a favorite snack or activity. Care, completed fetch catches, and completed manual moments count; interrupted moments and solo play do not.
+- He recognizes his favorite snack, can repeat a favorite moment, and leans toward eligible favorites during existing quiet routines.
+- Pin a favorite yourself, choose **No favorite**, pause learning, or forget care/play favorites. Forgetting also pauses learning until you turn it back on.
+- Tell him “my favorite game is Stardew Valley” in chat, or edit favorite games here. Games share Personal memory and respect its switch. Editing or forgetting games also clears recent conversation.
 
+Existing friendship counts toward **Tiny nuzzle (10), Paw promise (25), Wing hug (50), and Happy flourish (100)**. Older milestones unlock quietly. New milestone notices leave the current conversation intact. Try gestures when he's settled; they stay in place, earn no extra rewards, and pause for games or reduced motion.
 
-## A little home
+![Expanded Our bond view with sample favorites and earned friendship milestones](docs/screenshots/bond.png)
 
-Open **Creature → A little home** for a free wicker bed and ball basket. Spend earned coins on cushions, rugs, plants, lamps, and a star plush; each purchase unlocks permanently. Drag the **Home** handle or use its arrow keys to place the corner. Position and decorations survive restarts.
+## Make him your own
 
-Naps send him to bed, waking brings a stretch, and focus brings a quiet settling pose. With roaming and Home routines enabled, he occasionally visits the toy basket and tosses a toy by himself. Solo play earns no coins. The home folds away during games and returns afterward. Use the routine toggle or tuck the whole home away whenever you like.
+Choose four personalities, three colors, hats, and five readable themes. Give him a movable bed and toy basket; earn coins through care, fetch and focus, then unlock decorations permanently. Home routines bring stretches, naps or quiet toy visits. Games tuck the home away and keep the dragon in a chosen corner.
 
-**Settings → Activity → Task gestures** adds brief browser/editor/music poses and a paw stretch after sustained typing pauses. Built-in comments can name a changed current window title; existing conversation pauses still apply. These use existing app/typing signals and need no extra AI request. Music poses notice the app category; they do not listen to audio.
+**Creature → Trick school** teaches Wave, Bow, Spin and Hop through three completed practices. **Little moments** offers scratches, paws, toy visits and settling nearby. Motion level, Wandering, silent habits, reduced motion and Quiet let you tune how much company you want.
 
+## Optional local AI and voice
 
-## A calmer Companion panel
+**Ollama:** leave it running on the same PC with a model installed. **Settings → Local AI** discovers installed models and reconnects automatically. Ollama and models are installed separately; the companion needs no account or API key. Built-in behavior remains available without Ollama.
 
-Care and play stay on the Creature page. Colors/wardrobe and activity previews expand when needed. Settings has separate General, Voice, Local AI, Activity, Games, Memory, Projects, and Privacy pages. Search jumps to a control; navigation and Quiet stay easy to reach. Themes live under Settings → General, with delivery/game voice tuning under Voice → Delivery & game options.
+**Windows voice:** open **Settings → Voice**, refresh installed voices, select one, test it, and enable Spoken replies. Push-to-talk is a separate opt-in. Hold the button or shortcut, speak, then release; uncertain recognition can be reviewed before sending. Games mute speech by default.
 
+**Kokoro:** optional natural local speech needs a separate service. Follow the [Kokoro setup guide](docs/guide.md#natural-local-voices-optional). Stop or repeat the last reply without another AI request.
+
+Mouth movement follows Kokoro WAV playback or supported native voice events; word timing is an approximate fallback. Voices without timing keep a still mouth. Games and reduced motion keep voice animation still. **Voice → Dragon expressions & sounds** holds the gesture and optional chirp controls.
+
+## What he notices
+
+Supported foreground apps, transient window titles, typing counts and idle time can trigger reactions. Connected project folders allow supported saved text/code files to be sampled when their editor filename is recognized. The attention badge distinguishes **filename only** from **read text sample**.
+
+Screen awareness is **off by default** and requires a local vision model. Eligible observations can use occasional snapshots of the selected monitor. This is not continuous video or game telemetry. He does not infer favorite games or victories from titles. Borderless/windowed games may be needed for overlay visibility.
+
+Typed characters are not read. Raw file samples and snapshots are not saved, though conversations can quote observations. Personal facts come from clear messages or edits. AI uses a fixed localhost Ollama endpoint and cannot run commands or click your PC. Observation, memory, voice, Quiet and reduced-motion controls remain independent. See the [full guide](docs/guide.md) and [security/privacy notes](SECURITY.md).
 
 ## Run from source
 
@@ -68,9 +88,7 @@ npm ci
 npm run demo
 ```
 
-Open the localhost URL printed by the demo. For the Windows desktop app, use `npm start` instead. More setup, controls, privacy details, and troubleshooting are in [the full guide](docs/guide.md).
-
-## Develop and test
+Open the localhost URL printed by the demo. On Windows, use `npm start` for the desktop app. The [standalone browser playground](https://github.com/Woonnk/pocket-creature/releases/download/v0.23.0/Pocket-Creature-Playground.html) previews the renderer with separate browser progress; PC sensing, Windows recognition and local services need the desktop app.
 
 ```sh
 npm test
@@ -80,17 +98,12 @@ npm run dist:win
 npm run check:release
 ```
 
-The browser suite starts/stops its own local server. [CONTRIBUTING.md](CONTRIBUTING.md) explains Linux browser dependencies and development conventions. GitHub Actions covers Windows/Linux logic checks, browser regressions, C# helper compilation, and Windows package artifacts. Check the repository’s Actions tab for actual run results; prepared workflows alone do not establish native compatibility.
+The recorded 0.23 verification includes **153 logic tests and 23 browser suites**, plus package and extracted-portable checks. GitHub Actions runs Windows/Linux logic checks, browser regressions, Windows helper compilation and Windows packaging. Check [Actions](https://github.com/Woonnk/pocket-creature/actions) for the published commit's results. Packaging does not establish native microphone, mixed-DPI or exclusive-fullscreen compatibility; open checks are in [QA.md](QA.md).
 
-## Privacy and limits
+Screenshots show the actual browser renderer with sample progress; the bond frame is expanded to show the whole disclosure. They are not a native Windows acceptance test.
 
-Activity uses transient window titles/geometry, coarse app categories, idle time, and typing counts. Typed characters are not read. Text samples and screenshots are not saved; conversation may quote observations. Personal facts come from your messages or edits, never screenshots. Only manual replies receive personal memory. AI uses the fixed localhost Ollama endpoint.
+## Project links
 
-Native geometry, mixed-DPI behavior, fullscreen games, and live-model accuracy remain subject to the checks in [QA.md](QA.md). Borderless/windowed games may be needed for visibility. A model can misunderstand a scene. Window perching needs enough room above a restored window on the overlay’s selected monitor; maximized/fullscreen windows and games take priority over perching.
-
-## Project information
-
-- [Roadmap](ROADMAP.md) and [changelog](CHANGELOG.md)
-- [Release notes](RELEASE_NOTES.md) and [Release process and 1.0 preparation](docs/RELEASING.md)
-- [Security/privacy reporting](SECURITY.md)
-- [MIT license](LICENSE) and [third-party runtime notices](THIRD_PARTY_NOTICES.md)
+- [Roadmap](ROADMAP.md) · [Changelog](CHANGELOG.md) · [Release notes](RELEASE_NOTES.md)
+- [Contribution guide](CONTRIBUTING.md) · [Release process](docs/RELEASING.md)
+- [MIT license](LICENSE) · [Third-party runtime notices](THIRD_PARTY_NOTICES.md)

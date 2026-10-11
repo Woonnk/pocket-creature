@@ -1,5 +1,71 @@
 # Changelog
 
+## 0.23.0 — Bond & Favorites public beta
+
+- Add a collapsed Creature → Our bond page with favorites, friendship progress, four milestone gestures, and a nested editor. Preserve all existing friendship, coins, looks, voice and other settings on schema 15.
+- Learn favorite snacks from Berry bites, Honey crisps and Moon cookies, and favorite moments from deliberate care or completed manual play. Require three visits at least a minute apart; save cooldowns across reload. Interrupted and autonomous moments do not teach preferences.
+- Recognize a favorite snack in care replies, repeat a favorite activity from the bond page, and favor eligible learned quiet moments during existing idle routines. No extra AI calls or reward changes.
+- Allow manual pins, No favorite, and paused learning. Forgetting care/play favorites clears evidence and pauses learning. Games use the existing Personal memory field; edits/forgetting clear recent conversation so removed games are not retained in that history.
+- Unlock Tiny nuzzle, Paw promise, Wing hug and Happy flourish at 10/25/50/100 friendship. Older points migrate quietly; each new tier announces once without cutting the current conversation. Gestures stay in place and stop for higher-priority activity, games or reduced motion.
+- Keep native startup/input recovery and portable extraction checks.
+- Publish accumulated 0.16–0.23 improvements with a refreshed README, current screenshots, setup/roadmap documentation, release notes and a checksummed Windows beta.
+
+## 0.22.0 — Voice & Body Language local preview, unpublished
+
+- Replace the looping mouth animation with a bounded WAV envelope sampled against actual Kokoro playback time, including silence, pause, seeking and buffering.
+- Forward validated Windows mouth-position and word events; use word-timed browser/native fallback and keep unsupported voices still. Cancel old timing and audio timers with speech.
+- Add small phrase gestures and eased personality posture/gaze, respecting motion intensity and existing action priorities. Games and reduced motion remain still.
+- Add independently controlled, locally synthesized interaction chirps, care squeaks and sleep yawns, off by default. Quiet, games, focus, capture and speech mute them; volume is bounded separately.
+- Keep controls collapsed under Voice → Dragon expressions & sounds. Saves stay on schema 15, startup safeguards remain, and there is no GitHub publication.
+
+## 0.21.0 — Reaction Timing & Transitions local preview, unpublished
+
+- Wait for stable foreground activity and a genuine typing pause before automatic observations; recheck freshness and activity revision before delivering model output.
+- Coalesce automatic filename/content notices, discard obsolete or interrupted notices, and retain immediate explicit file selection and live file-card updates.
+- Expire old task gestures instead of replaying them after cooldown; typing priority remains independent of the mimic-animation preference.
+- Blend motion joints between activity modes and compensate interrupted 2D artwork poses, settling naturally without moving the companion or changing rewards.
+- Games, hidden windows and reduced motion clear blends immediately. Retain 3D trick animations and all startup safeguards. Saves remain on schema 15. No GitHub publication.
+
+## 0.20.0 — Motion & Animation local preview, unpublished
+
+- Independent animation joints preserve existing trick, expression, voice and reaction poses. Actual travel drives coordinated paws, body bob, head and arm motion, with eased turns.
+- Weighted drag, falling stretch, grounded landing squash/settle, and a height-sensitive ground shadow.
+- Natural single/double blinking, silent idle details, and distinct wing/tail/breathing profiles for all four looks. Existing motion levels and silent-habit preference apply.
+- Collapsed six-second motion previews stay in place and yield to higher-priority activity. No AI requests, speech, rewards, position changes, or new saved fields.
+- Actual renderer recording script; retained startup safeguards, game anchors and reduced-motion behavior. No GitHub publication.
+
+## 0.19.0 — Dragon Looks local preview, unpublished
+
+- Three new selectable vector dragons: Cloud Drake, Night Wyvern, and River Dragon. Original remains available; all share the existing face and animated joints.
+- Compact previews in the collapsed Style section; free switching with independent colors and wardrobe. No AI calls or changes to earned progress.
+- Save schema 15 retains prior settings/progress and defaults older saves to Original. Backup import/export preserves the look.
+- Reusable export script creates transparent neutral PNG/SVG artwork and a labeled preview from the real app geometry. No GitHub publication.
+
+## 0.18.0 — Expressive Companion local preview, unpublished
+
+- Activity-based affectionate, proud, sleepy, curious, playful, focused, and calm faces, with existing action/voice pose priority. Pride follows completed trick learning or focus, not inferred game victories.
+- Collapsed Little moments controls and silent autonomous paw offers, settling, head scratches on request, and live home-basket toy collection/return. Busy-state interruptions, game priority, no rewards/AI calls, and static reduced-motion poses.
+- Automatic comments pause during typing, focus, hidden state, ongoing interactions, and readable bubbles. Replies that become stale while typing are discarded in both renderer and desktop paths.
+- Five-minute unanswered-question protection and ten-minute follow-up context across app switches. Answering clears the question wait; explicit new topics reset context. Ten-minute delivered-comment repeat suppression handles common paraphrases without consuming rejected replies.
+- Schema 14 preserves prior saves, tricks, home, memory, voice, and permissions, with independent mood/interaction preferences. Temporary emotions/routes are not persisted.
+
+## 0.17.0 — Little Adventures local preview, unpublished
+
+- Quiet screen-edge travel/peeks/return routes and climbs along the current usable window edge. Routes use live perch/viewport geometry, cancel on lost/replaced surfaces, and pause for typing, conversation, home activities, focus, games, and reduced motion. Automatic exploring follows Wandering; explicit previews still work when Wandering is off. Return peeks wait briefly for wake-up stretches.
+- A collapsed Trick school teaches wave, bow, spin, and hop through three completed practices. Learning and cooldowns survive saves/backups; interrupted practices award nothing, and practice never earns coins. Learned tricks can be performed with buttons or explicit typed/voice commands such as “practice wave” and “do a wave”, without Ollama. Reduced motion uses still poses.
+- A clickable attention badge names the current observed window or file while controls are closed. Expanded details distinguish window titles, filename-only observations, sampled file reads, missing/stale signals, and listening/conversation/focus/rest priorities. It hides during games, remains click-through-aware, and is masked from optional screen captures. Turning it off hides the badge without changing sensing permissions.
+- Changing a title inside one window also invalidates a selected file’s short automatic grace period, in both renderer and desktop model context. Explicit questions about the selected file still work. Attention and route coordinates stay transient and never enter saves or memories.
+- Schema 13 preserves previous progress/preferences and adds learned tricks, screen adventures, and attention badge preferences. This preview remains local; GitHub is unchanged.
+
+## 0.16.0 — Living Companion local preview, unpublished
+
+- Silent daily routines follow local morning/afternoon/evening/night periods: hops, head tilts, peeking, snuggling, and yawns. They yield to typing, conversation, focus, sleep, games, home activities, and window perching. They never force sleep or add greetings.
+- Personality affects wandering speed, timing, and routine preferences. Gentle/Normal/Lively movement is independent of conversation frequency and speech chatter. Reduced motion disables daily routines.
+- Fresh page/document titles inside the same window invalidate pending observations and gestures. Built-in comments settle before naming a new title, and briefly acknowledge returning to a recent task. Live AI also discards replies for obsolete titles.
+- Explicit typed/spoken “remind me in 10 minutes to drink water” requests use existing local timers without Ollama. Mentioning homework or studying offers a 25-minute focus buddy in Creature → A little help; starting remains your choice. Selected-file help uses the file you showed.
+- General → Startup & backups adds opt-in Windows startup using the persistent portable executable, plus JSON save export/import with validation and a replacement preview. Restoring memories/settings retains this PC’s observation, microphone, speech, and automatic-conversation permissions. Connected-folder grants and startup registration are not exported.
+- General → Local connections gives Ollama, voice, and startup status with a manual refresh. Schema 12 preserves existing saves. This preview has not been pushed to GitHub.
+
 ## 0.15.1 — public beta: voice, home, and desktop startup fix
 
 - Publish the accumulated 0.11–0.15 improvements: Windows/Kokoro spoken replies, push-to-talk, local creature commands, organized settings, a movable home, decor, and task gestures. Earlier preview entries below describe development milestones first included in this public update.

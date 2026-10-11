@@ -1,3 +1,6 @@
+import {normalizeBond} from './bond.mjs';
+import {normalizeSprite} from './sprites.mjs';
+import {normalizeTricks} from './tricks.mjs';
 import {normalizeHome} from './home.mjs';
 export const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 const numeric = (n, fallback, min, max) => typeof n === 'number' && Number.isFinite(n) ? clamp(n, min, max) : fallback;
@@ -11,11 +14,12 @@ export function normalize(input = {}) {
   const s = input && typeof input === 'object' ? input : {};
   const f = s.focus && typeof s.focus === 'object' ? s.focus : {};
   return {
-    version: 11, home:normalizeHome(s.home),contextReactions:typeof s.contextReactions==='boolean'?s.contextReactions:true,name: text(s.name, 'Ember', 24).trim() || 'Ember',
+    version: 15, sprite:normalizeSprite(s.sprite), expressiveMoods:typeof s.expressiveMoods==='boolean'?s.expressiveMoods:true, littleInteractions:typeof s.littleInteractions==='boolean'?s.littleInteractions:true, tricks:normalizeTricks(s.tricks), screenAdventures:typeof s.screenAdventures==='boolean'?s.screenAdventures:true, attentionIndicator:typeof s.attentionIndicator==='boolean'?s.attentionIndicator:true, dailyRoutines:typeof s.dailyRoutines==='boolean'?s.dailyRoutines:true, motionLevel:choice(s.motionLevel,['gentle','normal','lively'],'normal'), helpfulOffers:typeof s.helpfulOffers==='boolean'?s.helpfulOffers:true, home:normalizeHome(s.home),contextReactions:typeof s.contextReactions==='boolean'?s.contextReactions:true,name: text(s.name, 'Ember', 24).trim() || 'Ember',
     color: choice(s.color, ['mint', 'lavender', 'peach'], 'mint'),
     hat: choice(s.hat, ['none', 'sprout', 'crown', 'wizard'], 'none'),
     coins: Math.floor(numeric(s.coins, 0, 0, 1000000)),
     friendship: numeric(s.friendship, 0, 0, 1000000),
+    bond:normalizeBond(s.bond,numeric(s.friendship,0,0,1000000)),
     energy: numeric(s.energy, 85, 0, 100), happiness: numeric(s.happiness, 90, 0, 100),
     voiceInputEnabled:s.voiceInputEnabled===true,
     voiceInputKey:choice(s.voiceInputKey,['f8','f9','f10'],'f9'),
@@ -29,6 +33,9 @@ export function normalize(input = {}) {
     speechChatter: choice(s.speechChatter,['replies','balanced','chatty'],'balanced'),
     speechInGames: s.speechInGames===true,
     speechExpression: typeof s.speechExpression==='boolean'?s.speechExpression:true,
+    speechGestures: typeof s.speechGestures==='boolean'?s.speechGestures:true,
+    dragonSounds:s.dragonSounds===true,
+    dragonSoundVolume:numeric(s.dragonSoundVolume,.25,0,.75),
     quiet: typeof s.quiet === 'boolean' ? s.quiet : false,
     wander: typeof s.wander === 'boolean' ? s.wander : true,
     reducedMotion: typeof s.reducedMotion === 'boolean' ? s.reducedMotion : false,

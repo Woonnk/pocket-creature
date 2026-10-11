@@ -73,10 +73,7 @@ body[data-theme] :is(.wardrobe button[aria-pressed="true"],.action-grid button:h
 
 /* Voice activity is separate from physical moods and stays still in reduced motion. */
 .voice-stop{position:absolute;left:20px;bottom:125px;z-index:40;border-radius:12px;padding:11px 14px;background:var(--panel,#20282c);color:var(--ink,#edf2f1);border:1px solid var(--line,#48565a);font-size:12px}
-.pet[data-speaking="true"] .mouth{transform-box:fill-box;transform-origin:center;animation:voice-mouth .22s ease-in-out infinite alternate}
-body.reduced-motion .pet[data-speaking="true"] .mouth,body.game-mode .pet[data-speaking="true"] .mouth{animation:none;stroke-width:4}
 #voice-settings output{float:right;color:var(--accent)}#voice-settings input[type=range]{padding:0;accent-color:var(--accent);height:28px;margin-bottom:10px}
-@keyframes voice-mouth{to{transform:scaleY(.35)}}
 
 .voice-dock{position:absolute;left:50%;bottom:20px;transform:translateX(-50%);z-index:40;width:min(360px,calc(100% - 32px));background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:12px;box-shadow:0 8px 30px #0002}.voice-dock-actions{display:flex;flex-wrap:wrap;gap:7px}.voice-dock button{padding:9px 12px;border-radius:9px;font-size:11px}.voice-dock p{margin:8px 0 0;font-size:11px;color:var(--muted);overflow-wrap:anywhere;line-height:1.4}#voice-heard{max-height:64px;overflow:auto}.voice-input-settings{margin-top:16px;border-top:1px solid var(--line)}.voice-command{display:block;white-space:pre-wrap;user-select:all;overflow-wrap:anywhere;background:var(--control);padding:10px;margin:9px 0;border-radius:8px}
 [data-voice-hold][aria-pressed="true"]{outline:2px solid var(--accent)}
@@ -195,3 +192,125 @@ body.reduced-motion .pet.home-stretch .arm,body.reduced-motion .pet[data-task-po
 body.reduced-motion .pet.home-inspect .head,body.reduced-motion .pet[data-task-pose="inspect"] .head{transform:rotate(-6deg)}
 body:is(.reduced-motion,.game-mode) .pet[data-task-pose="peek"] .head{transform:rotate(5deg)}
 @media(max-width:620px){.home-catalog{grid-template-columns:1fr}.home-catalog button{display:grid;grid-template-columns:36px minmax(0,1fr);gap:6px 10px;padding:13px}.home-catalog .decor-icon{grid-row:span 3}.decor-cost{padding-top:0}.home-preview{height:140px}.home-categories button{font-size:10px}}
+
+/* Daily routines animate the art, leaving the desktop hit area and window position stable. */
+.pet.daily-hop #habit-art{transform-origin:120px 205px;animation:daily-hop 1.5s ease-in-out 3}
+.pet.daily-tilt .head{transform-origin:120px 140px;animation:daily-tilt 4.5s ease-in-out both}
+.pet.daily-peek #habit-art{transform-origin:120px 205px;animation:daily-peek 4.5s ease-in-out both}
+.pet.daily-peek .head{transform-origin:120px 140px;animation:daily-tilt 4.5s ease-in-out both}
+.pet.daily-snuggle #habit-art{transform-origin:120px 205px;animation:daily-snuggle 6.5s ease-in-out both}
+.pet.daily-yawn .mouth{transform-origin:117px 124px;animation:daily-yawn 4.5s ease-in-out both}
+.pet.daily-yawn .head{transform-origin:120px 140px;animation:daily-tilt 4.5s ease-in-out both}
+@keyframes daily-hop{0%,100%{transform:translateY(0) scale(1)}20%{transform:scale(1.04,.94)}45%{transform:translateY(-15px) scale(.97,1.03)}70%{transform:scale(1.05,.95)}}
+@keyframes daily-tilt{0%,100%{transform:rotate(0)}25%,45%{transform:rotate(-9deg)}65%,80%{transform:rotate(7deg)}}
+@keyframes daily-peek{0%,100%{transform:translateX(0)}25%,60%{transform:translateX(8px) rotate(3deg)}}
+@keyframes daily-snuggle{0%,100%{transform:scale(1)}20%,80%{transform:translateY(5px) rotate(-5deg) scale(1.02,.95)}}
+@keyframes daily-yawn{0%,100%{transform:scaleY(1)}35%,60%{transform:scaleY(2.4)}}
+body:is(.reduced-motion,.game-mode) .pet[class*="daily-"] :is(#habit-art,.head,.mouth){animation:none}
+#little-assistance>p,#little-assistance>.home-toolbar{margin:12px 16px}
+
+.attention-tag{position:absolute;right:24px;top:24px;max-width:260px;display:flex;align-items:center;gap:9px;padding:11px 14px;border:1px solid var(--line);border-radius:18px;background:var(--panel);color:var(--ink);box-shadow:0 6px 24px #0002;font-size:12px;text-align:left;z-index:12}.attention-tag[hidden]{display:none}.attention-tag>span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.attention-dot{color:var(--accent);flex:none}.attention-tag[data-kind="off"] .attention-dot,.attention-tag[data-kind="waiting"] .attention-dot{color:var(--muted)}.attention-card{margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}#attention-label{font-size:14px;overflow-wrap:anywhere}.attention-card .hint{font-size:11px}.attention-card .home-toolbar button{font-size:11px}.trick-school-body{padding:14px 16px}.trick-progress{display:flex;align-items:center;gap:12px;margin:16px 0}.trick-progress progress{width:50%;height:7px}.trick-progress span{font-size:11px;color:var(--muted)}
+.pet.trick-wave .arm{transform-origin:85px 142px;animation:trick-wave 1s ease-in-out 3}
+.pet.trick-bow #habit-art{transform-origin:120px 205px;animation:trick-bow 3s ease-in-out both}
+.pet.trick-bow .head{transform-origin:120px 140px;animation:trick-bow-head 3s ease-in-out both}
+.pet.trick-spin #habit-art{transform-origin:120px 130px;animation:trick-spin 4s ease-in-out both}
+.pet.trick-hop #habit-art{transform-origin:120px 205px;animation:daily-hop 1s ease-in-out 3}
+.pet.adventure-climb .arm{transform-origin:85px 142px;animation:trick-wave .65s ease-in-out infinite}
+.pet.adventure-climb #habit-art{transform-origin:120px 205px;transform:rotate(-5deg)}
+.pet.adventure-walking .leg{animation:walk .4s ease-in-out infinite alternate}
+.pet.adventure-peek .head{transform-origin:120px 140px;animation:daily-tilt 3s ease-in-out both}
+@keyframes trick-wave{0%,100%{transform:rotate(0)}20%,60%{transform:translateY(-10px) rotate(80deg)}40%,80%{transform:translateY(-10px) rotate(55deg)}}
+@keyframes trick-bow{0%,100%{transform:rotate(0)}30%,65%{transform:rotate(12deg) translateY(3px)}}
+@keyframes trick-bow-head{0%,100%{transform:rotate(0)}30%,65%{transform:rotate(14deg)}}
+@keyframes trick-spin{0%{transform:rotateY(0)}85%,100%{transform:rotateY(360deg)}}
+body:is(.reduced-motion,.game-mode) .pet:is([class*="trick-"],[class*="adventure-"]) :is(#habit-art,.head,.arm,.leg){animation:none}
+body.reduced-motion .pet.trick-wave .arm{transform:translateY(-8px) rotate(60deg)}
+body.reduced-motion .pet.trick-bow .head{transform:rotate(12deg)}
+body.reduced-motion .pet.trick-spin #habit-art{transform:rotate(-8deg)}
+body.reduced-motion .pet.trick-hop #habit-art{transform:scale(1.02,.97)}
+/* Facial expressions yield to the existing action/voice pose controller. */
+.emotion-face{fill:none;stroke:#33473d;stroke-width:3;stroke-linecap:round;pointer-events:none}.emotion-face>*{display:none}
+.pet:is([data-emotion="curious"],[data-emotion="playful"],[data-emotion="proud"],[data-emotion="focused"]) .brow{display:none}
+.pet:is([data-emotion="curious"],[data-emotion="playful"],[data-emotion="proud"],[data-emotion="focused"]) .emotion-brows{display:block}
+.pet[data-emotion="curious"] .emotion-brows{d:path("M79 81q7-7 15-3M131 82q6-2 13 1")}
+.pet[data-emotion="focused"] .emotion-brows{d:path("M81 83l13 1M131 84l13-1")}
+.pet[data-emotion="proud"] .emotion-brows{d:path("M80 81q7-5 14 0M131 81q7-5 14 0")}
+.pet:is([data-emotion="affectionate"],[data-emotion="sleepy"]) :is(.eyes,.brow,.mouth){visibility:hidden}
+.pet:is([data-emotion="affectionate"],[data-emotion="sleepy"]) :is(.emotion-soft-eyes,.emotion-smile){display:block}
+.pet[data-emotion="sleepy"] .emotion-soft-eyes{d:path("M82 98q7 4 14 0M131 98q7 4 14 0")}
+.pet[data-emotion="sleepy"] .emotion-smile{d:path("M106 119q7 4 14 0")}
+.pet[data-emotion="affectionate"] .cheek{opacity:.8}
+.pet[data-emotion="proud"] .mouth{display:none}.pet[data-emotion="proud"] .emotion-smile{display:block}
+.moment-toy{display:none;stroke:#786344;stroke-width:2.5;pointer-events:none}.moment-ball{fill:#e3c375}.moment-star{fill:#edce82}
+.pet[data-carrying="true"] .moment-toy{display:block}.pet[data-toy="ball"] .moment-star,.pet[data-toy="star"] .moment-ball{display:none}
+.pet[data-moment="scratch"] .head{transform-origin:120px 140px;animation:moment-scratch 4s ease-in-out both}.pet[data-moment="paw"] .arm{transform-origin:85px 142px;animation:moment-paw 4s ease-in-out both}
+.pet[data-moment="settle"] #habit-art{transform-origin:120px 205px;animation:moment-settle 6s ease-in-out both}
+.pet[data-moment="toy"][data-carrying="true"] .arm{transform-origin:85px 142px;transform:translate(-4px,1px) rotate(-10deg)}
+.pet[data-moment="toy"]:is([data-moment-phase="fetch"],[data-moment-phase="return"]) .leg{animation:paw-step .45s ease-in-out infinite alternate}
+@keyframes moment-scratch{20%,75%{transform:rotate(-7deg) translateY(2px)}}
+@keyframes moment-paw{20%,75%{transform:translate(-3px,-2px) rotate(20deg)}}
+@keyframes moment-settle{20%,80%{transform:translateY(4px) scale(1.02,.96)}}
+body:is(.reduced-motion,.game-mode) .pet[data-moment]:not([data-moment="none"]) :is(.head,.arm,.leg,#habit-art){animation:none}
+body.reduced-motion .pet[data-moment="scratch"] .head{transform:rotate(-5deg)}
+body.reduced-motion .pet[data-moment="paw"] .arm{transform:translate(-3px,-2px) rotate(20deg)}
+body.reduced-motion .pet[data-moment="settle"] #habit-art{transform:translateY(3px) scale(1.02,.97)}
+@media(max-width:760px){.attention-tag{right:12px;top:12px;max-width:calc(100% - 24px)}.trick-progress{flex-wrap:wrap}.trick-progress progress{width:100%}}
+
+#panel .attention-card .hint{font-size:11px;font-weight:400;line-height:1.6;color:var(--muted)}
+.trick-progress progress{accent-color:var(--accent);border:0;border-radius:99px;overflow:hidden}
+.trick-progress progress::-webkit-progress-bar{background:var(--control);border-radius:99px}
+.trick-progress progress::-webkit-progress-value{background:var(--accent);border-radius:99px}
+
+/* Look selection lives inside Style; previews share artwork with the live actor. */
+.sprite-detail{fill:none;stroke:var(--dark);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;opacity:.55}
+#panel .sprite-gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#panel .sprite-choice{display:flex;flex-direction:column;align-items:center;min-width:0;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);padding:8px 9px 12px;text-align:center;transition:border-color .15s}
+#panel .sprite-choice[aria-pressed="true"]{border:2px solid var(--accent);padding:7px 8px 11px;background:var(--control)}
+#panel .sprite-choice:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+#panel .sprite-choice svg{width:100%;height:105px;flex-shrink:0;pointer-events:none}
+#panel .sprite-choice svg *{animation:none!important}
+#panel .sprite-choice strong{font-size:11px;margin-top:3px}
+#panel .sprite-choice small{font-size:10px;color:var(--muted);line-height:1.45;margin-top:5px}
+#panel .sprite-hint{font-size:10px;line-height:1.6;color:var(--muted);margin:12px 0 18px}
+
+.sprite-mouth{fill:none;stroke:#31574c;stroke-width:3;stroke-linecap:round}.sprite-eyes{fill:#274e45}
+
+/* Secondary motion uses separate joints; deliberate poses keep their own transforms. */
+.pet #dragon{overflow:visible}.pet .shadow{pointer-events:none}
+.pet[data-motion-ready="true"] .eyes{animation:none}
+.pet:is([data-motion-mode="idle"],[data-motion-mode="walk"],[data-motion-mode="drag"],[data-motion-mode="fall"],[data-motion-mode="landing"],[data-motion-mode="preview"]) #dragon-art{animation:none}
+.pet:is([data-motion-mode="idle"],[data-motion-mode="walk"],[data-motion-mode="drag"],[data-motion-mode="fall"],[data-motion-mode="landing"],[data-motion-mode="preview"]) :is(.wing,.tail,.leg){animation:none!important}
+#panel #animation-preview .hint{font-size:11px;line-height:1.6}
+
+/* Mouth opens from voice audio/visemes; there is no repeating talking loop. */
+.voice-mouth{display:none;pointer-events:none}.voice-jaw{fill:#543d42;stroke:#33473d;stroke-width:2}.voice-tongue{fill:none;stroke:#d88e92;stroke-width:2;stroke-linecap:round}
+.pet[data-voice-mouth="true"] .voice-mouth{display:block}
+.pet[data-voice-mouth="true"] :is(.mouth,.emotion-smile,.reaction-mouth){visibility:hidden!important}
+body:is(.game-mode,.reduced-motion) .pet .voice-mouth{display:none}
+
+/* A compact, theme-aware bond page. Editing stays behind one disclosure. */
+#panel .bond-overview{margin:16px 0}#panel .bond-overview progress{width:100%;height:7px;accent-color:var(--accent);background:var(--control);border:0;border-radius:99px;overflow:hidden}
+#panel .bond-overview progress::-webkit-progress-bar{background:var(--control);border-radius:99px}
+#panel .bond-overview progress::-webkit-progress-value{background:var(--accent);border-radius:99px}
+#panel .bond-favorites{display:grid;gap:12px;margin:16px 0}
+#panel .bond-favorites div{display:flex;flex-direction:column;gap:4px;min-width:0}
+#panel .bond-favorites span,#panel .bond-favorites small{font-size:11px;color:var(--muted)}
+#panel .bond-favorites strong{font-size:13px;overflow-wrap:anywhere}
+#panel .bond-milestones{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#panel .bond-milestone{border:1px solid var(--line);border-radius:12px;padding:12px;min-width:0;background:var(--surface);display:flex;flex-direction:column;gap:8px}
+#panel .bond-milestone strong{font-size:12px}#panel .bond-milestone small{font-size:11px;color:var(--muted)}
+#panel .bond-milestone button{font-size:11px;padding:9px 6px;white-space:normal}
+#panel .bond-edit{margin-top:18px;border-top:1px solid var(--line);padding-top:14px}#panel .bond-edit summary{cursor:pointer;font-size:12px}#bond-form .primary{width:100%;margin-top:14px}
+.pet[data-bond-gesture="nuzzle"] .head{transform-origin:120px 140px;animation:bond-nuzzle 3.2s ease-in-out both}
+.pet[data-bond-gesture="promise"] .arm{transform-origin:85px 142px;animation:bond-promise 3.2s ease-in-out both}
+.pet[data-bond-gesture="hug"] .wing{transform-origin:157px 139px;animation:bond-hug 3.2s ease-in-out both!important}
+.pet[data-bond-gesture="hug"] .arm{transform-origin:85px 142px;animation:bond-embrace 3.2s ease-in-out both}
+.pet[data-bond-gesture="flourish"] #habit-art{transform-origin:120px 205px;animation:bond-flourish 3.2s ease-in-out both}
+.pet[data-bond-gesture="flourish"] .wing{transform-origin:157px 139px;animation:bond-wing-flourish 3.2s ease-in-out both!important}
+@keyframes bond-nuzzle{25%,65%{transform:translate(-3px,3px) rotate(-10deg)}45%{transform:translate(-5px,2px) rotate(-13deg)}}
+@keyframes bond-promise{25%,65%{transform:translate(-3px,-3px) rotate(27deg)}45%{transform:translate(-3px,-5px) rotate(22deg)}}
+@keyframes bond-hug{25%,70%{transform:rotate(-27deg)}}
+@keyframes bond-embrace{25%,70%{transform:translate(4px,2px) rotate(-17deg)}}
+@keyframes bond-flourish{25%,60%{transform:translateY(-3px) rotate(-3deg)}42%{transform:translateY(-5px) rotate(3deg)}}
+@keyframes bond-wing-flourish{25%,60%{transform:rotate(22deg)}42%{transform:rotate(10deg)}}
+body:is(.game-mode,.reduced-motion) .pet[data-bond-gesture] :is(.head,.arm,.wing,#habit-art){animation:none!important}

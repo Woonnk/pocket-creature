@@ -8,7 +8,7 @@ async function run(){
   try{
     await page.addInitScript(()=>{
       window.nativeCalls={saves:[],clicks:[]};
-      window.companion={loadState:async()=>({wander:false,idleAfter:60}),saveState:async s=>window.nativeCalls.saves.push(JSON.parse(JSON.stringify(s))),setClickThrough:x=>window.nativeCalls.clicks.push(x),notify:()=>{},hide:()=>{},quit:()=>{},readyToQuit:()=>{},onOpenControls:fn=>window.openControls=fn,onBeforeQuit:()=>{},onClock:fn=>window.clock=fn,onCursor:fn=>window.cursor=fn,onActivity:fn=>window.activity=fn};
+      window.companion={loadState:async()=>({littleInteractions:false,wander:false,idleAfter:60}),saveState:async s=>window.nativeCalls.saves.push(JSON.parse(JSON.stringify(s))),setClickThrough:x=>window.nativeCalls.clicks.push(x),notify:()=>{},hide:()=>{},quit:()=>{},readyToQuit:()=>{},onOpenControls:fn=>window.openControls=fn,onBeforeQuit:()=>{},onClock:fn=>window.clock=fn,onCursor:fn=>window.cursor=fn,onActivity:fn=>window.activity=fn};
     });
     await page.goto('http://127.0.0.1:4173');await page.waitForSelector('#pet');
     await page.evaluate(()=>window.activity({category:'coding',idleSeconds:0,typingCount:4,appAvailable:true,typingAvailable:true}));

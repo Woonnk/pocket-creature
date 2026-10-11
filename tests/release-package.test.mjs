@@ -8,3 +8,9 @@ const {verifyPE}=createRequire(import.meta.url)('../scripts/check-release.cjs');
 test('release verifier rejects truncated/wrong executables and accepts a correctly placed PE signature',async()=>{
  const dir=await fs.mkdtemp(path.join(os.tmpdir(),'pocket-pe-'));try{const file=path.join(dir,'portable.exe'),data=Buffer.alloc(256);await fs.writeFile(file,data);assert.throws(()=>verifyPE(file),/DOS signature/);data.write('MZ');data.writeUInt32LE(128,60);await fs.writeFile(file,data);assert.throws(()=>verifyPE(file),/PE signature/);Buffer.from([80,69,0,0]).copy(data,128);await fs.writeFile(file,data);assert.doesNotThrow(()=>verifyPE(file));data.writeUInt32LE(9999,60);await fs.writeFile(file,data);assert.throws(()=>verifyPE(file),/header offset/);await fs.writeFile(file,Buffer.alloc(5));assert.throws(()=>verifyPE(file),/truncated/);}finally{await fs.rm(dir,{recursive:true,force:true});}
 });
+test('full runtime verification rejects missing PE section bytes despite a valid header',async()=>{
+ const dir=await fs.mkdtemp(path.join(os.tmpdir(),'pocket-full-pe-'));try{
+  const file=path.join(dir,'runtime.exe'),data=Buffer.alloc(512);data.write('MZ');data.writeUInt32LE(128,60);Buffer.from([80,69,0,0]).copy(data,128);data.writeUInt16LE(1,134);data.writeUInt16LE(0,148);data.writeUInt32LE(64,168);data.writeUInt32LE(448,172);
+  await fs.writeFile(file,data);assert.doesNotThrow(()=>verifyPE(file,true));await fs.writeFile(file,data.subarray(0,480));assert.doesNotThrow(()=>verifyPE(file));assert.throws(()=>verifyPE(file,true),/section data is truncated/);
+ }finally{await fs.rm(dir,{recursive:true,force:true});}
+});
